@@ -69,11 +69,30 @@ exports.handler = async (event, context) => {
     // Authenticate user
     const user = authenticateToken(event.headers.authorization);
     
-    const { path, httpMethod } = event;
-    const segments = path.split('/').filter(Boolean);
+    const { httpMethod, queryStringParameters } = event;
     
-    // GET /api/posts - Get all posts (admin)
-    if (httpMethod === 'GET' && segments[1] === 'posts' && segments.length === 2) {
+    // GET /posts - Get all posts (admin)
+    if (httpMethod === 'GET') {
+      // Check if it's a specific post request
+      if (queryStringParameters && queryStringParameters.id) {
+        const post = await Post.findOne({ id: queryStringParameters.id }).select('-_id -__v');
+        
+        if (!post) {
+          return {
+            statusCode: 404,
+            headers,
+            body: JSON.stringify({ message: 'Post not found' })
+          };
+        }
+        
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify(post)
+        };
+      }
+      
+      // Return all posts
       const posts = await Post.find()
         .select('-_id -__v')
         .sort({ createdAt: -1 });
@@ -85,8 +104,8 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // POST /api/posts - Create new post
-    if (httpMethod === 'POST' && segments[1] === 'posts' && segments.length === 2) {
+    // POST /posts - Create new post
+    if (httpMethod === 'POST') {
       const postData = JSON.parse(event.body);
       
       if (!postData.title || !postData.content) {
@@ -122,11 +141,19 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // PUT /api/posts/:id - Update post
-    if (httpMethod === 'PUT' && segments[1] === 'posts' && segments.length === 3) {
-      const id = segments[2];
-      const updateData = JSON.parse(event.body);
+    // PUT /posts - Update post (ID in query params)
+    if (httpMethod === 'PUT') {
+      const postId = queryStringParameters?.id;
       
+      if (!postId) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ message: 'Post ID is required' })
+        };
+      }
+      
+      const updateData = JSON.parse(event.body);
       updateData.updatedAt = new Date();
       updateData.author = user.username;
       
@@ -135,7 +162,7 @@ exports.handler = async (event, context) => {
       }
       
       const post = await Post.findOneAndUpdate(
-        { id },
+        { id: postId },
         updateData,
         { new: true, select: '-_id -__v' }
       );
@@ -155,10 +182,19 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // DELETE /api/posts/:id - Delete post
-    if (httpMethod === 'DELETE' && segments[1] === 'posts' && segments.length === 3) {
-      const id = segments[2];
-      const post = await Post.findOneAndDelete({ id });
+    // DELETE /posts - Delete post (ID in query params)
+    if (httpMethod === 'DELETE') {
+      const postId = queryStringParameters?.id;
+      
+      if (!postId) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ message: 'Post ID is required' })
+        };
+      }
+      
+      const post = await Post.findOneAndDelete({ id: postId });
       
       if (!post) {
         return {
@@ -176,9 +212,9 @@ exports.handler = async (event, context) => {
     }
     
     return {
-      statusCode: 404,
+      statusCode: 405,
       headers,
-      body: JSON.stringify({ message: 'Not found' })
+      body: JSON.stringify({ message: 'Method not allowed' })
     };
     
   } catch (error) {
@@ -195,7 +231,7 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ message: 'Internal server error' })
+      body: JSON.stringify({ message: 'Internal server error', error: error.message })
     };
   }
 };

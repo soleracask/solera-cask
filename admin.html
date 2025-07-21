@@ -894,15 +894,14 @@
 
             // Update existing post
             updatePost: async function(id, postData) {
-                return await apiRequest(`/posts/${id}`, {
+                return await apiRequest(`/posts?id=${id}`, {
                     method: 'PUT',
                     body: JSON.stringify(postData)
                 });
             },
 
-            // Delete post
             deletePost: async function(id) {
-                return await apiRequest(`/posts/${id}`, {
+                return await apiRequest(`/posts?id=${id}`, {
                     method: 'DELETE'
                 });
             },

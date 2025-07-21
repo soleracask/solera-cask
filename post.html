@@ -441,33 +441,48 @@
     </footer>
 
     <script>
-        // Solera Cask Individual Post Page JavaScript
+        // Solera Cask Individual Post Page JavaScript - Database Connected
         const SoleraBlogAPI = {
-            DATA_VERSION: '1.0',
-            STORAGE_KEY: 'solera-cask-posts',
-
-            getAllPosts: function() {
-                const posts = localStorage.getItem(this.STORAGE_KEY);
-                const version = localStorage.getItem(this.STORAGE_KEY + '-version');
-                
-                if (!posts || version !== this.DATA_VERSION) {
-                    const defaultPosts = this.getDefaultPosts();
-                    this.savePosts(defaultPosts);
-                    localStorage.setItem(this.STORAGE_KEY + '-version', this.DATA_VERSION);
-                    return defaultPosts;
+            // Get all published posts from database
+            getAllPosts: async function() {
+                try {
+                    const response = await fetch('/.netlify/functions/posts-public');
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching posts:', error);
+                    return [];
                 }
-                
-                return JSON.parse(posts);
             },
 
-            getPost: function(id) {
-                const posts = this.getAllPosts();
-                return posts.find(post => post.id === id);
+            // Get single post by ID from database
+            getPost: async function(id) {
+                try {
+                    const response = await fetch(`/.netlify/functions/posts-public?id=${id}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching post:', error);
+                    return null;
+                }
             },
 
-            getPostBySlug: function(slug) {
-                const posts = this.getAllPosts();
-                return posts.find(post => this.createPostSlug(post) === slug);
+            // Get single post by slug from database
+            getPostBySlug: async function(slug) {
+                try {
+                    const response = await fetch(`/.netlify/functions/posts-public?slug=${slug}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching post by slug:', error);
+                    return null;
+                }
             },
 
             createPostSlug: function(post) {
@@ -477,38 +492,6 @@
                     .replace(/\s+/g, '-')
                     .replace(/-+/g, '-')
                     .trim('-');
-            },
-
-            savePosts: function(posts) {
-                localStorage.setItem(this.STORAGE_KEY, JSON.stringify(posts));
-                localStorage.setItem(this.STORAGE_KEY + '-version', this.DATA_VERSION);
-            },
-
-            getDefaultPosts: function() {
-                return [
-                    {
-                        id: "welcome-to-solera-cask-stories",
-                        type: "News",
-                        date: new Date().toISOString(),
-                        title: "Welcome to Solera Cask Stories",
-                        excerpt: "Discover the heritage, craftsmanship, and stories behind our premium sherry barrels from Jerez de la Frontera.",
-                        content: "Welcome to Solera Cask Stories, where we share the rich heritage and exceptional craftsmanship behind our premium sherry barrels. From our historic solera systems in Jerez de la Frontera to the modern craft distilleries and breweries worldwide, each barrel tells a story of tradition, quality, and transformation.\n\nHere you'll find updates on our latest partnerships, educational content about sherry barrel aging, tasting notes from exceptional spirits and beers, and stories from the passionate makers who trust Solera Cask for their most important expressions.\n\nOur journey begins in the heart of Andalusia, where the ancient art of sherry making has been perfected over centuries. Each barrel we source carries with it the wisdom of generations of bodega masters, the terroir of Jerez de la Frontera, and the unique characteristics that only authentic Spanish sherry casks can provide.\n\nWhether you're a master distiller seeking the perfect finishing cask, a craft brewer exploring new flavor horizons, or simply someone passionate about the stories behind exceptional spirits, this is your gateway to the world of premium sherry barrel aging.",
-                        link: "",
-                        tags: ["welcome", "heritage", "craftsmanship", "solera", "jerez"],
-                        status: "published"
-                    },
-                    {
-                        id: "understanding-sherry-types-for-aging",
-                        type: "Education",
-                        date: new Date(Date.now() - 86400000).toISOString(),
-                        title: "Understanding Sherry Types for Aging",
-                        excerpt: "A comprehensive guide to the six sherry types and how each imparts unique characteristics to spirits and beer.",
-                        content: "Understanding the different sherry types is crucial for selecting the right barrel for your aging program. Each of the six main sherry types brings distinct flavor profiles and characteristics to spirits and beer.\n\n## Fino and Manzanilla\nFino and Manzanilla, aged under flor, contribute bright, mineral, and saline notes perfect for lighter spirits. These sherries develop under a layer of yeast called flor, which protects the wine from oxidation and creates unique aldehydic compounds that translate beautifully to aged spirits.\n\n## Amontillado\nAmontillado offers balanced complexity with nutty and oxidative characteristics. Starting life under flor like Fino, these sherries later undergo oxidative aging, creating a perfect bridge between biological and oxidative aging styles.\n\n## Oloroso\nOloroso provides rich, robust flavors ideal for whisky and dark beer styles. These sherries undergo full oxidative aging from the beginning, developing deep walnut, leather, and dried fruit characteristics that complement bold spirits beautifully.\n\n## Palo Cortado\nPalo Cortado, the rarest type, combines elegance with depth. This enigmatic style begins like Amontillado but develops the body and richness of Oloroso, creating complex barrels perfect for premium expressions.\n\n## Pedro Ximénez\nPedro Ximénez delivers intense sweetness and rich fruit character for dessert-style expressions. Made from sun-dried grapes, these extremely sweet sherries create barrels that impart incredible richness and complexity to spirits.\n\nUnderstanding these profiles allows distillers and brewers to make informed decisions for their barrel aging programs, ensuring the perfect marriage between base spirit and sherry influence.",
-                        link: "",
-                        tags: ["education", "sherry-types", "aging", "flavor-profiles", "spirits", "beer"],
-                        status: "published"
-                    }
-                ];
             }
         };
 
@@ -532,7 +515,7 @@
             initializePostPage();
         });
 
-        function initializePostPage() {
+        async function initializePostPage() {
             const postSlug = getCurrentPostSlug();
             
             if (!postSlug) {
@@ -542,21 +525,26 @@
             
             console.log('Looking for post with slug:', postSlug);
             
-            // Find post by slug
-            const post = SoleraBlogAPI.getPostBySlug(postSlug);
-            
-            if (!post || post.status !== 'published') {
-                console.error('Post not found for slug:', postSlug);
-                showError('Story not found');
-                return;
+            try {
+                // Find post by slug from database
+                const post = await SoleraBlogAPI.getPostBySlug(postSlug);
+                
+                if (!post || post.status !== 'published') {
+                    console.error('Post not found for slug:', postSlug);
+                    showError('Story not found');
+                    return;
+                }
+                
+                // Render the post
+                renderPost(post);
+                await loadRelatedPosts(post);
+                
+                // Update page title
+                document.title = `${post.title} - Solera Cask`;
+            } catch (error) {
+                console.error('Error loading post:', error);
+                showError('Failed to load story');
             }
-            
-            // Render the post
-            renderPost(post);
-            loadRelatedPosts(post);
-            
-            // Update page title
-            document.title = `${post.title} - Solera Cask`;
         }
 
         function renderPost(post) {
@@ -608,48 +596,56 @@
             }
         }
 
-        function loadRelatedPosts(currentPost) {
-            const allPosts = SoleraBlogAPI.getAllPosts()
-                .filter(post => post.status === 'published' && post.id !== currentPost.id);
-            
-            // Find posts with shared tags or same type
-            const relatedPosts = allPosts
-                .map(post => {
-                    let score = 0;
-                    const sharedTags = post.tags.filter(tag => currentPost.tags.includes(tag));
-                    score += sharedTags.length * 2;
-                    if (post.type === currentPost.type) score += 1;
-                    return { post, score };
-                })
-                .filter(item => item.score > 0)
-                .sort((a, b) => b.score - a.score)
-                .slice(0, 3)
-                .map(item => item.post);
-            
-            const relatedContainer = document.getElementById('relatedPosts');
-            if (relatedContainer) {
-                if (relatedPosts.length === 0) {
-                    relatedContainer.innerHTML = '<p style="text-align: center; color: var(--text-light);">No related stories found.</p>';
-                } else {
-                    relatedContainer.innerHTML = relatedPosts.map(post => `
-                        <div class="related-post" onclick="navigateToPost('${post.id}')">
-                            <div class="related-post-meta">
-                                <span class="post-type">${post.type}</span>
-                                <span class="post-date">${formatDate(post.date)}</span>
+        async function loadRelatedPosts(currentPost) {
+            try {
+                const allPosts = await SoleraBlogAPI.getAllPosts();
+                const otherPosts = allPosts.filter(post => post.id !== currentPost.id);
+                
+                // Find posts with shared tags or same type
+                const relatedPosts = otherPosts
+                    .map(post => {
+                        let score = 0;
+                        const sharedTags = post.tags.filter(tag => currentPost.tags.includes(tag));
+                        score += sharedTags.length * 2;
+                        if (post.type === currentPost.type) score += 1;
+                        return { post, score };
+                    })
+                    .filter(item => item.score > 0)
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, 3)
+                    .map(item => item.post);
+                
+                const relatedContainer = document.getElementById('relatedPosts');
+                if (relatedContainer) {
+                    if (relatedPosts.length === 0) {
+                        relatedContainer.innerHTML = '<p style="text-align: center; color: var(--text-light);">No related stories found.</p>';
+                    } else {
+                        relatedContainer.innerHTML = relatedPosts.map(post => `
+                            <div class="related-post" onclick="navigateToPost('${post.id}')">
+                                <div class="related-post-meta">
+                                    <span class="post-type">${post.type}</span>
+                                    <span class="post-date">${formatDate(post.date)}</span>
+                                </div>
+                                <h4>${post.title}</h4>
+                                <p>${post.excerpt || post.content.substring(0, 100)}...</p>
                             </div>
-                            <h4>${post.title}</h4>
-                            <p>${post.excerpt || post.content.substring(0, 100)}...</p>
-                        </div>
-                    `).join('');
+                        `).join('');
+                    }
                 }
+            } catch (error) {
+                console.error('Error loading related posts:', error);
             }
         }
 
-        function navigateToPost(postId) {
-            const post = SoleraBlogAPI.getPost(postId);
-            if (post) {
-                const postSlug = SoleraBlogAPI.createPostSlug(post);
-                window.location.href = `post.html?slug=${postSlug}`;
+        async function navigateToPost(postId) {
+            try {
+                const post = await SoleraBlogAPI.getPost(postId);
+                if (post) {
+                    const postSlug = SoleraBlogAPI.createPostSlug(post);
+                    window.location.href = `/post/${postSlug}`;
+                }
+            } catch (error) {
+                console.error('Error navigating to post:', error);
             }
         }
 
@@ -664,8 +660,8 @@
                 if (!trimmed) return '';
                 
                 // Handle images first (markdown format)
-                if (trimmed.match(/^!\[.*?\]\(data:image\/.*?\)$/)) {
-                    const match = trimmed.match(/^!\[(.*?)\]\((data:image\/.*?)\)$/);
+                if (trimmed.match(/^!\[.*?\]\(.*?\)$/)) {
+                    const match = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
                     if (match) {
                         const altText = match[1];
                         const src = match[2];
@@ -729,5 +725,6 @@
         window.closeMobileMenu = closeMobileMenu;
         window.SoleraBlogAPI = SoleraBlogAPI;
     </script>
+    
 </body>
 </html>

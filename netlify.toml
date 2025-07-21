@@ -6,7 +6,28 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
-# Only redirect unmatched routes (not existing files)
+# Specific redirects for your pages
+[[redirects]]
+  from = "/blog"
+  to = "/blog.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/*"
+  to = "/blog.html"
+  status = 200
+
+[[redirects]]
+  from = "/post/*"
+  to = "/post.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+# Catch-all redirect (must be last)
 [[redirects]]
   from = "/*"
   to = "/index.html"

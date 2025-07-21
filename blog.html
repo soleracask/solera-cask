@@ -554,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get all published posts from database
         getAllPosts: async function() {
             try {
-                const response = await fetch(`${API_BASE}/posts/public`);
+                const response = await fetch(`${API_BASE}/posts-public`);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get single post by ID from database
         getPost: async function(id) {
             try {
-                const response = await fetch(`${API_BASE}/posts/public/${id}`);
+                const response = await fetch(`${API_BASE}/posts-public?id=${id}`);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
@@ -583,7 +583,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get single post by slug from database
         getPostBySlug: async function(slug) {
             try {
-                const response = await fetch(`${API_BASE}/posts/public/slug/${slug}`);
+                const response = await fetch(`${API_BASE}/posts-public?slug=${slug}`);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }

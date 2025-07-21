@@ -1,0 +1,201 @@
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+
+let cachedDb = null;
+
+async function connectDB() {
+  if (cachedDb) return cachedDb;
+  
+  await mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
+  
+  cachedDb = mongoose.connection;
+  return cachedDb;
+}
+
+const PostSchema = new mongoose.Schema({
+  id: String,
+  title: String,
+  type: String,
+  date: String,
+  excerpt: String,
+  content: String,
+  link: String,
+  tags: [String],
+  status: String,
+  author: String,
+  createdAt: Date,
+  updatedAt: Date
+});
+
+const Post = mongoose.models.Post || mongoose.model('Post', PostSchema);
+
+function generateId(title) {
+  return title.toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim('-') + '-' + Date.now();
+}
+
+function authenticateToken(authHeader) {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new Error('No token provided');
+  }
+  
+  const token = authHeader.split(' ')[1];
+  return jwt.verify(token, process.env.JWT_SECRET);
+}
+
+exports.handler = async (event, context) => {
+  context.callbackWaitsForEmptyEventLoop = false;
+  
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Content-Type': 'application/json'
+  };
+  
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
+  }
+  
+  try {
+    await connectDB();
+    
+    // Authenticate user
+    const user = authenticateToken(event.headers.authorization);
+    
+    const { path, httpMethod } = event;
+    const segments = path.split('/').filter(Boolean);
+    
+    // GET /api/posts - Get all posts (admin)
+    if (httpMethod === 'GET' && segments[1] === 'posts' && segments.length === 2) {
+      const posts = await Post.find()
+        .select('-_id -__v')
+        .sort({ createdAt: -1 });
+      
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(posts)
+      };
+    }
+    
+    // POST /api/posts - Create new post
+    if (httpMethod === 'POST' && segments[1] === 'posts' && segments.length === 2) {
+      const postData = JSON.parse(event.body);
+      
+      if (!postData.title || !postData.content) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ message: 'Title and content are required' })
+        };
+      }
+      
+      const newPost = {
+        id: postData.id || generateId(postData.title),
+        title: postData.title.trim(),
+        type: postData.type || 'News',
+        excerpt: postData.excerpt ? postData.excerpt.trim() : '',
+        content: postData.content.trim(),
+        link: postData.link ? postData.link.trim() : '',
+        tags: Array.isArray(postData.tags) ? postData.tags : 
+              (typeof postData.tags === 'string' ? postData.tags.split(',').map(t => t.trim()) : []),
+        status: postData.status || 'published',
+        date: postData.date || new Date().toISOString().split('T')[0],
+        author: user.username,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      const post = await Post.create(newPost);
+      
+      return {
+        statusCode: 201,
+        headers,
+        body: JSON.stringify(post)
+      };
+    }
+    
+    // PUT /api/posts/:id - Update post
+    if (httpMethod === 'PUT' && segments[1] === 'posts' && segments.length === 3) {
+      const id = segments[2];
+      const updateData = JSON.parse(event.body);
+      
+      updateData.updatedAt = new Date();
+      updateData.author = user.username;
+      
+      if (updateData.tags && typeof updateData.tags === 'string') {
+        updateData.tags = updateData.tags.split(',').map(t => t.trim());
+      }
+      
+      const post = await Post.findOneAndUpdate(
+        { id },
+        updateData,
+        { new: true, select: '-_id -__v' }
+      );
+      
+      if (!post) {
+        return {
+          statusCode: 404,
+          headers,
+          body: JSON.stringify({ message: 'Post not found' })
+        };
+      }
+      
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(post)
+      };
+    }
+    
+    // DELETE /api/posts/:id - Delete post
+    if (httpMethod === 'DELETE' && segments[1] === 'posts' && segments.length === 3) {
+      const id = segments[2];
+      const post = await Post.findOneAndDelete({ id });
+      
+      if (!post) {
+        return {
+          statusCode: 404,
+          headers,
+          body: JSON.stringify({ message: 'Post not found' })
+        };
+      }
+      
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ message: 'Post deleted successfully' })
+      };
+    }
+    
+    return {
+      statusCode: 404,
+      headers,
+      body: JSON.stringify({ message: 'Not found' })
+    };
+    
+  } catch (error) {
+    console.error('Posts function error:', error);
+    
+    if (error.message === 'No token provided' || error.name === 'JsonWebTokenError') {
+      return {
+        statusCode: 401,
+        headers,
+        body: JSON.stringify({ message: 'Authentication required' })
+      };
+    }
+    
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ message: 'Internal server error' })
+    };
+  }
+};

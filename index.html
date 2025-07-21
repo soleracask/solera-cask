@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solera Cask - Premium Sherry Barrels</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">
+                <img src="images/logos/solera-cask-logo.png" alt="Solera Cask" class="logo-image logo-large">
+                <img src="images/logos/sc-logo.png" alt="Solera Cask" class="logo-image logo-small">
+            </a>
+            
+            <!-- Desktop Menu -->
+            <ul class="nav-menu">
+                <li><a href="#heritage">Heritage</a></li>
+                <li><a href="#products">Casks</a></li>
+                <li><a href="#product-finder">Sherry Barrel Butler</a></li>
+                <li><a href="#story">Stories</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contact" class="nav-cta">Get Quote</a></li>
+            </ul>
+    
+            <!-- Mobile Hamburger Menu -->
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    
+        <!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <div class="mobile-menu-content">
+        <a href="#heritage" class="mobile-menu-item">Heritage</a>
+        <a href="#products" class="mobile-menu-item">Casks</a>
+        <a href="#product-finder" class="mobile-menu-item">Sherry Barrel Butler</a>
+        <a href="#story" class="mobile-menu-item">Stories</a>
+        <a href="#faq" class="mobile-menu-item">FAQ</a>
+        <a href="#contact" class="mobile-menu-item mobile-cta">Get Quote</a>
+    </div>
+</div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-image">
+            <img src="images/heritage/solera-hero.jpg" alt="Spanish Barrel Aging Rooms - Atmospheric Lighting & Craftsmanship" class="hero-bg-image">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-subtitle">Jerez de la Frontera, Spain</div>
+                <h1>SHERRY BARRELS FOR DISTILLERS & BREWERS</h1>
+                <p class="hero-description">Bring unparalleled depth to your spirits or beer with sherry barrels sourced directly in Jerez de la Frontera, the home of sherry.</p>
+                
+                <!-- Hero Search -->
+                <div class="hero-search">
+                    <div class="hero-search-container">
+                        <input 
+                            type="text" 
+                            id="heroSearchInput" 
+                            class="hero-search-input" 
+                            placeholder="What do you produce?"
+                            autocomplete="off"
+                        >
+                        <button class="hero-search-button" id="heroSearchButton">
+                            <span class="search-text">Sherry Barrel Suggestions</span>
+                            <span class="search-arrow">→</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Quick suggestions for hero -->
+                    <div class="hero-quick-suggestions">
+                        <span class="suggestions-label">Popular:</span>
+                        <button class="hero-suggestion-tag" data-search="single malt whisky">Whisky</button>
+                        <button class="hero-suggestion-tag" data-search="beer">Beer</button>
+                        <button class="hero-suggestion-tag" data-search="aged rum">Rum</button>
+                        <button class="hero-suggestion-tag" data-search="añejo tequila">Tequila</button>
+                        <button class="hero-suggestion-tag" data-search="premium vodka">Vodka</button>
+                    </div>
+                </div>
+                
+                <div class="hero-cta-section">
+                    <a href="#products" class="hero-cta">Explore Casks</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section heritage" id="heritage">
+        <div class="container">
+            <div class="heritage-grid">
+                <div class="heritage-content fade-in">
+                    <div class="section-label">Our Heritage</div>
+                    <h2>Dedication to Craft</h2>
+                    <p>Based in Jerez de la Frontera and backed by years of experience in the wine industry, we specialize in supplying distillers with mature casks from various solera systems within the sherry triangle. We work directly with local bodegas and cooperages to source exceptional barrels — from Oloroso and Palo Cortado to Pedro Ximénez, Amontillado, Fino, and Manzanilla — so you can finish your spirit or beer to the highest standard.</p>
+                    <p>Our direct partnerships with local bodegas and cooperages ensure you receive the highest quality barrels to create exceptional aged spirits and beers.</p>
+                    
+                    <ul class="heritage-features">
+                        <li>Direct sourcing in the sherry triangle</li>
+                        <li>Mature casks from historic solera systems</li>
+                        <li>Partnership with traditional cooperages</li>
+                        <li>Global shipping</li>
+                    </ul>
+                    
+                    <a href="#contact" class="btn-outline">Contact Us</a>
+                </div>
+                <div class="heritage-image fade-in">
+                    <div class="heritage-image">
+                        <img src="images/heritage/solera-cask-heritage.jpg" alt="Spanish Bodega Interior - Traditional Barrel Aging" class="heritage-bg-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="section products" id="products">
+        <div class="container">
+            <div class="section-intro fade-in">
+                <div class="section-label">Solera Cask</div>
+                <h2 class="section-title">Sherry Barrels</h2>
+                <p class="section-description">New Barrels, ex-sherry casks from historic soleras, and customization options. Each cask is seasoned with your choice of one of six sherry types, imparting unique characteristics to your spirits and beers.</p>
+            </div>
+            
+            <div class="products-grid">
+                <a href="/sherry-barrels.html" class="product-card fade-in product-card-link">
+                    <div class="product-image">
+                        <img src="images/products/new-certified-casks.jpg" alt="New Certified Sherry Casks - Fresh Oak Barrels" class="product-bg-image">
+                    </div>
+                    <div class="product-content">
+                        <h3>New Sherry Casks</h3>
+                        <p>Brand new casks certified by the Xeres-Jerez-Sherry regulatory body, seasoned with your choice of sherry.</p>
+                        <ul class="product-features">
+                            <li>Regulatory body certification</li>
+                            <li>225L hogsheads & 500L butts available</li>
+                            <li>12-month seasoning</li>
+                            <li>Choice of 6 sherry types</li>
+                            <li>Professional packaging & shipping</li>
+                        </ul>
+                        <span class="product-learn-more">Learn More</span>
+                    </div>
+                </a>
+                
+                <a href="/sherry-barrels.html" class="product-card fade-in product-card-link">
+                    <div class="product-image">
+                        <img src="images/products/historic-solera-casks2.jpg" alt="Historic Solera Barrels - Aged Patina & Character" class="product-bg-image">
+                    </div>
+                    <div class="product-content">
+                        <h3>Historic Solera Casks</h3>
+                        <p>Ex-sherry casks from historic solera systems, sourced directly from prestigious bodegas across the sherry triangle.</p>
+                        <ul class="product-features">
+                            <li>Historic solera system provenance</li>
+                            <li>225L hogsheads & 500L butts available</li>
+                            <li>Years of seasoning</li>
+                            <li>Selected & quality inspected</li>
+                            <li>Professional restoration if needed</li>
+                        </ul>
+                        <span class="product-learn-more">Learn More</span>
+                    </div>
+                </a>
+                
+                <a href="/sherry-barrels.html" class="product-card fade-in product-card-link">
+                    <div class="product-image">
+                        <img src="images/products/custom-barrel-solutions.jpg" alt="Custom Barrel Solutions - Tailored Craftsmanship" class="product-bg-image">
+                    </div>
+                    <div class="product-content">
+                        <h3>Custom Options</h3>
+                        <p>Tailored solutions for your specific needs, with custom configurations and finishes to match your operation perfectly.</p>
+                        <ul class="product-features">
+                            <li>Upright or horizontal storage</li>
+                            <li>Custom toast levels</li>
+                            <li>Wood, cork, or silicone bungs</li>
+                            <li>Custom paint finishes</li>
+                            <li>Logo application</li>
+                        </ul>
+                        <span class="product-learn-more">Learn More</span>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Products CTA Section -->
+            <div class="products-cta fade-in">
+                <div class="products-cta-content">
+                    <h3>Ready to Elevate Your Spirits?</h3>
+                    <p>We're excited to help you select the perfect sherry casks for your unique requirements. From technical specifications to custom configurations, we provide complete consultation services.</p>
+                    <div class="products-cta-buttons">
+                        <a href="#contact" class="btn-primary">Get Custom Quote</a>
+    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  <!-- Interactive Product Finder Section -->
+<section class="section product-finder" id="product-finder">
+    <div class="container">
+        <div class="section-intro fade-in">
+            <div class="section-label">Find Your Perfect Match</div>
+            <h2 class="section-title">What do you produce?</h2>
+            <p class="section-description">Let us know what spirit or beer you produce and we'll guide you on the best type of sherry barrel for your product.</p>
+        </div>
+        
+        <div class="finder-container fade-in">
+            <div class="finder-box">
+                <div class="finder-input-container">
+                    <input 
+                        type="text" 
+                        id="productInput" 
+                        class="finder-input" 
+                        placeholder="Type your spirit or beer style (e.g., single malt whisky, imperial stout, añejo tequila...)"
+                        autocomplete="off"
+                    >
+                    <button class="finder-submit" id="finderSubmit">
+                        <span class="submit-text">Sherry Barrel Suggestions</span>
+                        <span class="submit-arrow">→</span>
+                    </button>
+                </div>
+                
+                <!-- Suggestions Dropdown -->
+                <div class="finder-suggestions" id="finderSuggestions">
+                    <!-- Dynamic suggestions will be populated here -->
+                </div>
+                
+                <!-- Results Container -->
+                <div class="finder-results" id="finderResults">
+                    <!-- Results will be populated here -->
+                </div>
+                
+                <!-- Popular Searches -->
+                <div class="popular-searches">
+                    <div class="popular-label">Popular searches:</div>
+                    <div class="popular-tags">
+                        <button class="popular-tag" data-product="single malt whisky">Single Malt Whisky</button>
+                        <button class="popular-tag" data-product="beer">Beer</button>
+                        <button class="popular-tag" data-product="aged rum">Rum</button>
+                        <button class="popular-tag" data-product="añejo tequila">Tequila</button>
+                        <button class="popular-tag" data-product="barleywine">Barleywine</button>
+                        <button class="popular-tag" data-product="saison">Saison</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading State -->
+        <div class="finder-loading" id="finderLoading">
+            <div class="loading-spinner"></div>
+            <p>Analyzing your product and matching with our sherry cask expertise...</p>
+        </div>
+        
+        <!-- No Results State -->
+        <div class="finder-no-results" id="finderNoResults">
+            <div class="no-results-icon">🔍</div>
+            <h3>Didn't find what you're looking for?</h3>
+            <p>Our Spanish cooperage experts can help you find the perfect sherry cask for any unique product. Get personalized recommendations.</p>
+            <a href="#contact" class="btn-outline">Contact Our Experts</a>
+        </div>
+    </div>
+</section>
+
+
+    <section class="section featured-story" id="story">
+        <div class="container">
+            <div class="story-grid">
+                <div class="story-image fade-in">
+                    [FEATURED IMAGE]<br>
+                    Spring Mill Distillery<br>
+                    Partnership Story<br>
+                    Barrel Aging Process
+                    
+                    <!-- Add your actual image here -->
+                    <img src="images/heritage/solera-spring-mill-distillery.jpg" alt="Spring Mill Distillery Partnership - Barrel Aging Process" class="story-bg-image">
+                </div>
+                <div class="story-content fade-in">
+                    <div class="section-label">Featured Partnership</div>
+                    <h2>Solera Cask & Spring Mill Distillery</h2>
+                    <p class="story-subtitle">Family, Tradition, and a dedication to Craft</p>
+                    <p>Discover how Spring Mill Distillery partnered with Solera Cask to create exceptional aged expressions using authentic sherry barrels from our historic solera systems in Jerez de la Frontera.</p>
+                    <p>This collaboration showcases the transformative power of authentic Spanish cooperage, where centuries-old traditions meet modern craft distilling excellence.</p>
+                    <a href="#" class="btn-outline">Read Full Story</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section faq-section" id="faq">
+        <div class="container">
+            <div class="section-intro fade-in">
+                <div class="section-label">Common Questions</div>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-description">Find answers to the most common questions about our premium sherry barrels and services.</p>
+            </div>
+            
+            <div class="faq-container fade-in">
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>What's the difference between DO certified casks and historic solera casks?</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-content">
+                            <p>DO certified casks are brand new barrels that have been seasoned for 12 months with authentic sherry and certified by the Xeres-Jerez-Sherry regulatory body. Historic solera casks are ex-sherry barrels from centuries-old solera systems, offering deeper character from years of sherry aging. Both provide authentic Spanish provenance, but historic casks offer more complex, mature flavors while certified casks provide consistent, controlled seasoning.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>How do I choose the right sherry cask type for my spirit or beer?</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-content">
+                            <p>The choice depends on your desired flavor profile and base spirit. Fino and Manzanilla casks work well with lighter spirits and beers, adding mineral and saline notes. Amontillado provides balanced complexity, while Oloroso offers rich, robust flavors perfect for whisky and dark beers. Pedro Ximénez creates sweet, dessert-like profiles. Our consultation service includes personalized recommendations based on your specific goals and production style.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>What shipping options do you offer for international orders?</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-content">
+                            <p>We ship globally from Jerez de la Frontera, Spain. Fifty 225L barrels fit perfectly in a 20-foot container, offering the most economical shipping option. We also accommodate partial container shipments and mixed orders. All barrels are professionally packaged to prevent damage during transit, and we provide full documentation including certificates of origin. Our team handles all logistics and can arrange door-to-door delivery to your facility.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can you customize barrels for specific storage or finishing requirements?</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-content">
+                            <p>Yes, we offer extensive customization options. Barrels can be prepared for upright or horizontal storage, with custom toast levels, and different bung types (wood, cork, or silicone). We also provide custom paint finishes and specialized sizing beyond our standard 225L and 500L options. Our cooperage partners can accommodate most technical specifications to match your facility's requirements and aging protocols.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>What support do you provide after delivery?</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-content">
+                            <p>Our relationship doesn't end at delivery. We provide ongoing technical support throughout your barrel program, including guidance on aging times, maintenance protocols, and troubleshooting. Our Spanish cooperage experts are available for follow-up consultations, and we can source additional barrels as your program expands. We also offer barrel restoration services and can help optimize your aging processes based on your specific outcomes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="faq-footer fade-in">
+                <p>Have more questions about our sherry barrels and services?</p>
+                <a href="/sherry-barrels-faq.html" class="btn-outline">View Complete FAQ</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section contact" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info fade-in">
+                    <div class="section-label">Get In Touch</div>
+                    <h2>Request Your Consultation</h2>
+                    <p>Ready to elevate your spirits or beer? Connect with us for personalized recommendations and sherry barrel solutions.</p>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                            </svg>
+                        </div>
+                        <span>+34 656 778 590</span>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                        </div>
+                        <span>info@soleracask.com</span>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                            </svg>
+                        </div>
+                        <span>www.soleracask.com</span>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                        </div>
+                        <span>Jerez de la Frontera, Spain</span>
+                    </div>
+                    
+                    <div class="shipping-note">
+                        <strong>Shipping:</strong> A 20-foot container holds 55 barrels (225L each) and a 40-footer holds 150. Shipping a full container is the most cost-effective option, but we’re happy to accommodate orders of any size.
+                    </div>
+                </div>
+                
+                <div class="quote-form fade-in">
+                    <form id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="company">Distillery/Brewery Name</label>
+                            <input type="text" id="company" name="company" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address">Shipping Address</label>
+                            <textarea id="address" name="address" rows="3" placeholder="Complete shipping address for cask delivery"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Sherry Cask Types of Interest</label>
+                            <div class="checkbox-options">
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="all-types" name="caskType" value="all">
+                                    <label for="all-types">All Types</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="fino" name="caskType" value="fino">
+                                    <label for="fino">Fino</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="manzanilla" name="caskType" value="manzanilla">
+                                    <label for="manzanilla">Manzanilla</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="amontillado" name="caskType" value="amontillado">
+                                    <label for="amontillado">Amontillado</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="palo-cortado" name="caskType" value="palo-cortado">
+                                    <label for="palo-cortado">Palo Cortado</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="oloroso" name="caskType" value="oloroso">
+                                    <label for="oloroso">Oloroso</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="pedro-ximenez" name="caskType" value="pedro-ximenez">
+                                    <label for="pedro-ximenez">Pedro Ximénez</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="unsure" name="caskType" value="unsure">
+                                    <label for="unsure">Not Sure</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="caskSize">Preferred Cask Size</label>
+                                <select id="caskSize" name="caskSize">
+                                    <option value="">Select size</option>
+                                    <option value="225l">225L Hogsheads</option>
+                                    <option value="500l">500L Butts</option>
+                                    <option value="custom">Custom Size</option>
+                                    <option value="mixed">Mixed Sizes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Estimated Quantity</label>
+                                <input type="number" id="quantity" name="quantity" min="1" placeholder="Number of casks">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="project">Project Details</label>
+                            <textarea id="project" name="project" rows="4" placeholder="Tell us about your project, timeline, and specific requirements..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Submit Consultation Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Brand Section - Far Left -->
+                <div class="footer-section footer-brand">
+                    <h3>Solera Cask</h3>
+                    <p class="brand-motto">Supplying fine sherry barrels from Jerez de la Frontera, Spain, to discerning brewers and distillers across the globe.</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/soleracask" target="_blank" rel="noopener noreferrer" class="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+    
+                <div class="footer-section">
+                    <h3>Casks</h3>
+                    <ul>
+                        <li><a href="/whisky-sherry-barrels.html">Sherry Barrels for Whisky</a></li>
+                        <li><a href="/rum-sherry-barrels.html">Sherry Barrels for Rum</a></li>
+                        <li><a href="/tequila-sherry-barrels.html">Sherry Barrels for Tequila</a></li>
+                        <li><a href="/vodka-sherry-barrels.html">Sherry Barrels for Vodka</a></li>
+                        <li><a href="/beer-sherry-barrels.html">Sherry Barrels for Beer</a></li>
+                        <li><a href="/sherry-barrels.html">Jerez Sherry Barrels</a></li>
+                    </ul>
+                </div>
+    
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/#heritage">About Solera Cask</a></li>
+                        <li><a href="/blog.html">Stories</a></li>
+                        <li><a href="/sherry-barrels-faq.html">FAQ</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+    
+                <!-- Contact Section - Far Right -->
+                <div class="footer-section footer-contact">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li>
+                            <a href="mailto:info@soleracask.com" class="contact-link-with-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="contact-icon">
+                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                </svg>
+                                info@soleracask.com
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.soleracask.com" target="_blank" rel="noopener noreferrer" class="contact-link-with-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="contact-icon">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                </svg>
+                                www.soleracask.com
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Solera Cask. Premium Sherry Barrels from Jerez de la Frontera, Spain. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

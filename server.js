@@ -402,20 +402,29 @@ app.get('/api/posts', authenticateToken, async (req, res) => {
 // Create new post (admin only)
 app.post('/api/posts', authenticateToken, async (req, res) => {
   try {
-    if (!req.body.title || !req.body.content) {
+    if (!req.body.title || (!req.body.content && !req.body.contentHtml)) {
       return res.status(400).json({ message: 'Title and content are required' });
     }
+    
+    console.log('Creating post with data:', {
+      title: req.body.title,
+      featured: req.body.featured,
+      featuredImage: req.body.featuredImage ? 'HAS IMAGE' : 'NO IMAGE'
+    });
     
     const postData = {
       id: req.body.id || generateId(req.body.title),
       title: req.body.title.trim(),
       type: req.body.type || 'News',
       excerpt: req.body.excerpt ? req.body.excerpt.trim() : '',
-      content: req.body.content.trim(),
+      content: req.body.content ? req.body.content.trim() : '',
+      contentHtml: req.body.contentHtml ? req.body.contentHtml.trim() : '',
+      featuredImage: req.body.featuredImage || '',
       link: req.body.link ? req.body.link.trim() : '',
       tags: Array.isArray(req.body.tags) ? req.body.tags : 
             (typeof req.body.tags === 'string' ? req.body.tags.split(',').map(t => t.trim()) : []),
       status: req.body.status || 'published',
+      featured: req.body.featured || false,
       date: req.body.date || new Date().toISOString().split('T')[0],
       images: req.body.images || [],
       author: req.user.username,
@@ -424,7 +433,7 @@ app.post('/api/posts', authenticateToken, async (req, res) => {
     };
     
     const post = await Post.create(postData);
-    console.log(`Created post: ${post.title} by ${req.user.username}`);
+    console.log(`Created post: ${post.title} by ${req.user.username}, featured: ${post.featured}, featuredImage: ${post.featuredImage ? 'YES' : 'NO'}`);
     
     res.status(201).json(post);
   } catch (error) {
@@ -440,6 +449,13 @@ app.post('/api/posts', authenticateToken, async (req, res) => {
 // Update post (admin only)
 app.put('/api/posts/:id', authenticateToken, async (req, res) => {
   try {
+    console.log('Updating post with data:', {
+      id: req.params.id,
+      title: req.body.title,
+      featured: req.body.featured,
+      featuredImage: req.body.featuredImage ? 'HAS IMAGE' : 'NO IMAGE'
+    });
+    
     const updateData = {
       ...req.body,
       updatedAt: new Date(),
@@ -460,7 +476,7 @@ app.put('/api/posts/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
     
-    console.log(`Updated post: ${post.title} by ${req.user.username}`);
+    console.log(`Updated post: ${post.title} by ${req.user.username}, featured: ${post.featured}, featuredImage: ${post.featuredImage ? 'YES' : 'NO'}`);
     res.json(post);
   } catch (error) {
     console.error('Error updating post:', error);
@@ -780,6 +796,99 @@ app.get('/api/featured-post-advanced', async (req, res) => {
   } catch (error) {
     console.error('Error fetching featured post:', error);
     res.status(500).json({ message: 'Error fetching featured post' });
+  }
+});
+
+// Upload endpoint that matches your admin script call
+app.post('/api/upload', authenticateToken, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No image file provided' });
+    }
+    
+    const imageId = uuidv4();
+    const base64Data = req.file.buffer.toString('base64');
+    const dataUrl = `data:${req.file.mimetype};base64,${base64Data}`;
+    
+    console.log(`Image uploaded: ${req.file.originalname} (${req.file.size} bytes) by ${req.user.username}`);
+    
+    res.json({
+      id: imageId,
+      url: dataUrl,
+      filename: req.file.originalname,
+      size: req.file.size
+    });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ message: 'Error uploading image' });
+  }
+});
+
+// Featured post management endpoints
+app.get('/api/featured-post', async (req, res) => {
+  try {
+    // First try to find a post specifically marked as featured
+    let featuredPost = await Post.findOne({ 
+      featured: true,
+      status: 'published' 
+    })
+    .select('-_id -__v')
+    .sort({ createdAt: -1 });
+    
+    // If no featured post found, get the most recent published post
+    if (!featuredPost) {
+      featuredPost = await Post.findOne({ 
+        status: 'published' 
+      })
+      .select('-_id -__v')
+      .sort({ createdAt: -1 });
+    }
+    
+    if (!featuredPost) {
+      return res.status(404).json({ message: 'No featured post found' });
+    }
+    
+    console.log(`Featured post: ${featuredPost.title}`);
+    res.set('Cache-Control', 'public, max-age=300');
+    res.json(featuredPost);
+  } catch (error) {
+    console.error('Error fetching featured post:', error);
+    res.status(500).json({ message: 'Error fetching featured post' });
+  }
+});
+
+// Set featured post (admin only)
+app.post('/api/featured-post', authenticateToken, async (req, res) => {
+  try {
+    const { postId } = req.body;
+    
+    // Remove featured status from all posts
+    await Post.updateMany({}, { featured: false });
+    
+    // Set new featured post if postId provided
+    if (postId) {
+      const post = await Post.findOneAndUpdate(
+        { id: postId, status: 'published' },
+        { featured: true, updatedAt: new Date() },
+        { new: true, select: '-_id -__v' }
+      );
+      
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found or not published' });
+      }
+      
+      console.log(`Set featured post: ${post.title} by ${req.user.username}`);
+      res.json({ 
+        message: 'Featured post updated successfully',
+        post: post
+      });
+    } else {
+      console.log(`Cleared featured post by ${req.user.username}`);
+      res.json({ message: 'Featured post cleared successfully' });
+    }
+  } catch (error) {
+    console.error('Error setting featured post:', error);
+    res.status(500).json({ message: 'Error setting featured post' });
   }
 });
 

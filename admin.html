@@ -1078,8 +1078,7 @@
     </div>
 
     <script>
-        // Solera Cask Blog Admin System - Enhanced with Featured Posts and HTML Support
-        let posts = [];
+       let posts = [];
         let currentEditId = null;
         let authToken = null;
         let currentContentFormat = 'markdown';
@@ -1087,8 +1086,8 @@
 
         // Determine API base URL based on environment
         const API_BASE = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-            ? '/api' // Local development
-            : '/.netlify/functions'; // Netlify production
+            ? '/api'
+            : '/api'; // Update to your production API URL if not using Netlify Functions
 
         // Enhanced error handling for API requests
         async function apiRequest(endpoint, options = {}) {
@@ -1192,31 +1191,29 @@
 
             // Update existing post
             updatePost: async function(id, postData) {
-                return await apiRequest(`/posts?id=${id}`, {
+                return await apiRequest(`/posts/${id}`, { // Fixed endpoint syntax
                     method: 'PUT',
                     body: JSON.stringify(postData)
                 });
             },
 
             deletePost: async function(id) {
-                return await apiRequest(`/posts?id=${id}`, {
+                return await apiRequest(`/posts/${id}`, {
                     method: 'DELETE'
                 });
             },
 
-           // Upload image
+            // Upload image
             uploadImage: async function(file) {
                 const formData = new FormData();
                 formData.append('image', file);
                 
-                // Special handling for file uploads - don't set Content-Type header
-                const url = `${API_BASE}/upload`;
+                const url = `${API_BASE}/images/upload`;
                 
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: {
-                            // Don't set Content-Type - let browser set it with boundary
                             'Authorization': authToken ? `Bearer ${authToken}` : undefined
                         },
                         body: formData
@@ -1247,8 +1244,8 @@
 
             // Change password
             changePassword: async function(newPassword, confirmPassword) {
-                return await apiRequest('/change-password', {
-                    method: 'POST',
+                return await apiRequest('/user/password', { // Updated to match server.js endpoint
+                    method: 'PUT',
                     body: JSON.stringify({ newPassword, confirmPassword })
                 });
             },
@@ -1326,7 +1323,7 @@
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             const preview = document.getElementById('featuredImagePreview');
-                            preview.innerHTML = `<img src="${e.target.result}" alt="Featured image preview">`;
+                            preview.innerHTML = `<img src="${e.target.result}" alt="Featured image preview" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 4px;">`;
                         };
                         reader.readAsDataURL(file);
                     }
@@ -1498,79 +1495,89 @@
                     showMessage('Uploading image...', 'info');
                     console.log('Starting upload for:', file.name);
                     
-                    try {
-                        const response = await SoleraBlogAPI.uploadImage(file);
-                        console.log('Upload successful, response:', response);
-                        
-                        addImageToPost(response.id, response.url, file.name);
-                        showMessage('Image uploaded successfully!', 'success');
-                    } catch (error) {
-                        console.warn('Server upload failed, using local upload:', error);
-                        // Create a more robust fallback
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            console.log('FileReader loaded image data');
-                            const imageData = e.target.result;
-                            const imageId = 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                            addImageToPost(imageId, imageData, file.name);
-                            showMessage('Image processed locally (will sync when saving)', 'info');
-                        };
-                        reader.onerror = (error) => {
-                            console.error('FileReader error:', error);
-                            showMessage('Failed to process image file', 'error');
-                        };
-                        reader.readAsDataURL(file);
-                    }
+                    const response = await SoleraBlogAPI.uploadImage(file);
+                    console.log('Upload successful, response:', response);
+                    
+                    addImageToPost(response.id, response.url, response.originalName || file.name);
+                    showMessage('Image uploaded successfully!', 'success');
                 } catch (error) {
                     console.error('Image upload error:', error);
-                    showMessage('Failed to process image: ' + error.message, 'error');
+                    showMessage('Failed to upload image: ' + error.message, 'error');
                 }
             }
         }
 
+        async function handleFeaturedImageUpload(file) {
+            if (!file) {
+                throw new Error('No file provided');
+            }
 
-        function copyImageCode(element) {
-            const text = element.textContent.trim();
-            navigator.clipboard.writeText(text).then(() => {
+            console.log('Uploading featured image:', file.name);
+            try {
+                const response = await SoleraBlogAPI.uploadImage(file);
+                console.log('Featured image upload response:', response);
+                return response.url;
+            } catch (error) {
+                console.error('Failed to upload featured image:', error);
+                throw error;
+            }
+        }
+
+        function copyImageCodeFixed(element) {
+            const imageElement = element.closest('.uploaded-image');
+            const imageUrl = imageElement.getAttribute('data-image-url');
+            const filename = imageElement.getAttribute('data-filename');
+            
+            const actualImageCode = currentContentFormat === 'html' 
+                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
+                : `![${filename}](${imageUrl})`;
+            
+            navigator.clipboard.writeText(actualImageCode).then(() => {
                 const tooltip = element.querySelector('.copy-tooltip');
+                const originalText = tooltip.textContent;
                 tooltip.textContent = 'Copied!';
-                tooltip.classList.add('show');
+                tooltip.style.background = '#4CAF50';
                 setTimeout(() => {
-                    tooltip.classList.remove('show');
-                    tooltip.textContent = 'Click to copy';
+                    tooltip.textContent = originalText;
+                    tooltip.style.background = '';
                 }, 2000);
-            }).catch(() => {
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
                 showMessage('Failed to copy image code', 'error');
             });
         }
 
-        function insertImageAtCursor(imageCode) {
-            const contentTextarea = currentContentFormat === 'html' 
+        function insertImageAtCursorFixed(element) {
+            const imageElement = element.closest('.uploaded-image');
+            const imageUrl = imageElement.getAttribute('data-image-url');
+            const filename = imageElement.getAttribute('data-filename');
+            
+            const imageCode = currentContentFormat === 'html' 
+                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
+                : `![${filename}](${imageUrl})`;
+            
+            const activeTextarea = currentContentFormat === 'html' 
                 ? document.getElementById('postContentHtml')
                 : document.getElementById('postContent');
             
-            if (!contentTextarea) return;
-
-            const start = contentTextarea.selectionStart;
-            const end = contentTextarea.selectionEnd;
-            const text = contentTextarea.value;
-            
-            const beforeText = text.substring(0, start);
-            const afterText = text.substring(end);
-            const separator = beforeText.endsWith('\n') || beforeText === '' ? '' : '\n\n';
-            const endSeparator = afterText.startsWith('\n') || afterText === '' ? '' : '\n\n';
-            
-            contentTextarea.value = beforeText + separator + imageCode + endSeparator + afterText;
-            
-            const newPosition = start + separator.length + imageCode.length + endSeparator.length;
-            contentTextarea.setSelectionRange(newPosition, newPosition);
-            contentTextarea.focus();
-
-            if (currentContentFormat === 'html') {
-                refreshHTMLPreview();
+            if (activeTextarea) {
+                const cursorPos = activeTextarea.selectionStart;
+                const textBefore = activeTextarea.value.substring(0, cursorPos);
+                const textAfter = activeTextarea.value.substring(activeTextarea.selectionEnd);
+                
+                activeTextarea.value = textBefore + imageCode + textAfter;
+                activeTextarea.focus();
+                activeTextarea.setSelectionRange(
+                    cursorPos + imageCode.length, 
+                    cursorPos + imageCode.length
+                );
+                
+                if (currentContentFormat === 'html') {
+                    refreshHTMLPreview();
+                }
+                
+                showMessage('Image inserted into post content!', 'success');
             }
-
-            showMessage('Image inserted into post content!', 'success');
         }
 
         function removeImage(button) {
@@ -1853,7 +1860,6 @@
             }
         }
 
-
         // Toggle featured status from table
         async function toggleFeatured(postId) {
             const post = posts.find(p => p.id === postId);
@@ -1911,7 +1917,6 @@
             
             if (post.featured) {
                 featuredImageUpload.style.display = 'block';
-                // Display existing featured image if available - IMPROVED
                 if (post.featuredImage) {
                     featuredImagePreview.innerHTML = `
                         <div class="existing-featured-image">
@@ -2049,13 +2054,13 @@
             // Handle content based on format
             if (currentContentFormat === 'html') {
                 postData.contentHtml = document.getElementById('postContentHtml').value.trim();
-                postData.content = ''; 
+                postData.content = '';
             } else {
                 postData.content = document.getElementById('postContent').value.trim();
-                postData.contentHtml = ''; 
+                postData.contentHtml = '';
             }
 
-            // Handle featured image - FIXED VERSION
+            // Handle featured image
             if (postData.featured) {
                 const featuredImageFile = document.getElementById('featuredImage').files[0];
                 
@@ -2069,16 +2074,16 @@
                 if (featuredImageFile) {
                     try {
                         showMessage('Processing featured image...', 'info');
-                        const imageUrl = await handleFeaturedImageUpload(featuredImageFile);
-                        postData.featuredImage = imageUrl;
-                        console.log('Featured image processed successfully');
+                        const imageResponse = await handleFeaturedImageUpload(featuredImageFile);
+                        postData.featuredImage = imageResponse;
+                        console.log('Featured image processed successfully:', imageResponse);
                     } catch (error) {
                         console.error('Featured image upload failed:', error);
                         showMessage('Featured image upload failed, saving post without featured image', 'warning');
                         postData.featuredImage = '';
                     }
                 } else if (currentEditId) {
-                    // Preserve existing featured image if editing
+                    // Preserve existing featured image if editing and no new file is uploaded
                     const existingPost = posts.find(p => p.id === currentEditId);
                     postData.featuredImage = existingPost?.featuredImage || '';
                 } else {
@@ -2138,9 +2143,8 @@
             imageElement.setAttribute('data-image-url', imageUrl);
             imageElement.setAttribute('data-filename', filename);
 
-            // Now we have proper URLs, so we can display them normally
             const displayCode = currentContentFormat === 'html' 
-                ? `&lt;img src="${imageUrl}" alt="${filename}"&gt;`
+                ? `<img src="${imageUrl}" alt="${filename}">`
                 : `![${filename}](${imageUrl})`;
             
             imageElement.innerHTML = `
@@ -2158,105 +2162,6 @@
 
             uploadedImagesContainer.appendChild(imageElement);
             console.log('Image added to container successfully');
-        }
-
-        // Fixed copy function
-        function copyImageCodeFixed(element) {
-            const imageElement = element.closest('.uploaded-image');
-            const imageUrl = imageElement.getAttribute('data-image-url');
-            const filename = imageElement.getAttribute('data-filename');
-            
-            const actualImageCode = currentContentFormat === 'html' 
-                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
-                : `![${filename}](${imageUrl})`;
-            
-            navigator.clipboard.writeText(actualImageCode).then(() => {
-                const tooltip = element.querySelector('.copy-tooltip');
-                const originalText = tooltip.textContent;
-                tooltip.textContent = 'Copied!';
-                tooltip.style.background = '#4CAF50';
-                setTimeout(() => {
-                    tooltip.textContent = originalText;
-                    tooltip.style.background = '';
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                showMessage('Failed to copy image code', 'error');
-            });
-        }
-
-        // Fixed insert function
-        function insertImageAtCursorFixed(element) {
-            const imageElement = element.closest('.uploaded-image');
-            const imageUrl = imageElement.getAttribute('data-image-url');
-            const filename = imageElement.getAttribute('data-filename');
-            
-            const imageCode = currentContentFormat === 'html' 
-                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
-                : `![${filename}](${imageUrl})`;
-            
-            const activeTextarea = currentContentFormat === 'html' 
-                ? document.getElementById('postContentHtml')
-                : document.getElementById('postContent');
-            
-            if (activeTextarea) {
-                const cursorPos = activeTextarea.selectionStart;
-                const textBefore = activeTextarea.value.substring(0, cursorPos);
-                const textAfter = activeTextarea.value.substring(activeTextarea.selectionEnd);
-                
-                activeTextarea.value = textBefore + imageCode + textAfter;
-                activeTextarea.focus();
-                activeTextarea.setSelectionRange(
-                    cursorPos + imageCode.length, 
-                    cursorPos + imageCode.length
-                );
-                
-                if (currentContentFormat === 'html') {
-                    refreshHTMLPreview();
-                }
-                
-                showMessage('Image inserted into post content!', 'success');
-            }
-        }
-
-        // Enhanced featured image handler
-        async function handleFiles(files) {
-            console.log('handleFiles called with', files.length, 'files');
-            
-            const uploadedImagesContainer = document.getElementById('uploadedImages');
-            if (!uploadedImagesContainer) {
-                console.error('uploadedImages container not found');
-                return;
-            }
-
-            for (const file of files) {
-                console.log('Processing file:', file.name, file.type, file.size);
-                
-                if (!file.type.startsWith('image/')) {
-                    showMessage('Please upload only image files', 'error');
-                    continue;
-                }
-
-                if (file.size > 5 * 1024 * 1024) {
-                    showMessage('Image size must be less than 5MB', 'error');
-                    continue;
-                }
-
-                try {
-                    showMessage('Uploading image...', 'info');
-                    console.log('Starting upload for:', file.name);
-                    
-                    const response = await SoleraBlogAPI.uploadImage(file);
-                    console.log('Upload successful, response:', response);
-                    
-                    addImageToPost(response.id, response.url, response.originalName || file.name);
-                    showMessage('Image uploaded successfully!', 'success');
-                    
-                } catch (error) {
-                    console.error('Image upload error:', error);
-                    showMessage('Failed to upload image: ' + error.message, 'error');
-                }
-            }
         }
 
         function resetPostForm() {
@@ -2417,15 +2322,11 @@
         window.changePassword = changePassword;
         window.exportData = exportData;
         window.importData = importData;
-        window.copyImageCode = copyImageCodeFixed; // FIXED: Point to the new function
-        window.insertImageAtCursor = insertImageAtCursorFixed; // FIXED: Point to the new function
+        window.copyImageCodeFixed = copyImageCodeFixed;
+        window.insertImageAtCursorFixed = insertImageAtCursorFixed;
         window.removeImage = removeImage;
         window.setContentFormat = setContentFormat;
         window.refreshHTMLPreview = refreshHTMLPreview;
-
-        // Also add these missing global exports:
-        window.copyImageCodeFixed = copyImageCodeFixed;
-        window.insertImageAtCursorFixed = insertImageAtCursorFixed;
         window.handleFeaturedImageUpload = handleFeaturedImageUpload;
     </script>
 </body>

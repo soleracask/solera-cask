@@ -1451,49 +1451,26 @@
                         showMessage('Image uploaded successfully!', 'success');
                     } catch (error) {
                         console.warn('Server upload failed, using local upload:', error);
+                        // Create a more robust fallback
                         const reader = new FileReader();
                         reader.onload = (e) => {
                             const imageData = e.target.result;
                             const imageId = 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                             addImageToPost(imageId, imageData, file.name);
-                            showMessage('Image uploaded locally (will be uploaded when saving)', 'info');
+                            showMessage('Image processed locally (will sync when saving)', 'info');
+                        };
+                        reader.onerror = () => {
+                            showMessage('Failed to process image file', 'error');
                         };
                         reader.readAsDataURL(file);
                     }
                 } catch (error) {
                     console.error('Image upload error:', error);
-                    showMessage('Failed to upload image: ' + error.message, 'error');
+                    showMessage('Failed to process image: ' + error.message, 'error');
                 }
             }
         }
 
-        function addImageToPost(imageId, imageUrl, filename) {
-            const uploadedImagesContainer = document.getElementById('uploadedImages');
-            if (!uploadedImagesContainer) return;
-
-            const imageElement = document.createElement('div');
-            imageElement.className = 'uploaded-image';
-            imageElement.setAttribute('data-image-id', imageId);
-
-            const imageCode = currentContentFormat === 'html' 
-                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
-                : `![${filename}](${imageUrl})`;
-            
-            imageElement.innerHTML = `
-                <img src="${imageUrl}" alt="${filename}">
-                <div class="image-info">${filename}</div>
-                <div class="image-code" onclick="copyImageCode(this)" title="Click to copy">
-                    ${imageCode}
-                    <div class="copy-tooltip">Click to copy</div>
-                </div>
-                <div class="image-actions">
-                    <button class="image-btn" onclick="insertImageAtCursor('${imageCode.replace(/'/g, "\\'")}')">Insert</button>
-                    <button class="image-btn danger" onclick="removeImage(this)">Delete</button>
-                </div>
-            `;
-
-            uploadedImagesContainer.appendChild(imageElement);
-        }
 
         function copyImageCode(element) {
             const text = element.textContent.trim();
@@ -1845,7 +1822,6 @@
             }
         }
 
-        // Edit post function
         function editPost(postId) {
             const post = posts.find(p => p.id === postId);
             if (!post) {
@@ -1861,7 +1837,6 @@
             if (post.contentHtml && post.contentHtml.trim()) {
                 setContentFormat('html');
                 document.getElementById('postContentHtml').value = post.contentHtml;
-                // Refresh HTML preview
                 setTimeout(() => refreshHTMLPreview(), 100);
             } else {
                 setContentFormat('markdown');
@@ -1875,15 +1850,24 @@
             
             // Show/hide featured image upload based on featured status
             const featuredImageUpload = document.getElementById('featuredImageUpload');
+            const featuredImagePreview = document.getElementById('featuredImagePreview');
+            
             if (post.featured) {
                 featuredImageUpload.style.display = 'block';
-                // Display existing featured image if available
+                // Display existing featured image if available - IMPROVED
                 if (post.featuredImage) {
-                    const preview = document.getElementById('featuredImagePreview');
-                    preview.innerHTML = `<img src="${post.featuredImage}" alt="Featured image">`;
+                    featuredImagePreview.innerHTML = `
+                        <div class="existing-featured-image">
+                            <img src="${post.featuredImage}" alt="Current featured image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: 4px;">
+                            <p style="margin-top: 5px; font-size: 12px; color: var(--text-light);">Current featured image (upload new to replace)</p>
+                        </div>
+                    `;
+                } else {
+                    featuredImagePreview.innerHTML = '<p style="color: var(--text-light); font-style: italic;">No featured image set</p>';
                 }
             } else {
                 featuredImageUpload.style.display = 'none';
+                featuredImagePreview.innerHTML = '';
             }
             
             // Set current edit ID
@@ -2014,17 +1998,40 @@
                 postData.contentHtml = ''; // Clear HTML content
             }
 
-            // Handle featured image upload
+            // Handle featured image - FIXED VERSION
             if (postData.featured) {
                 const featuredImageFile = document.getElementById('featuredImage').files[0];
+                
                 if (featuredImageFile) {
+                    // New image uploaded
                     try {
+                        showMessage('Uploading featured image...', 'info');
                         const imageResponse = await SoleraBlogAPI.uploadImage(featuredImageFile);
                         postData.featuredImage = imageResponse.url;
+                        console.log('Featured image uploaded:', imageResponse.url);
                     } catch (error) {
-                        console.warn('Failed to upload featured image:', error);
+                        console.warn('Failed to upload featured image, using local fallback:', error);
+                        // Fallback to data URL for local storage
+                        const reader = new FileReader();
+                        const dataUrl = await new Promise((resolve) => {
+                            reader.onload = (e) => resolve(e.target.result);
+                            reader.readAsDataURL(featuredImageFile);
+                        });
+                        postData.featuredImage = dataUrl;
+                    }
+                } else {
+                    // No new image, preserve existing one if editing
+                    if (currentEditId) {
+                        const existingPost = posts.find(p => p.id === currentEditId);
+                        if (existingPost && existingPost.featuredImage) {
+                            postData.featuredImage = existingPost.featuredImage;
+                            console.log('Preserving existing featured image:', existingPost.featuredImage);
+                        }
                     }
                 }
+            } else {
+                // Not featured, clear the featured image
+                postData.featuredImage = '';
             }
 
             if (!postData.title || (!postData.content && !postData.contentHtml)) {

@@ -1186,18 +1186,45 @@
                 });
             },
 
-            // Upload image
+           // Upload image
             uploadImage: async function(file) {
                 const formData = new FormData();
                 formData.append('image', file);
                 
-                return await apiRequest('/upload', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': authToken ? `Bearer ${authToken}` : undefined
-                    },
-                    body: formData
-                });
+                // Special handling for file uploads - don't set Content-Type header
+                const url = `${API_BASE}/upload`;
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            // Don't set Content-Type - let browser set it with boundary
+                            'Authorization': authToken ? `Bearer ${authToken}` : undefined
+                        },
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        if (response.status === 401 || response.status === 403) {
+                            logout();
+                            throw new Error('Authentication required');
+                        }
+                        
+                        let errorData;
+                        try {
+                            errorData = await response.json();
+                        } catch {
+                            errorData = { message: `HTTP ${response.status}` };
+                        }
+                        
+                        throw new Error(errorData.message || `Upload failed: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Upload failed:', error);
+                    throw error;
+                }
             },
 
             // Change password

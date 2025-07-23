@@ -57,6 +57,8 @@ class SoleraHomepageIntegration {
         // Create post URL
         const postSlug = this.createPostSlug(featuredPost);
         const postUrl = `/post/${postSlug}`;
+        
+        console.log('Generated post URL:', postUrl, 'for post:', featuredPost.title);
 
         // Get existing elements
         const storyImage = storySection.querySelector('.story-image img');
@@ -103,7 +105,23 @@ class SoleraHomepageIntegration {
         if (ctaButton) {
             ctaButton.href = postUrl;
             ctaButton.textContent = 'Read Full Story';
-            console.log('Updated CTA button');
+            
+            // Remove any existing event listeners that might interfere
+            ctaButton.removeAttribute('onclick');
+            
+            // Clone the button to remove all existing event listeners
+            const newButton = ctaButton.cloneNode(true);
+            ctaButton.parentNode.replaceChild(newButton, ctaButton);
+            
+            // Add fresh click handler
+            newButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Button clicked, navigating to:', postUrl);
+                window.location.href = postUrl;
+            });
+            
+            console.log('Updated CTA button with URL:', postUrl);
         }
 
         console.log('Featured story section updated successfully!');

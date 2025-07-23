@@ -2124,7 +2124,7 @@
         }
 
         function addImageToPost(imageId, imageUrl, filename) {
-            console.log('addImageToPost called with:', { imageId, filename });
+            console.log('addImageToPost called with:', { imageId, filename, imageUrl });
             
             const uploadedImagesContainer = document.getElementById('uploadedImages');
             if (!uploadedImagesContainer) {
@@ -2135,13 +2135,13 @@
             const imageElement = document.createElement('div');
             imageElement.className = 'uploaded-image';
             imageElement.setAttribute('data-image-id', imageId);
-            imageElement.setAttribute('data-image-url', imageUrl); // Store the actual URL as data attribute
+            imageElement.setAttribute('data-image-url', imageUrl);
             imageElement.setAttribute('data-filename', filename);
 
-            // Create user-friendly display code (NO base64 shown)
+            // Now we have proper URLs, so we can display them normally
             const displayCode = currentContentFormat === 'html' 
-                ? `&lt;img src="[${filename}]" alt="${filename}"&gt;`
-                : `![${filename}](uploaded-image)`;
+                ? `&lt;img src="${imageUrl}" alt="${filename}"&gt;`
+                : `![${filename}](${imageUrl})`;
             
             imageElement.innerHTML = `
                 <img src="${imageUrl}" alt="${filename}" style="max-width: 100px; height: auto;">
@@ -2220,50 +2220,42 @@
         }
 
         // Enhanced featured image handler
-        async function handleFeaturedImageUpload(file) {
-            if (!file) return null;
+        async function handleFiles(files) {
+            console.log('handleFiles called with', files.length, 'files');
             
-            try {
-                console.log('Uploading featured image:', file.name);
+            const uploadedImagesContainer = document.getElementById('uploadedImages');
+            if (!uploadedImagesContainer) {
+                console.error('uploadedImages container not found');
+                return;
+            }
+
+            for (const file of files) {
+                console.log('Processing file:', file.name, file.type, file.size);
                 
-                const featuredImagePreview = document.getElementById('featuredImagePreview');
-                if (featuredImagePreview) {
-                    featuredImagePreview.innerHTML = '<div class="upload-progress">Uploading featured image...</div>';
+                if (!file.type.startsWith('image/')) {
+                    showMessage('Please upload only image files', 'error');
+                    continue;
                 }
-                
-                const response = await SoleraBlogAPI.uploadImage(file);
-                console.log('Featured image uploaded successfully');
-                
-                if (featuredImagePreview) {
-                    featuredImagePreview.innerHTML = `
-                        <img src="${response.url}" alt="Featured image preview" style="max-width: 200px; height: auto; border-radius: 4px;">
-                        <div class="image-info">Featured Image: ${response.filename || file.name}</div>
-                    `;
+
+                if (file.size > 5 * 1024 * 1024) {
+                    showMessage('Image size must be less than 5MB', 'error');
+                    continue;
                 }
-                
-                return response.url;
-            } catch (error) {
-                console.error('Featured image upload failed:', error);
-                
-                // Fallback to local data URL
-                const reader = new FileReader();
-                const dataUrl = await new Promise((resolve, reject) => {
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
-                
-                console.log('Using local fallback for featured image');
-                
-                const featuredImagePreview = document.getElementById('featuredImagePreview');
-                if (featuredImagePreview) {
-                    featuredImagePreview.innerHTML = `
-                        <img src="${dataUrl}" alt="Featured image preview" style="max-width: 200px; height: auto; border-radius: 4px;">
-                        <div class="image-info">Featured Image: ${file.name} (local preview)</div>
-                    `;
+
+                try {
+                    showMessage('Uploading image...', 'info');
+                    console.log('Starting upload for:', file.name);
+                    
+                    const response = await SoleraBlogAPI.uploadImage(file);
+                    console.log('Upload successful, response:', response);
+                    
+                    addImageToPost(response.id, response.url, response.originalName || file.name);
+                    showMessage('Image uploaded successfully!', 'success');
+                    
+                } catch (error) {
+                    console.error('Image upload error:', error);
+                    showMessage('Failed to upload image: ' + error.message, 'error');
                 }
-                
-                return dataUrl;
             }
         }
 

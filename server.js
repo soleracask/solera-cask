@@ -1,4 +1,3 @@
-// Secure Solera Cask Server - Production Ready
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -8,6 +7,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 
 dotenv.config();
 const app = express();
@@ -15,7 +15,7 @@ const app = express();
 // CORS configuration
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-netlify-domain.netlify.app', 'https://soleracask.com'] 
+    ? ['https://soleracask.netlify.app', 'https://soleracask.com'] 
     : ['http://localhost:3000', 'http://127.0.0.1:5500'],
   credentials: true,
   optionsSuccessStatus: 200
@@ -27,22 +27,27 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // DEBUG: Log all requests
 app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-  });
-  
-  // DEBUG: Check if files exist
-  const fs = require('fs');
-  console.log('Checking files:');
-  console.log('index.html exists:', fs.existsSync(path.join(__dirname, 'index.html')));
-  console.log('admin.html exists:', fs.existsSync(path.join(__dirname, 'admin.html')));
-  console.log('public folder exists:', fs.existsSync(path.join(__dirname, 'public')));
-  console.log('Current directory:', __dirname);
-  
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
+// DEBUG: Check if files exist
+console.log('Checking files:');
+console.log('index.html exists:', fs.existsSync(path.join(__dirname, 'index.html')));
+console.log('admin.html exists:', fs.existsSync(path.join(__dirname, 'admin.html')));
+console.log('public folder exists:', fs.existsSync(path.join(__dirname, 'public')));
+console.log('Current directory:', __dirname);
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log('Created uploads directory');
+}
 
 // Validate required environment variables
 const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET', 'ADMIN_USERNAME', 'ADMIN_PASSWORD'];
@@ -85,13 +90,13 @@ const PostSchema = new mongoose.Schema({
   date: { type: String, required: true },
   excerpt: String,
   content: { type: String, required: true },
-  contentHtml: String, // For rich HTML content
-  featuredImage: String, // For homepage featured story images
+  contentHtml: String,
+  featuredImage: String,
   link: String,
   tags: [String],
   status: { type: String, enum: ['published', 'draft'], default: 'published' },
-  featured: { type: Boolean, default: false }, // NEW: For marking posts as featured
-  images: [String], // Array of image URLs/data
+  featured: { type: Boolean, default: false },
+  images: [String],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   author: String
@@ -103,7 +108,7 @@ const ImageSchema = new mongoose.Schema({
   originalName: String,
   mimetype: String,
   size: Number,
-  data: String, // Base64 data
+  filePath: String, // Store file path instead of base64 data
   uploadedAt: { type: Date, default: Date.now },
   uploadedBy: String
 });
@@ -152,7 +157,6 @@ async function initializeDefaultUser() {
       });
       console.log(`Admin user '${adminUsername}' created successfully`);
       
-      // Create default posts for Solera Cask
       await createDefaultPosts();
     } else {
       console.log(`Admin user '${adminUsername}' already exists`);
@@ -246,7 +250,6 @@ function authenticateToken(req, res, next) {
       return res.status(403).json({ message: 'Invalid or expired token' });
     }
     
-    // Update last login
     try {
       await User.findOneAndUpdate(
         { username: decoded.username },
@@ -262,11 +265,21 @@ function authenticateToken(req, res, next) {
 }
 
 // Image upload configuration
-const storage = multer.memoryStorage();
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+  }
+});
+
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
+    fileSize: 5 * 1024 * 1024, // 5MB limit
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
@@ -330,6 +343,37 @@ app.get('/api/posts/public/slug/:slug', async (req, res) => {
   } catch (error) {
     console.error('Error fetching public post by slug:', error);
     res.status(500).json({ message: 'Error fetching post' });
+  }
+});
+
+// Get featured post
+app.get('/api/featured-post', async (req, res) => {
+  try {
+    let featuredPost = await Post.findOne({ 
+      featured: true,
+      status: 'published' 
+    })
+    .select('-_id -__v')
+    .sort({ createdAt: -1 });
+
+    if (!featuredPost) {
+      featuredPost = await Post.findOne({ 
+        status: 'published' 
+      })
+      .select('-_id -__v')
+      .sort({ createdAt: -1 });
+    }
+
+    if (!featuredPost) {
+      return res.status(404).json({ message: 'No featured post found' });
+    }
+
+    console.log(`Featured post: ${featuredPost.title}`);
+    res.set('Cache-Control', 'public, max-age=300');
+    res.json(featuredPost);
+  } catch (error) {
+    console.error('Error fetching featured post:', error);
+    res.status(500).json({ message: 'Error fetching featured post' });
   }
 });
 
@@ -506,29 +550,68 @@ app.post('/api/images/upload', authenticateToken, upload.single('image'), async 
     if (!req.file) {
       return res.status(400).json({ message: 'No image file provided' });
     }
-    
+
     const imageId = uuidv4();
-    const base64Data = req.file.buffer.toString('base64');
-    const dataUrl = `data:${req.file.mimetype};base64,${base64Data}`;
-    
+
     const imageDoc = new Image({
       id: imageId,
-      filename: `${imageId}.${req.file.mimetype.split('/')[1]}`,
+      filename: req.file.filename,
       originalName: req.file.originalname,
       mimetype: req.file.mimetype,
       size: req.file.size,
-      data: dataUrl,
+      filePath: req.file.path,
       uploadedBy: req.user.username
     });
-    
+
     await imageDoc.save();
-    
+
+    const imageUrl = `/uploads/${req.file.filename}`;
+
+    console.log(`Image uploaded: ${req.file.originalname} -> ${imageUrl} by ${req.user.username}`);
+
     res.json({
       id: imageId,
-      filename: imageDoc.filename,
-      url: dataUrl,
+      filename: req.file.filename,
+      url: imageUrl,
       size: req.file.size,
       originalName: req.file.originalname
+    });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ message: 'Error uploading image' });
+  }
+});
+
+// ADD THE NEW /api/upload ENDPOINT RIGHT HERE:
+app.post('/api/upload', authenticateToken, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No image file provided' });
+    }
+
+    const imageId = uuidv4();
+
+    const imageDoc = new Image({
+      id: imageId,
+      filename: req.file.filename,
+      originalName: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      filePath: req.file.path,
+      uploadedBy: req.user.username
+    });
+
+    await imageDoc.save();
+
+    const imageUrl = `/uploads/${req.file.filename}`;
+
+    console.log(`Image uploaded: ${req.file.originalname} -> ${imageUrl} by ${req.user.username}`);
+
+    res.json({
+      id: imageId,
+      url: imageUrl,
+      filename: req.file.originalname,
+      size: req.file.size
     });
   } catch (error) {
     console.error('Error uploading image:', error);
@@ -540,29 +623,59 @@ app.post('/api/images/upload', authenticateToken, upload.single('image'), async 
 app.get('/api/images', authenticateToken, async (req, res) => {
   try {
     const images = await Image.find()
-      .select('-_id -__v -data') // Don't send data in list view
+      .select('-_id -__v -filePath')
       .sort({ uploadedAt: -1 });
     
-    res.json(images);
+    res.json(images.map(image => ({
+      ...image.toObject(),
+      url: `/uploads/${image.filename}`
+    })));
   } catch (error) {
     console.error('Error fetching images:', error);
     res.status(500).json({ message: 'Error fetching images' });
   }
 });
 
-// Get single image with data (admin only)
+// Get single image metadata (admin only)
 app.get('/api/images/:id', authenticateToken, async (req, res) => {
   try {
     const image = await Image.findOne({ id: req.params.id }).select('-_id -__v');
-    
+
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
-    
-    res.json(image);
+
+    res.json({
+      ...image.toObject(),
+      url: `/uploads/${image.filename}`
+    });
   } catch (error) {
     console.error('Error fetching image:', error);
     res.status(500).json({ message: 'Error fetching image' });
+  }
+});
+
+// Serve image file by ID
+app.get('/api/images/:id/file', async (req, res) => {
+  try {
+    const image = await Image.findOne({ id: req.params.id });
+
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    if (!fs.existsSync(image.filePath)) {
+      return res.status(404).json({ message: 'Image file not found' });
+    }
+
+    res.setHeader('Content-Type', image.mimetype);
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
+
+    const fileStream = fs.createReadStream(image.filePath);
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error('Error serving image:', error);
+    res.status(500).json({ message: 'Error serving image' });
   }
 });
 
@@ -570,11 +683,16 @@ app.get('/api/images/:id', authenticateToken, async (req, res) => {
 app.delete('/api/images/:id', authenticateToken, async (req, res) => {
   try {
     const image = await Image.findOneAndDelete({ id: req.params.id });
-    
+
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
-    
+
+    if (fs.existsSync(image.filePath)) {
+      fs.unlinkSync(image.filePath);
+      console.log(`Deleted file: ${image.filePath}`);
+    }
+
     console.log(`Deleted image: ${image.filename} by ${req.user.username}`);
     res.json({ message: 'Image deleted successfully' });
   } catch (error) {
@@ -583,15 +701,51 @@ app.delete('/api/images/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// Set featured post (admin only)
+app.post('/api/featured-post', authenticateToken, async (req, res) => {
+  try {
+    const { postId } = req.body;
+    
+    await Post.updateMany({}, { featured: false });
+    
+    if (postId) {
+      const post = await Post.findOneAndUpdate(
+        { id: postId, status: 'published' },
+        { featured: true, updatedAt: new Date() },
+        { new: true, select: '-_id -__v' }
+      );
+      
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found or not published' });
+      }
+      
+      console.log(`Set featured post: ${post.title} by ${req.user.username}`);
+      res.json({ 
+        message: 'Featured post updated successfully',
+        post: post
+      });
+    } else {
+      console.log(`Cleared featured post by ${req.user.username}`);
+      res.json({ message: 'Featured post cleared successfully' });
+    }
+  } catch (error) {
+    console.error('Error setting featured post:', error);
+    res.status(500).json({ message: 'Error setting featured post' });
+  }
+});
+
 // Export/Import posts (admin only)
 app.get('/api/posts/export', authenticateToken, async (req, res) => {
   try {
     const posts = await Post.find().select('-_id -__v');
-    const images = await Image.find().select('-_id -__v');
+    const images = await Image.find().select('-_id -__v -filePath');
     
     res.json({
       posts,
-      images,
+      images: images.map(image => ({
+        ...image.toObject(),
+        url: `/uploads/${image.filename}`
+      })),
       exportDate: new Date().toISOString(),
       version: '1.0'
     });
@@ -610,7 +764,6 @@ app.post('/api/posts/import', authenticateToken, async (req, res) => {
     let skippedPosts = 0;
     let skippedImages = 0;
     
-    // Import posts
     if (Array.isArray(posts)) {
       for (const postData of posts) {
         try {
@@ -630,7 +783,6 @@ app.post('/api/posts/import', authenticateToken, async (req, res) => {
       }
     }
     
-    // Import images
     if (Array.isArray(images)) {
       for (const imageData of images) {
         try {
@@ -699,8 +851,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ===== STATIC ROUTES =====
-
 // Serve static files first
 app.use(express.static(path.join(__dirname, '.')));
 
@@ -740,156 +890,6 @@ initializeDefaultUser().then(() => {
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`Admin user: ${process.env.ADMIN_USERNAME}`);
   });
-});
-
-// Add this to your server.js file after your existing public API routes
-
-// Get featured post (the most recent published post)
-app.get('/api/featured-post', async (req, res) => {
-  try {
-    const featuredPost = await Post.findOne({ 
-      status: 'published' 
-    })
-    .select('-_id -__v')
-    .sort({ createdAt: -1 });
-    
-    if (!featuredPost) {
-      return res.status(404).json({ message: 'No featured post found' });
-    }
-    
-    console.log(`Featured post: ${featuredPost.title}`);
-    res.set('Cache-Control', 'public, max-age=300');
-    res.json(featuredPost);
-  } catch (error) {
-    console.error('Error fetching featured post:', error);
-    res.status(500).json({ message: 'Error fetching featured post' });
-  }
-});
-
-// Alternative: Get featured post by specific criteria (e.g., featured flag)
-app.get('/api/featured-post-advanced', async (req, res) => {
-  try {
-    // First try to find a post specifically marked as featured
-    let featuredPost = await Post.findOne({ 
-      status: 'published',
-      tags: { $in: ['featured'] }  // Look for posts tagged with 'featured'
-    })
-    .select('-_id -__v')
-    .sort({ createdAt: -1 });
-    
-    // If no featured post found, get the most recent
-    if (!featuredPost) {
-      featuredPost = await Post.findOne({ 
-        status: 'published' 
-      })
-      .select('-_id -__v')
-      .sort({ createdAt: -1 });
-    }
-    
-    if (!featuredPost) {
-      return res.status(404).json({ message: 'No featured post found' });
-    }
-    
-    console.log(`Featured post: ${featuredPost.title}`);
-    res.set('Cache-Control', 'public, max-age=300');
-    res.json(featuredPost);
-  } catch (error) {
-    console.error('Error fetching featured post:', error);
-    res.status(500).json({ message: 'Error fetching featured post' });
-  }
-});
-
-// Upload endpoint that matches your admin script call
-app.post('/api/upload', authenticateToken, upload.single('image'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No image file provided' });
-    }
-    
-    const imageId = uuidv4();
-    const base64Data = req.file.buffer.toString('base64');
-    const dataUrl = `data:${req.file.mimetype};base64,${base64Data}`;
-    
-    console.log(`Image uploaded: ${req.file.originalname} (${req.file.size} bytes) by ${req.user.username}`);
-    
-    res.json({
-      id: imageId,
-      url: dataUrl,
-      filename: req.file.originalname,
-      size: req.file.size
-    });
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    res.status(500).json({ message: 'Error uploading image' });
-  }
-});
-
-// Featured post management endpoints
-app.get('/api/featured-post', async (req, res) => {
-  try {
-    // First try to find a post specifically marked as featured
-    let featuredPost = await Post.findOne({ 
-      featured: true,
-      status: 'published' 
-    })
-    .select('-_id -__v')
-    .sort({ createdAt: -1 });
-    
-    // If no featured post found, get the most recent published post
-    if (!featuredPost) {
-      featuredPost = await Post.findOne({ 
-        status: 'published' 
-      })
-      .select('-_id -__v')
-      .sort({ createdAt: -1 });
-    }
-    
-    if (!featuredPost) {
-      return res.status(404).json({ message: 'No featured post found' });
-    }
-    
-    console.log(`Featured post: ${featuredPost.title}`);
-    res.set('Cache-Control', 'public, max-age=300');
-    res.json(featuredPost);
-  } catch (error) {
-    console.error('Error fetching featured post:', error);
-    res.status(500).json({ message: 'Error fetching featured post' });
-  }
-});
-
-// Set featured post (admin only)
-app.post('/api/featured-post', authenticateToken, async (req, res) => {
-  try {
-    const { postId } = req.body;
-    
-    // Remove featured status from all posts
-    await Post.updateMany({}, { featured: false });
-    
-    // Set new featured post if postId provided
-    if (postId) {
-      const post = await Post.findOneAndUpdate(
-        { id: postId, status: 'published' },
-        { featured: true, updatedAt: new Date() },
-        { new: true, select: '-_id -__v' }
-      );
-      
-      if (!post) {
-        return res.status(404).json({ message: 'Post not found or not published' });
-      }
-      
-      console.log(`Set featured post: ${post.title} by ${req.user.username}`);
-      res.json({ 
-        message: 'Featured post updated successfully',
-        post: post
-      });
-    } else {
-      console.log(`Cleared featured post by ${req.user.username}`);
-      res.json({ message: 'Featured post cleared successfully' });
-    }
-  } catch (error) {
-    console.error('Error setting featured post:', error);
-    res.status(500).json({ message: 'Error setting featured post' });
-  }
 });
 
 module.exports = app;

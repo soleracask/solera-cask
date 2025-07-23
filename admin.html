@@ -648,21 +648,31 @@
         }
 
         .image-code {
-            background: var(--cream);
-            border: 1px solid var(--border);
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background: #f5f5f5;
             padding: 8px;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 11px;
-            color: var(--text-primary);
-            border-radius: 2px;
-            margin-bottom: 8px;
-            word-break: break-all;
+            border-radius: 4px;
             cursor: pointer;
-            position: relative;
+            border: 1px solid #ddd;
+            word-break: break-all;
         }
 
         .image-code:hover {
             background: var(--light-beige);
+        }
+
+        .upload-progress {
+            padding: 10px;
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            background: #f9f9f9;
+            border-radius: 4px;
         }
 
         .copy-tooltip {
@@ -722,6 +732,13 @@
             border-radius: 50%;
             border-top-color: var(--primary);
             animation: spin 1s ease-in-out infinite;
+        }
+
+        .image-code {
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         @keyframes spin {
@@ -1066,6 +1083,7 @@
         let currentEditId = null;
         let authToken = null;
         let currentContentFormat = 'markdown';
+        const uploadedImages = new Map();
 
         // Determine API base URL based on environment
         const API_BASE = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
@@ -2031,77 +2049,51 @@
             // Handle content based on format
             if (currentContentFormat === 'html') {
                 postData.contentHtml = document.getElementById('postContentHtml').value.trim();
-                postData.content = ''; // Clear markdown content
+                postData.content = ''; 
             } else {
                 postData.content = document.getElementById('postContent').value.trim();
-                postData.contentHtml = ''; // Clear HTML content
+                postData.contentHtml = ''; 
             }
 
-           // Handle featured image - DEBUGGED VERSION
-        if (postData.featured) {
-            const featuredImageFile = document.getElementById('featuredImage').files[0];
-            
-            console.log('Featured image handling:', {
-                featured: postData.featured,
-                hasFile: !!featuredImageFile,
-                fileName: featuredImageFile?.name,
-                currentEditId: currentEditId
-            });
-            
-            if (featuredImageFile) {
-                // New image uploaded
-                try {
-                    showMessage('Uploading featured image...', 'info');
-                    console.log('Starting featured image upload...');
-                    
-                    const imageResponse = await SoleraBlogAPI.uploadImage(featuredImageFile);
-                    console.log('Featured image upload response:', imageResponse);
-                    
-                    postData.featuredImage = imageResponse.url;
-                    console.log('Set postData.featuredImage to:', postData.featuredImage);
-                    
-                } catch (error) {
-                    console.warn('Failed to upload featured image, using local fallback:', error);
-                    // Fallback to data URL for local storage
-                    const reader = new FileReader();
-                    const dataUrl = await new Promise((resolve) => {
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.readAsDataURL(featuredImageFile);
-                    });
-                    postData.featuredImage = dataUrl;
-                    console.log('Using local fallback, set postData.featuredImage to:', postData.featuredImage.substring(0, 50) + '...');
+            // Handle featured image - FIXED VERSION
+            if (postData.featured) {
+                const featuredImageFile = document.getElementById('featuredImage').files[0];
+                
+                console.log('Featured image handling:', {
+                    featured: postData.featured,
+                    hasFile: !!featuredImageFile,
+                    fileName: featuredImageFile?.name,
+                    currentEditId: currentEditId
+                });
+                
+                if (featuredImageFile) {
+                    try {
+                        showMessage('Processing featured image...', 'info');
+                        const imageUrl = await handleFeaturedImageUpload(featuredImageFile);
+                        postData.featuredImage = imageUrl;
+                        console.log('Featured image processed successfully');
+                    } catch (error) {
+                        console.error('Featured image upload failed:', error);
+                        showMessage('Featured image upload failed, saving post without featured image', 'warning');
+                        postData.featuredImage = '';
+                    }
+                } else if (currentEditId) {
+                    // Preserve existing featured image if editing
+                    const existingPost = posts.find(p => p.id === currentEditId);
+                    postData.featuredImage = existingPost?.featuredImage || '';
+                } else {
+                    postData.featuredImage = '';
                 }
             } else {
-                // No new image, preserve existing one if editing
-                if (currentEditId) {
-                    const existingPost = posts.find(p => p.id === currentEditId);
-                    if (existingPost && existingPost.featuredImage) {
-                        postData.featuredImage = existingPost.featuredImage;
-                        console.log('Preserving existing featured image:', existingPost.featuredImage);
-                    } else {
-                        console.log('No existing featured image found for post:', currentEditId);
-                    }
-                } else {
-                    console.log('No featured image file and not editing existing post');
-                }
+                postData.featuredImage = '';
             }
-        } else {
-            // Not featured, clear the featured image
-            postData.featuredImage = '';
-            console.log('Post not featured, clearing featured image');
-        }
-
-        console.log('Final postData before saving:', {
-            title: postData.title,
-            featured: postData.featured,
-            featuredImage: postData.featuredImage ? postData.featuredImage.substring(0, 50) + '...' : 'none'
-        });
 
             const submitButton = document.querySelector('#postForm button[type="submit"]');
             const btnText = submitButton.querySelector('.btn-text');
             const spinner = submitButton.querySelector('.loading-spinner');
 
             try {
+                // Show loading state
                 if (btnText) btnText.style.display = 'none';
                 if (spinner) spinner.style.display = 'inline-block';
                 submitButton.disabled = true;
@@ -2119,10 +2111,12 @@
                 loadDashboardStats();
                 loadFeaturedPostSection();
                 showSection('posts');
+                
             } catch (error) {
                 console.error('Error saving post:', error);
                 showMessage('Failed to save post: ' + error.message, 'error');
             } finally {
+                // Restore button state
                 if (btnText) btnText.style.display = 'inline';
                 if (spinner) spinner.style.display = 'none';
                 submitButton.disabled = false;
@@ -2130,7 +2124,7 @@
         }
 
         function addImageToPost(imageId, imageUrl, filename) {
-            console.log('addImageToPost called with:', { imageId, imageUrl: imageUrl.substring(0, 50) + '...', filename });
+            console.log('addImageToPost called with:', { imageId, filename });
             
             const uploadedImagesContainer = document.getElementById('uploadedImages');
             if (!uploadedImagesContainer) {
@@ -2141,26 +2135,136 @@
             const imageElement = document.createElement('div');
             imageElement.className = 'uploaded-image';
             imageElement.setAttribute('data-image-id', imageId);
+            imageElement.setAttribute('data-image-url', imageUrl); // Store the actual URL as data attribute
+            imageElement.setAttribute('data-filename', filename);
 
-            const imageCode = currentContentFormat === 'html' 
-                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
-                : `![${filename}](${imageUrl})`;
+            // Create user-friendly display code (NO base64 shown)
+            const displayCode = currentContentFormat === 'html' 
+                ? `&lt;img src="[${filename}]" alt="${filename}"&gt;`
+                : `![${filename}](uploaded-image)`;
             
             imageElement.innerHTML = `
                 <img src="${imageUrl}" alt="${filename}" style="max-width: 100px; height: auto;">
                 <div class="image-info">${filename}</div>
-                <div class="image-code" onclick="copyImageCode(this)" title="Click to copy">
-                    ${imageCode}
+                <div class="image-code" onclick="copyImageCodeFixed(this)" title="Click to copy">
+                    ${displayCode}
                     <div class="copy-tooltip">Click to copy</div>
                 </div>
                 <div class="image-actions">
-                    <button class="image-btn" onclick="insertImageAtCursor('${imageCode.replace(/'/g, "\\'")}')">Insert</button>
+                    <button class="image-btn" onclick="insertImageAtCursorFixed(this)">Insert</button>
                     <button class="image-btn danger" onclick="removeImage(this)">Delete</button>
                 </div>
             `;
 
             uploadedImagesContainer.appendChild(imageElement);
             console.log('Image added to container successfully');
+        }
+
+        // Fixed copy function
+        function copyImageCodeFixed(element) {
+            const imageElement = element.closest('.uploaded-image');
+            const imageUrl = imageElement.getAttribute('data-image-url');
+            const filename = imageElement.getAttribute('data-filename');
+            
+            const actualImageCode = currentContentFormat === 'html' 
+                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
+                : `![${filename}](${imageUrl})`;
+            
+            navigator.clipboard.writeText(actualImageCode).then(() => {
+                const tooltip = element.querySelector('.copy-tooltip');
+                const originalText = tooltip.textContent;
+                tooltip.textContent = 'Copied!';
+                tooltip.style.background = '#4CAF50';
+                setTimeout(() => {
+                    tooltip.textContent = originalText;
+                    tooltip.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showMessage('Failed to copy image code', 'error');
+            });
+        }
+
+        // Fixed insert function
+        function insertImageAtCursorFixed(element) {
+            const imageElement = element.closest('.uploaded-image');
+            const imageUrl = imageElement.getAttribute('data-image-url');
+            const filename = imageElement.getAttribute('data-filename');
+            
+            const imageCode = currentContentFormat === 'html' 
+                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
+                : `![${filename}](${imageUrl})`;
+            
+            const activeTextarea = currentContentFormat === 'html' 
+                ? document.getElementById('postContentHtml')
+                : document.getElementById('postContent');
+            
+            if (activeTextarea) {
+                const cursorPos = activeTextarea.selectionStart;
+                const textBefore = activeTextarea.value.substring(0, cursorPos);
+                const textAfter = activeTextarea.value.substring(activeTextarea.selectionEnd);
+                
+                activeTextarea.value = textBefore + imageCode + textAfter;
+                activeTextarea.focus();
+                activeTextarea.setSelectionRange(
+                    cursorPos + imageCode.length, 
+                    cursorPos + imageCode.length
+                );
+                
+                if (currentContentFormat === 'html') {
+                    refreshHTMLPreview();
+                }
+                
+                showMessage('Image inserted into post content!', 'success');
+            }
+        }
+
+        // Enhanced featured image handler
+        async function handleFeaturedImageUpload(file) {
+            if (!file) return null;
+            
+            try {
+                console.log('Uploading featured image:', file.name);
+                
+                const featuredImagePreview = document.getElementById('featuredImagePreview');
+                if (featuredImagePreview) {
+                    featuredImagePreview.innerHTML = '<div class="upload-progress">Uploading featured image...</div>';
+                }
+                
+                const response = await SoleraBlogAPI.uploadImage(file);
+                console.log('Featured image uploaded successfully');
+                
+                if (featuredImagePreview) {
+                    featuredImagePreview.innerHTML = `
+                        <img src="${response.url}" alt="Featured image preview" style="max-width: 200px; height: auto; border-radius: 4px;">
+                        <div class="image-info">Featured Image: ${response.filename || file.name}</div>
+                    `;
+                }
+                
+                return response.url;
+            } catch (error) {
+                console.error('Featured image upload failed:', error);
+                
+                // Fallback to local data URL
+                const reader = new FileReader();
+                const dataUrl = await new Promise((resolve, reject) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+                
+                console.log('Using local fallback for featured image');
+                
+                const featuredImagePreview = document.getElementById('featuredImagePreview');
+                if (featuredImagePreview) {
+                    featuredImagePreview.innerHTML = `
+                        <img src="${dataUrl}" alt="Featured image preview" style="max-width: 200px; height: auto; border-radius: 4px;">
+                        <div class="image-info">Featured Image: ${file.name} (local preview)</div>
+                    `;
+                }
+                
+                return dataUrl;
+            }
         }
 
         function resetPostForm() {
@@ -2321,11 +2425,16 @@
         window.changePassword = changePassword;
         window.exportData = exportData;
         window.importData = importData;
-        window.copyImageCode = copyImageCode;
-        window.insertImageAtCursor = insertImageAtCursor;
+        window.copyImageCode = copyImageCodeFixed; // FIXED: Point to the new function
+        window.insertImageAtCursor = insertImageAtCursorFixed; // FIXED: Point to the new function
         window.removeImage = removeImage;
         window.setContentFormat = setContentFormat;
         window.refreshHTMLPreview = refreshHTMLPreview;
+
+        // Also add these missing global exports:
+        window.copyImageCodeFixed = copyImageCodeFixed;
+        window.insertImageAtCursorFixed = insertImageAtCursorFixed;
+        window.handleFeaturedImageUpload = handleFeaturedImageUpload;
     </script>
 </body>
 </html>

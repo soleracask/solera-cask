@@ -1455,10 +1455,17 @@
         }
 
         async function handleFiles(files) {
+            console.log('handleFiles called with', files.length, 'files');
+            
             const uploadedImagesContainer = document.getElementById('uploadedImages');
-            if (!uploadedImagesContainer) return;
+            if (!uploadedImagesContainer) {
+                console.error('uploadedImages container not found');
+                return;
+            }
 
             for (const file of files) {
+                console.log('Processing file:', file.name, file.type, file.size);
+                
                 if (!file.type.startsWith('image/')) {
                     showMessage('Please upload only image files', 'error');
                     continue;
@@ -1471,9 +1478,12 @@
 
                 try {
                     showMessage('Uploading image...', 'info');
+                    console.log('Starting upload for:', file.name);
                     
                     try {
                         const response = await SoleraBlogAPI.uploadImage(file);
+                        console.log('Upload successful, response:', response);
+                        
                         addImageToPost(response.id, response.url, file.name);
                         showMessage('Image uploaded successfully!', 'success');
                     } catch (error) {
@@ -1481,12 +1491,14 @@
                         // Create a more robust fallback
                         const reader = new FileReader();
                         reader.onload = (e) => {
+                            console.log('FileReader loaded image data');
                             const imageData = e.target.result;
                             const imageId = 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                             addImageToPost(imageId, imageData, file.name);
                             showMessage('Image processed locally (will sync when saving)', 'info');
                         };
-                        reader.onerror = () => {
+                        reader.onerror = (error) => {
+                            console.error('FileReader error:', error);
                             showMessage('Failed to process image file', 'error');
                         };
                         reader.readAsDataURL(file);
@@ -2025,46 +2037,65 @@
                 postData.contentHtml = ''; // Clear HTML content
             }
 
-            // Handle featured image - FIXED VERSION
-            if (postData.featured) {
-                const featuredImageFile = document.getElementById('featuredImage').files[0];
-                
-                if (featuredImageFile) {
-                    // New image uploaded
-                    try {
-                        showMessage('Uploading featured image...', 'info');
-                        const imageResponse = await SoleraBlogAPI.uploadImage(featuredImageFile);
-                        postData.featuredImage = imageResponse.url;
-                        console.log('Featured image uploaded:', imageResponse.url);
-                    } catch (error) {
-                        console.warn('Failed to upload featured image, using local fallback:', error);
-                        // Fallback to data URL for local storage
-                        const reader = new FileReader();
-                        const dataUrl = await new Promise((resolve) => {
-                            reader.onload = (e) => resolve(e.target.result);
-                            reader.readAsDataURL(featuredImageFile);
-                        });
-                        postData.featuredImage = dataUrl;
-                    }
-                } else {
-                    // No new image, preserve existing one if editing
-                    if (currentEditId) {
-                        const existingPost = posts.find(p => p.id === currentEditId);
-                        if (existingPost && existingPost.featuredImage) {
-                            postData.featuredImage = existingPost.featuredImage;
-                            console.log('Preserving existing featured image:', existingPost.featuredImage);
-                        }
-                    }
+           // Handle featured image - DEBUGGED VERSION
+        if (postData.featured) {
+            const featuredImageFile = document.getElementById('featuredImage').files[0];
+            
+            console.log('Featured image handling:', {
+                featured: postData.featured,
+                hasFile: !!featuredImageFile,
+                fileName: featuredImageFile?.name,
+                currentEditId: currentEditId
+            });
+            
+            if (featuredImageFile) {
+                // New image uploaded
+                try {
+                    showMessage('Uploading featured image...', 'info');
+                    console.log('Starting featured image upload...');
+                    
+                    const imageResponse = await SoleraBlogAPI.uploadImage(featuredImageFile);
+                    console.log('Featured image upload response:', imageResponse);
+                    
+                    postData.featuredImage = imageResponse.url;
+                    console.log('Set postData.featuredImage to:', postData.featuredImage);
+                    
+                } catch (error) {
+                    console.warn('Failed to upload featured image, using local fallback:', error);
+                    // Fallback to data URL for local storage
+                    const reader = new FileReader();
+                    const dataUrl = await new Promise((resolve) => {
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(featuredImageFile);
+                    });
+                    postData.featuredImage = dataUrl;
+                    console.log('Using local fallback, set postData.featuredImage to:', postData.featuredImage.substring(0, 50) + '...');
                 }
             } else {
-                // Not featured, clear the featured image
-                postData.featuredImage = '';
+                // No new image, preserve existing one if editing
+                if (currentEditId) {
+                    const existingPost = posts.find(p => p.id === currentEditId);
+                    if (existingPost && existingPost.featuredImage) {
+                        postData.featuredImage = existingPost.featuredImage;
+                        console.log('Preserving existing featured image:', existingPost.featuredImage);
+                    } else {
+                        console.log('No existing featured image found for post:', currentEditId);
+                    }
+                } else {
+                    console.log('No featured image file and not editing existing post');
+                }
             }
+        } else {
+            // Not featured, clear the featured image
+            postData.featuredImage = '';
+            console.log('Post not featured, clearing featured image');
+        }
 
-            if (!postData.title || (!postData.content && !postData.contentHtml)) {
-                showMessage('Title and content are required', 'error');
-                return;
-            }
+        console.log('Final postData before saving:', {
+            title: postData.title,
+            featured: postData.featured,
+            featuredImage: postData.featuredImage ? postData.featuredImage.substring(0, 50) + '...' : 'none'
+        });
 
             const submitButton = document.querySelector('#postForm button[type="submit"]');
             const btnText = submitButton.querySelector('.btn-text');
@@ -2099,8 +2130,13 @@
         }
 
         function addImageToPost(imageId, imageUrl, filename) {
+            console.log('addImageToPost called with:', { imageId, imageUrl: imageUrl.substring(0, 50) + '...', filename });
+            
             const uploadedImagesContainer = document.getElementById('uploadedImages');
-            if (!uploadedImagesContainer) return;
+            if (!uploadedImagesContainer) {
+                console.error('uploadedImages container not found');
+                return;
+            }
 
             const imageElement = document.createElement('div');
             imageElement.className = 'uploaded-image';
@@ -2111,7 +2147,7 @@
                 : `![${filename}](${imageUrl})`;
             
             imageElement.innerHTML = `
-                <img src="${imageUrl}" alt="${filename}">
+                <img src="${imageUrl}" alt="${filename}" style="max-width: 100px; height: auto;">
                 <div class="image-info">${filename}</div>
                 <div class="image-code" onclick="copyImageCode(this)" title="Click to copy">
                     ${imageCode}
@@ -2124,6 +2160,7 @@
             `;
 
             uploadedImagesContainer.appendChild(imageElement);
+            console.log('Image added to container successfully');
         }
 
         function resetPostForm() {

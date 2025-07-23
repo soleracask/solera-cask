@@ -15,7 +15,7 @@ async function connectDB() {
   return cachedDb;
 }
 
-// Post Schema
+// Enhanced Post Schema with HTML support
 const PostSchema = new mongoose.Schema({
   id: String,
   title: String,
@@ -23,9 +23,13 @@ const PostSchema = new mongoose.Schema({
   date: String,
   excerpt: String,
   content: String,
+  contentHtml: String, // HTML content support
   link: String,
   tags: [String],
   status: String,
+  featured: { type: Boolean, default: false }, // Featured post flag
+  featuredImage: String, // Featured image URL
+  author: String,
   createdAt: Date,
   updatedAt: Date
 });
@@ -70,8 +74,22 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // For Netlify Functions, we need to handle different endpoints based on the function name
-    // This function handles all posts-public routes
+    // NEW: Check for featured posts endpoint
+    if (queryStringParameters && queryStringParameters.featured === 'true') {
+      const featuredPosts = await Post.find({ 
+        status: 'published', 
+        featured: true 
+      })
+        .select('-_id -__v')
+        .sort({ createdAt: -1 })
+        .limit(3); // Limit to 3 featured posts
+      
+      return {
+        statusCode: 200,
+        headers: { ...headers, 'Cache-Control': 'public, max-age=300' },
+        body: JSON.stringify(featuredPosts)
+      };
+    }
     
     // Check if there's a slug parameter (for individual posts)
     if (queryStringParameters && queryStringParameters.slug) {
@@ -158,7 +176,7 @@ exports.handler = async (event, context) => {
   }
 };
 
-// Create default posts
+// Create default posts with enhanced schema
 async function createDefaultPosts() {
   const generateId = (title) => {
     return title.toLowerCase()
@@ -176,9 +194,13 @@ async function createDefaultPosts() {
       date: new Date().toISOString().split('T')[0],
       excerpt: "Discover the heritage, craftsmanship, and stories behind our premium sherry barrels from Jerez de la Frontera.",
       content: "Welcome to Solera Cask Stories, where we share the rich heritage and exceptional craftsmanship behind our premium sherry barrels. From our historic solera systems in Jerez de la Frontera to the modern craft distilleries and breweries worldwide, each barrel tells a story of tradition, quality, and transformation.\n\nHere you'll find updates on our latest partnerships, educational content about sherry barrel aging, tasting notes from exceptional spirits and beers, and stories from the passionate makers who trust Solera Cask for their most important expressions.\n\nOur journey begins in the heart of Andalusia, where the ancient art of sherry making has been perfected over centuries. Each barrel we source carries with it the wisdom of generations of bodega masters, the terroir of Jerez de la Frontera, and the unique characteristics that only authentic Spanish sherry casks can provide.",
+      contentHtml: "",
       link: "",
       tags: ["welcome", "heritage", "craftsmanship", "solera", "jerez"],
       status: "published",
+      featured: false,
+      featuredImage: "",
+      author: "Solera Cask Team",
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -189,11 +211,32 @@ async function createDefaultPosts() {
       date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
       excerpt: "A comprehensive guide to the six sherry types and how each imparts unique characteristics to spirits and beer.",
       content: "Understanding the different sherry types is crucial for selecting the right barrel for your aging program. Each of the six main sherry types brings distinct flavor profiles and characteristics to spirits and beer.\n\n## Fino and Manzanilla\nFino and Manzanilla, aged under flor, contribute bright, mineral, and saline notes perfect for lighter spirits. These sherries develop under a layer of yeast called flor, which protects the wine from oxidation and creates unique aldehydic compounds.\n\n## Amontillado\nAmontillado offers balanced complexity with nutty and oxidative characteristics. Starting life under flor like Fino, these sherries later undergo oxidative aging.\n\n## Oloroso\nOloroso provides rich, robust flavors ideal for whisky and dark beer styles. These sherries undergo full oxidative aging from the beginning.\n\n## Pedro Ximénez\nPedro Ximénez delivers intense sweetness and rich fruit character for dessert-style expressions.",
+      contentHtml: "",
       link: "",
       tags: ["education", "sherry-types", "aging", "flavor-profiles"],
       status: "published",
+      featured: false,
+      featuredImage: "",
+      author: "Solera Cask Team",
       createdAt: new Date(Date.now() - 86400000),
       updatedAt: new Date(Date.now() - 86400000)
+    },
+    {
+      id: generateId("Solera Cask & Spring Mill Distillery Partnership"),
+      title: "Solera Cask & Spring Mill Distillery",
+      type: "Partnership",
+      date: new Date(Date.now() - 172800000).toISOString().split('T')[0],
+      excerpt: "Family, Tradition, and a dedication to Craft - Discover how Spring Mill Distillery partnered with Solera Cask to create exceptional aged expressions.",
+      content: "Discover how Spring Mill Distillery partnered with Solera Cask to create exceptional aged expressions using authentic sherry barrels from our historic solera systems in Jerez de la Frontera.\n\nThis collaboration showcases the transformative power of authentic Spanish cooperage, where centuries-old traditions meet modern craft distilling excellence.\n\n## The Partnership\nSpring Mill Distillery, known for their commitment to traditional distilling methods, sought authentic sherry barrels to age their premium expressions. Our partnership began with a shared vision: creating spirits that honor both American craft distilling innovation and Spanish sherry-making heritage.\n\n## The Barrels\nEach barrel provided to Spring Mill comes from our carefully curated selection of ex-sherry casks, previously seasoned with authentic Jerez sherries including Oloroso, Amontillado, and Pedro Ximénez. These barrels carry the essence of centuries-old solera systems.\n\n## The Results\nThe partnership has yielded exceptional results, with Spring Mill's aged expressions demonstrating the profound impact of authentic Spanish sherry barrel aging on American whiskey.",
+      contentHtml: "",
+      link: "",
+      tags: ["partnership", "spring-mill", "distillery", "collaboration", "whiskey"],
+      status: "published",
+      featured: true, // THIS IS THE FEATURED POST
+      featuredImage: "images/solera-spring-mill-distillery.jpg",
+      author: "Solera Cask Team",
+      createdAt: new Date(Date.now() - 172800000),
+      updatedAt: new Date(Date.now() - 172800000)
     }
   ];
 

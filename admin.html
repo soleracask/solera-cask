@@ -248,6 +248,34 @@
             color: #ffb800;
         }
 
+        .status-featured {
+            background: rgba(160, 82, 45, 0.1);
+            color: var(--primary);
+        }
+
+        .featured-indicator {
+            background: var(--accent-gold);
+            color: var(--text-primary);
+            padding: 2px 6px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            margin-left: 8px;
+            border-radius: 2px;
+        }
+
+
+        .action-btn[title="Toggle Featured"] {
+            font-size: 16px;
+            color: #ffd700;
+        }
+
+        .action-btn[title="Toggle Featured"]:hover {
+            transform: scale(1.2);
+            color: #ffed4e;
+        }
+
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -272,6 +300,24 @@
             background: var(--warm-white);
             border: 1px solid var(--border-light);
             padding: 40px;
+        }
+
+
+        /* Featured post upload section */
+        #featuredImageUpload {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px dashed #ffd700;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        #featuredImagePreview img {
+            max-width: 200px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-top: 10px;
         }
 
         .form-row {
@@ -320,6 +366,142 @@
         .form-group textarea {
             resize: vertical;
             min-height: 120px;
+        }
+
+        .content-format-toggle {
+            margin-bottom: 16px;
+        }
+
+        .format-toggle-buttons {
+            display: flex;
+            gap: 0;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .format-toggle-btn {
+            background: var(--warm-white);
+            border: none;
+            padding: 12px 24px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 1px solid var(--border);
+        }
+
+        .format-toggle-btn:last-child {
+            border-right: none;
+        }
+
+        .format-toggle-btn.active {
+            background: var(--primary);
+            color: var(--text-white);
+        }
+
+        .format-toggle-btn:hover:not(.active) {
+            background: var(--cream);
+        }
+
+        .html-editor {
+            background: var(--text-primary);
+            color: #ffffff;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 20px;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 300px;
+            overflow-x: auto;
+            white-space: pre;
+            tab-size: 2;
+        }
+
+        .html-editor:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .html-preview {
+            border: 1px solid var(--border);
+            background: var(--warm-white);
+            padding: 20px;
+            min-height: 300px;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .preview-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .refresh-preview-btn {
+            background: var(--primary);
+            color: var(--text-white);
+            border: none;
+            padding: 6px 12px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-preview-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .featured-controls {
+            background: var(--cream);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+        }
+
+        .featured-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .featured-checkbox input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.2);
+        }
+
+        .featured-image-upload {
+            margin-top: 16px;
+        }
+
+        .featured-image-preview {
+            margin-top: 16px;
+            max-width: 200px;
+        }
+
+        .featured-image-preview img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border);
         }
 
         .form-actions {
@@ -394,7 +576,6 @@
             color: var(--primary);
         }
 
-        /* Image Upload Styles */
         .image-upload-container {
             margin-top: 16px;
         }
@@ -628,6 +809,7 @@
                     <ul class="admin-menu">
                         <li><a href="#" onclick="showSection('posts')" class="active">Manage Posts</a></li>
                         <li><a href="#" onclick="showSection('add-post')">Add New Post</a></li>
+                        <li><a href="#" onclick="showSection('featured')">Featured Post</a></li>
                         <li><a href="#" onclick="showSection('settings')">Settings</a></li>
                         <li><a href="/">View Website</a></li>
                     </ul>
@@ -654,8 +836,8 @@
                                 <div class="stat-label">Drafts</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-number" id="stat-week">0</div>
-                                <div class="stat-label">This Week</div>
+                                <div class="stat-number" id="stat-featured">0</div>
+                                <div class="stat-label">Featured</div>
                             </div>
                         </div>
 
@@ -668,12 +850,13 @@
                                         <th>Type</th>
                                         <th>Date</th>
                                         <th>Status</th>
+                                        <th>Featured</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="postsTableBody">
                                     <tr>
-                                        <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-light);">
+                                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-light);">
                                             <div class="loading-spinner"></div> Loading posts...
                                         </td>
                                     </tr>
@@ -709,13 +892,64 @@
                                 <textarea id="postExcerpt" name="excerpt" rows="3" placeholder="Brief summary for post preview..." required></textarea>
                             </div>
 
+                            <!-- Featured Post Controls -->
+                            <div class="featured-controls">
+                                <h3 style="margin-bottom: 16px; color: var(--text-primary);">Featured Post Settings</h3>
+                                <div class="featured-checkbox">
+                                    <input type="checkbox" id="postFeatured" name="featured">
+                                    <label for="postFeatured" style="text-transform: none; font-size: 14px;">Set as Featured Post (appears on homepage)</label>
+                                </div>
+                                <div class="featured-image-upload" id="featuredImageUpload" style="display: none;">
+                                    <label for="featuredImage">Featured Image for Homepage</label>
+                                    <input type="file" id="featuredImage" accept="image/*">
+                                    <div class="featured-image-preview" id="featuredImagePreview"></div>
+                                </div>
+                            </div>
+
+                            <!-- Content Format Toggle -->
                             <div class="form-group">
+                                <label>Content Format</label>
+                                <div class="content-format-toggle">
+                                    <div class="format-toggle-buttons">
+                                        <button type="button" class="format-toggle-btn active" onclick="setContentFormat('markdown')">Markdown</button>
+                                        <button type="button" class="format-toggle-btn" onclick="setContentFormat('html')">HTML</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Markdown Content (default) -->
+                            <div class="form-group" id="markdownContent">
                                 <label for="postContent">Full Content *</label>
                                 <textarea id="postContent" name="content" rows="10" placeholder="Full post content..." required></textarea>
                                 <div class="content-helper">
                                     <small style="color: var(--text-light); font-size: 12px; margin-top: 8px; display: block;">
                                         Tip: Add images by dragging them to the upload area below, then copy the image code into your content where you want it to appear.
                                     </small>
+                                </div>
+                            </div>
+
+                            <!-- HTML Content -->
+                            <div class="form-group" id="htmlContent" style="display: none;">
+                                <label for="postContentHtml">HTML Content *</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                    <div>
+                                        <textarea id="postContentHtml" name="contentHtml" class="html-editor" placeholder="<h2>Your HTML content here...</h2>
+<p>You can use full HTML markup including:</p>
+<ul>
+  <li>Images and videos</li>
+  <li>Custom styling</li>
+  <li>Interactive elements</li>
+</ul>"></textarea>
+                                    </div>
+                                    <div>
+                                        <div class="preview-header">
+                                            <span class="preview-title">Live Preview</span>
+                                            <button type="button" class="refresh-preview-btn" onclick="refreshHTMLPreview()">Refresh</button>
+                                        </div>
+                                        <div id="htmlPreview" class="html-preview">
+                                            <p style="color: var(--text-light); font-style: italic;">Preview will appear here...</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -770,6 +1004,32 @@
                         </form>
                     </div>
 
+                    <!-- Featured Post Management Section -->
+                    <div class="admin-section" id="featured-section">
+                        <h2>Featured Post Management</h2>
+                        <div class="post-form">
+                            <h3 style="margin-bottom: 24px; color: var(--text-primary);">Current Featured Post</h3>
+                            <div id="currentFeaturedPost">
+                                <p style="color: var(--text-light); font-style: italic;">No featured post set</p>
+                            </div>
+                            
+                            <h3 style="margin: 40px 0 24px; color: var(--text-primary);">Select Featured Post</h3>
+                            <div class="form-group">
+                                <label for="featuredPostSelect">Choose Post to Feature</label>
+                                <select id="featuredPostSelect">
+                                    <option value="">No featured post</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button onclick="updateFeaturedPost()" class="btn-primary">
+                                    <span class="btn-text">Update Featured Post</span>
+                                    <span class="loading-spinner" style="display: none;"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Settings Section -->
                     <div class="admin-section" id="settings-section">
                         <h2>Settings</h2>
@@ -801,10 +1061,11 @@
     </div>
 
     <script>
-        // Solera Cask Blog Admin System - MongoDB & Netlify Compatible
+        // Solera Cask Blog Admin System - Enhanced with Featured Posts and HTML Support
         let posts = [];
         let currentEditId = null;
         let authToken = null;
+        let currentContentFormat = 'markdown';
 
         // Determine API base URL based on environment
         const API_BASE = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
@@ -836,7 +1097,6 @@
                 
                 if (!response.ok) {
                     if (response.status === 401 || response.status === 403) {
-                        // Token expired or invalid, logout user
                         logout();
                         throw new Error('Authentication required');
                     }
@@ -858,7 +1118,7 @@
             }
         }
 
-        // Blog API adapted for MongoDB & Netlify
+        // Enhanced Blog API with featured posts and HTML support
         window.SoleraBlogAPI = {
             // Authentication
             login: async function(username, password) {
@@ -882,6 +1142,26 @@
             // Get single post by ID (admin only)
             getPost: async function(id) {
                 return await apiRequest(`/posts/${id}`);
+            },
+
+            // Get featured post
+            getFeaturedPost: async function() {
+                return await apiRequest('/featured-post');
+            },
+
+            // Set featured post
+            setFeaturedPost: async function(postId) {
+                return await apiRequest('/featured-post', {
+                    method: 'POST',
+                    body: JSON.stringify({ postId })
+                });
+            },
+
+            clearFeaturedPost: async function() {
+                return await apiRequest('/featured-post', {
+                    method: 'POST',
+                    body: JSON.stringify({ postId: null })
+                });
             },
 
             // Create new post
@@ -914,7 +1194,6 @@
                 return await apiRequest('/upload', {
                     method: 'POST',
                     headers: {
-                        // Remove Content-Type to let browser set it with boundary
                         'Authorization': authToken ? `Bearer ${authToken}` : undefined
                     },
                     body: formData
@@ -931,14 +1210,11 @@
 
             // Get dashboard stats
             getStats: function(allPosts) {
-                const now = new Date();
-                const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                
                 return {
                     total: allPosts.length,
                     published: allPosts.filter(post => post.status === 'published').length,
                     drafts: allPosts.filter(post => post.status === 'draft').length,
-                    thisWeek: allPosts.filter(post => new Date(post.createdAt || post.date) >= oneWeekAgo).length
+                    featured: allPosts.filter(post => post.featured === true).length
                 };
             },
 
@@ -958,6 +1234,9 @@
             initializeAdmin();
             checkAuthStatus();
             initializeImageUpload();
+            initializeFeaturedPostControls();
+            initializeHTMLEditor();
+            initializeImportHandler();
         });
 
         function initializeAdmin() {
@@ -979,6 +1258,138 @@
             });
         }
 
+        // Initialize featured post controls
+        function initializeFeaturedPostControls() {
+            const featuredCheckbox = document.getElementById('postFeatured');
+            const featuredImageUpload = document.getElementById('featuredImageUpload');
+            const featuredImageInput = document.getElementById('featuredImage');
+
+            if (featuredCheckbox) {
+                featuredCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        featuredImageUpload.style.display = 'block';
+                    } else {
+                        featuredImageUpload.style.display = 'none';
+                    }
+                });
+            }
+
+            if (featuredImageInput) {
+                featuredImageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('featuredImagePreview');
+                            preview.innerHTML = `<img src="${e.target.result}" alt="Featured image preview">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        // Initialize HTML editor
+        function initializeHTMLEditor() {
+            const htmlEditor = document.getElementById('postContentHtml');
+            if (htmlEditor) {
+                htmlEditor.addEventListener('input', function() {
+                    // Auto-refresh preview on typing (debounced)
+                    clearTimeout(this.previewTimeout);
+                    this.previewTimeout = setTimeout(refreshHTMLPreview, 500);
+                });
+            }
+        }
+
+        // Initialize import file handler
+        function initializeImportHandler() {
+            const importFileInput = document.getElementById('importFile');
+            if (importFileInput) {
+                importFileInput.addEventListener('change', async function(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        try {
+                            const postsData = JSON.parse(e.target.result);
+                            
+                            if (!Array.isArray(postsData)) {
+                                throw new Error('Invalid file format. Expected JSON array of posts.');
+                            }
+                            
+                            showMessage('Importing posts...', 'info');
+                            
+                            let imported = 0;
+                            for (const postData of postsData) {
+                                try {
+                                    await SoleraBlogAPI.addPost(postData);
+                                    imported++;
+                                } catch (error) {
+                                    console.warn('Failed to import post:', postData.title, error);
+                                }
+                            }
+                            
+                            showMessage(`Successfully imported ${imported} of ${postsData.length} posts`, 'success');
+                            loadPostsTable();
+                            loadDashboardStats();
+                            loadFeaturedPostSection();
+                            
+                            event.target.value = '';
+                        } catch (error) {
+                            console.error('Error importing posts:', error);
+                            showMessage('Error importing posts: ' + error.message, 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                });
+            }
+        }
+
+        // Content format switching
+        function setContentFormat(format) {
+            currentContentFormat = format;
+            
+            // Update toggle buttons
+            document.querySelectorAll('.format-toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const activeBtn = document.querySelector(`[onclick="setContentFormat('${format}')"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            // Show/hide content areas
+            const markdownContent = document.getElementById('markdownContent');
+            const htmlContent = document.getElementById('htmlContent');
+            
+            if (markdownContent && htmlContent) {
+                if (format === 'markdown') {
+                    markdownContent.style.display = 'block';
+                    htmlContent.style.display = 'none';
+                } else {
+                    markdownContent.style.display = 'none';
+                    htmlContent.style.display = 'block';
+                    refreshHTMLPreview();
+                }
+            }
+        }
+
+        // Refresh HTML preview
+        function refreshHTMLPreview() {
+            const htmlContent = document.getElementById('postContentHtml');
+            const preview = document.getElementById('htmlPreview');
+            
+            if (htmlContent && preview) {
+                if (htmlContent.value.trim()) {
+                    preview.innerHTML = htmlContent.value;
+                } else {
+                    preview.innerHTML = '<p style="color: var(--text-light); font-style: italic;">Preview will appear here...</p>';
+                }
+            }
+        }
+
         // Image Upload Functionality
         function initializeImageUpload() {
             const dropZone = document.getElementById('imageDropZone');
@@ -987,7 +1398,6 @@
 
             if (!dropZone || !fileInput) return;
 
-            // Click to browse files
             dropZone.addEventListener('click', () => fileInput.click());
             if (browseLink) {
                 browseLink.addEventListener('click', (e) => {
@@ -996,12 +1406,10 @@
                 });
             }
 
-            // File input change
             fileInput.addEventListener('change', (e) => {
                 handleFiles(e.target.files);
             });
 
-            // Drag and drop
             dropZone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropZone.classList.add('drag-over');
@@ -1029,7 +1437,7 @@
                     continue;
                 }
 
-                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                if (file.size > 5 * 1024 * 1024) {
                     showMessage('Image size must be less than 5MB', 'error');
                     continue;
                 }
@@ -1037,14 +1445,12 @@
                 try {
                     showMessage('Uploading image...', 'info');
                     
-                    // Try to upload to server first
                     try {
                         const response = await SoleraBlogAPI.uploadImage(file);
                         addImageToPost(response.id, response.url, file.name);
                         showMessage('Image uploaded successfully!', 'success');
                     } catch (error) {
                         console.warn('Server upload failed, using local upload:', error);
-                        // Fallback to local base64 encoding
                         const reader = new FileReader();
                         reader.onload = (e) => {
                             const imageData = e.target.result;
@@ -1069,7 +1475,9 @@
             imageElement.className = 'uploaded-image';
             imageElement.setAttribute('data-image-id', imageId);
 
-            const imageCode = `![${filename}](${imageUrl})`;
+            const imageCode = currentContentFormat === 'html' 
+                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
+                : `![${filename}](${imageUrl})`;
             
             imageElement.innerHTML = `
                 <img src="${imageUrl}" alt="${filename}">
@@ -1079,7 +1487,7 @@
                     <div class="copy-tooltip">Click to copy</div>
                 </div>
                 <div class="image-actions">
-                    <button class="image-btn" onclick="insertImageAtCursor('${imageCode}')">Insert</button>
+                    <button class="image-btn" onclick="insertImageAtCursor('${imageCode.replace(/'/g, "\\'")}')">Insert</button>
                     <button class="image-btn danger" onclick="removeImage(this)">Delete</button>
                 </div>
             `;
@@ -1103,14 +1511,16 @@
         }
 
         function insertImageAtCursor(imageCode) {
-            const contentTextarea = document.getElementById('postContent');
+            const contentTextarea = currentContentFormat === 'html' 
+                ? document.getElementById('postContentHtml')
+                : document.getElementById('postContent');
+            
             if (!contentTextarea) return;
 
             const start = contentTextarea.selectionStart;
             const end = contentTextarea.selectionEnd;
             const text = contentTextarea.value;
             
-            // Insert image code at cursor position with proper spacing
             const beforeText = text.substring(0, start);
             const afterText = text.substring(end);
             const separator = beforeText.endsWith('\n') || beforeText === '' ? '' : '\n\n';
@@ -1118,10 +1528,13 @@
             
             contentTextarea.value = beforeText + separator + imageCode + endSeparator + afterText;
             
-            // Move cursor to end of inserted text
             const newPosition = start + separator.length + imageCode.length + endSeparator.length;
             contentTextarea.setSelectionRange(newPosition, newPosition);
             contentTextarea.focus();
+
+            if (currentContentFormat === 'html') {
+                refreshHTMLPreview();
+            }
 
             showMessage('Image inserted into post content!', 'success');
         }
@@ -1148,10 +1561,14 @@
             if (authToken && userData) {
                 try {
                     const user = JSON.parse(userData);
-                    document.getElementById('welcomeUser').textContent = `Welcome, ${user.username}`;
+                    const welcomeElement = document.getElementById('welcomeUser');
+                    if (welcomeElement) {
+                        welcomeElement.textContent = `Welcome, ${user.username}`;
+                    }
                     showAdminDashboard();
                     loadPostsTable();
                     loadDashboardStats();
+                    loadFeaturedPostSection();
                 } catch (error) {
                     console.error('Error parsing user data:', error);
                     logout();
@@ -1162,13 +1579,19 @@
         }
 
         function showLoginForm() {
-            document.getElementById('loginContainer').style.display = 'block';
-            document.getElementById('adminDashboard').style.display = 'none';
+            const loginContainer = document.getElementById('loginContainer');
+            const adminDashboard = document.getElementById('adminDashboard');
+            
+            if (loginContainer) loginContainer.style.display = 'block';
+            if (adminDashboard) adminDashboard.style.display = 'none';
         }
 
         function showAdminDashboard() {
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'block';
+            const loginContainer = document.getElementById('loginContainer');
+            const adminDashboard = document.getElementById('adminDashboard');
+            
+            if (loginContainer) loginContainer.style.display = 'none';
+            if (adminDashboard) adminDashboard.style.display = 'block';
         }
 
         // Authentication
@@ -1182,23 +1605,28 @@
             const spinner = submitButton.querySelector('.loading-spinner');
 
             try {
-                btnText.style.display = 'none';
-                spinner.style.display = 'inline-block';
+                if (btnText) btnText.style.display = 'none';
+                if (spinner) spinner.style.display = 'inline-block';
                 submitButton.disabled = true;
 
                 const response = await SoleraBlogAPI.login(username, password);
                 
-                document.getElementById('welcomeUser').textContent = `Welcome, ${response.user.username}`;
+                const welcomeElement = document.getElementById('welcomeUser');
+                if (welcomeElement) {
+                    welcomeElement.textContent = `Welcome, ${response.user.username}`;
+                }
+                
                 showAdminDashboard();
                 loadPostsTable();
                 loadDashboardStats();
+                loadFeaturedPostSection();
                 showMessage('Welcome to Solera Cask Admin!', 'success');
             } catch (error) {
                 console.error('Login error:', error);
                 showMessage('Login failed: ' + error.message, 'error');
             } finally {
-                btnText.style.display = 'inline';
-                spinner.style.display = 'none';
+                if (btnText) btnText.style.display = 'inline';
+                if (spinner) spinner.style.display = 'none';
                 submitButton.disabled = false;
             }
         }
@@ -1231,19 +1659,20 @@
             
             if (sectionName === 'add-post' && !currentEditId) {
                 resetPostForm();
+            } else if (sectionName === 'featured') {
+                loadFeaturedPostSection();
             }
         }
 
         async function loadPostsTable() {
             try {
                 posts = await SoleraBlogAPI.getAllPosts();
-                SoleraBlogAPI.saveLocalPosts(posts); // Cache for offline
+                SoleraBlogAPI.saveLocalPosts(posts);
                 renderPostsTable(posts);
             } catch (error) {
                 console.error('Error loading posts:', error);
                 showMessage('Failed to load posts: ' + error.message, 'error');
                 
-                // Try to load from cache
                 const cachedPosts = SoleraBlogAPI.getLocalPosts();
                 if (cachedPosts.length > 0) {
                     posts = cachedPosts;
@@ -1260,7 +1689,7 @@
             if (postsToRender.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-light);">
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-light);">
                             No posts found. <a href="#" onclick="showSection('add-post')" style="color: var(--primary);">Create your first post</a>.
                         </td>
                     </tr>
@@ -1271,7 +1700,7 @@
             tableBody.innerHTML = postsToRender.map(post => `
                 <tr class="${post.status === 'draft' ? 'draft-row' : ''}">
                     <td>
-                        <div class="post-title-main">${post.title}</div>
+                        <div class="post-title-main">${post.title}${post.featured ? '<span class="featured-indicator">FEATURED</span>' : ''}</div>
                         <div class="post-meta-small">
                             <span>ID: ${post.id}</span>
                             ${post.excerpt ? `<span> • ${post.excerpt.substring(0, 50)}...</span>` : ''}
@@ -1282,10 +1711,12 @@
                     <td><span class="status-badge status-${post.status || 'published'}">
                         ${(post.status || 'published').charAt(0).toUpperCase() + (post.status || 'published').slice(1)}
                     </span></td>
+                    <td><span class="status-badge ${post.featured ? 'status-featured' : ''}">${post.featured ? 'Yes' : 'No'}</span></td>
                     <td>
                         <div class="action-buttons">
                             <button class="action-btn" onclick="editPost('${post.id}')" title="Edit Post">✏️</button>
                             <button class="action-btn" onclick="viewPost('${post.id}')" title="View Post">👁️</button>
+                            <button class="action-btn" onclick="toggleFeatured('${post.id}')" title="Toggle Featured">${post.featured ? '⭐' : '☆'}</button>
                             <button class="action-btn" onclick="duplicatePost('${post.id}')" title="Duplicate Post">📋</button>
                             <button class="action-btn" onclick="deletePost('${post.id}')" title="Delete Post">🗑️</button>
                         </div>
@@ -1298,15 +1729,123 @@
             try {
                 const stats = SoleraBlogAPI.getStats(posts);
                 
-                document.getElementById('stat-total').textContent = stats.total;
-                document.getElementById('stat-published').textContent = stats.published;
-                document.getElementById('stat-drafts').textContent = stats.drafts;
-                document.getElementById('stat-week').textContent = stats.thisWeek;
+                const elements = {
+                    total: document.getElementById('stat-total'),
+                    published: document.getElementById('stat-published'),
+                    drafts: document.getElementById('stat-drafts'),
+                    featured: document.getElementById('stat-featured')
+                };
+
+                if (elements.total) elements.total.textContent = stats.total;
+                if (elements.published) elements.published.textContent = stats.published;
+                if (elements.drafts) elements.drafts.textContent = stats.drafts;
+                if (elements.featured) elements.featured.textContent = stats.featured;
             } catch (error) {
                 console.error('Error loading stats:', error);
             }
         }
 
+        // Load featured post section
+        async function loadFeaturedPostSection() {
+            try {
+                // Load all posts for the dropdown
+                const allPosts = await SoleraBlogAPI.getAllPosts();
+                const publishedPosts = allPosts.filter(post => post.status === 'published');
+                
+                const featuredPostSelect = document.getElementById('featuredPostSelect');
+                if (featuredPostSelect) {
+                    featuredPostSelect.innerHTML = '<option value="">No featured post</option>' +
+                        publishedPosts.map(post => 
+                            `<option value="${post.id}" ${post.featured ? 'selected' : ''}>${post.title}</option>`
+                        ).join('');
+                }
+
+                // Get current featured post from API
+                let featuredPost = null;
+                try {
+                    featuredPost = await SoleraBlogAPI.getFeaturedPost();
+                } catch (error) {
+                    if (error.message.includes('404')) {
+                        // No featured post found, that's okay
+                        featuredPost = null;
+                    } else {
+                        throw error;
+                    }
+                }
+                
+                const currentFeaturedPost = document.getElementById('currentFeaturedPost');
+                
+                if (currentFeaturedPost) {
+                    if (featuredPost) {
+                        currentFeaturedPost.innerHTML = `
+                            <div style="border: 1px solid var(--border); padding: 20px; background: var(--warm-white);">
+                                <h4 style="margin-bottom: 8px; color: var(--text-primary);">${featuredPost.title}</h4>
+                                <p style="color: var(--text-secondary); margin-bottom: 12px;">${featuredPost.excerpt || 'No excerpt available'}</p>
+                                <div style="font-size: 12px; color: var(--text-light);">
+                                    <span class="post-type-badge">${featuredPost.type}</span>
+                                    <span style="margin-left: 12px;">Published: ${formatDate(featuredPost.date)}</span>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        currentFeaturedPost.innerHTML = '<p style="color: var(--text-light); font-style: italic;">No featured post set</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading featured post section:', error);
+                showMessage('Failed to load featured post section', 'error');
+            }
+        }
+
+        // Update featured post
+        async function updateFeaturedPost() {
+            const selectedPostId = document.getElementById('featuredPostSelect').value;
+            
+            try {
+                if (selectedPostId) {
+                    await SoleraBlogAPI.setFeaturedPost(selectedPostId);
+                    showMessage('Featured post updated successfully!', 'success');
+                } else {
+                    await SoleraBlogAPI.clearFeaturedPost();
+                    showMessage('Featured post cleared successfully!', 'success');
+                }
+                
+                loadPostsTable();
+                loadDashboardStats();
+                loadFeaturedPostSection();
+            } catch (error) {
+                console.error('Error updating featured post:', error);
+                showMessage('Failed to update featured post: ' + error.message, 'error');
+            }
+        }
+
+
+        // Toggle featured status from table
+        async function toggleFeatured(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            try {
+                if (post.featured) {
+                    // If currently featured, clear it
+                    await SoleraBlogAPI.clearFeaturedPost();
+                    showMessage(`"${post.title}" removed from featured`, 'success');
+                } else {
+                    // If not featured, set it as featured
+                    await SoleraBlogAPI.setFeaturedPost(postId);
+                    showMessage(`"${post.title}" set as featured post!`, 'success');
+                }
+                
+                loadPostsTable();
+                loadDashboardStats();
+                loadFeaturedPostSection();
+            } catch (error) {
+                console.error('Error toggling featured status:', error);
+                showMessage('Failed to update featured status: ' + error.message, 'error');
+            }
+        }
+
+        // Edit post function
         function editPost(postId) {
             const post = posts.find(p => p.id === postId);
             if (!post) {
@@ -1317,25 +1856,72 @@
             document.getElementById('postTitle').value = post.title;
             document.getElementById('postType').value = post.type;
             document.getElementById('postExcerpt').value = post.excerpt || '';
-            document.getElementById('postContent').value = post.content;
+            
+            // Handle content format
+            if (post.contentHtml && post.contentHtml.trim()) {
+                setContentFormat('html');
+                document.getElementById('postContentHtml').value = post.contentHtml;
+                // Refresh HTML preview
+                setTimeout(() => refreshHTMLPreview(), 100);
+            } else {
+                setContentFormat('markdown');
+                document.getElementById('postContent').value = post.content || '';
+            }
+            
             document.getElementById('postLink').value = post.link || '';
             document.getElementById('postTags').value = Array.isArray(post.tags) ? post.tags.join(', ') : '';
             document.getElementById('postStatus').value = post.status || 'published';
+            document.getElementById('postFeatured').checked = post.featured || false;
             
+            // Show/hide featured image upload based on featured status
+            const featuredImageUpload = document.getElementById('featuredImageUpload');
+            if (post.featured) {
+                featuredImageUpload.style.display = 'block';
+                // Display existing featured image if available
+                if (post.featuredImage) {
+                    const preview = document.getElementById('featuredImagePreview');
+                    preview.innerHTML = `<img src="${post.featuredImage}" alt="Featured image">`;
+                }
+            } else {
+                featuredImageUpload.style.display = 'none';
+            }
+            
+            // Set current edit ID
             currentEditId = postId;
             
+            // Update form title
             const formTitle = document.getElementById('postFormTitle');
             if (formTitle) {
                 formTitle.textContent = `Edit Post: ${post.title}`;
             }
             
+            // Update submit button text
             const submitButton = document.querySelector('#postForm button[type="submit"] .btn-text');
             if (submitButton) {
                 submitButton.textContent = 'Update Post';
             }
             
+            // Switch to add-post section
             showSection('add-post');
+            
+            // Show editing message
             showMessage(`Editing: ${post.title}`, 'info');
+            
+            // Auto-resize textareas if they have content
+            setTimeout(() => {
+                const contentTextarea = currentContentFormat === 'html' 
+                    ? document.getElementById('postContentHtml')
+                    : document.getElementById('postContent');
+                
+                if (contentTextarea) {
+                    autoResizeTextarea(contentTextarea);
+                }
+                
+                const excerptTextarea = document.getElementById('postExcerpt');
+                if (excerptTextarea) {
+                    autoResizeTextarea(excerptTextarea);
+                }
+            }, 200);
         }
 
         function viewPost(postId) {
@@ -1345,7 +1931,6 @@
                 return;
             }
             
-            // Open post in new tab
             const postSlug = createPostSlug(post);
             window.open(`/post/${postSlug}`, '_blank');
         }
@@ -1362,9 +1947,11 @@
                 type: post.type,
                 excerpt: post.excerpt,
                 content: post.content,
+                contentHtml: post.contentHtml,
                 link: post.link,
                 tags: post.tags,
-                status: 'draft'
+                status: 'draft',
+                featured: false // Don't duplicate featured status
             };
             
             try {
@@ -1394,6 +1981,7 @@
                 showMessage(`Post "${post.title}" deleted successfully!`, 'success');
                 loadPostsTable();
                 loadDashboardStats();
+                loadFeaturedPostSection();
             } catch (error) {
                 console.error('Error deleting post:', error);
                 showMessage('Failed to delete post: ' + error.message, 'error');
@@ -1411,13 +1999,35 @@
                 title: formData.get('title').trim(),
                 type: formData.get('type'),
                 excerpt: formData.get('excerpt').trim(),
-                content: formData.get('content').trim(),
                 link: formData.get('link').trim(),
                 tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
-                status: formData.get('status')
+                status: formData.get('status'),
+                featured: document.getElementById('postFeatured').checked
             };
 
-            if (!postData.title || !postData.content) {
+            // Handle content based on format
+            if (currentContentFormat === 'html') {
+                postData.contentHtml = document.getElementById('postContentHtml').value.trim();
+                postData.content = ''; // Clear markdown content
+            } else {
+                postData.content = document.getElementById('postContent').value.trim();
+                postData.contentHtml = ''; // Clear HTML content
+            }
+
+            // Handle featured image upload
+            if (postData.featured) {
+                const featuredImageFile = document.getElementById('featuredImage').files[0];
+                if (featuredImageFile) {
+                    try {
+                        const imageResponse = await SoleraBlogAPI.uploadImage(featuredImageFile);
+                        postData.featuredImage = imageResponse.url;
+                    } catch (error) {
+                        console.warn('Failed to upload featured image:', error);
+                    }
+                }
+            }
+
+            if (!postData.title || (!postData.content && !postData.contentHtml)) {
                 showMessage('Title and content are required', 'error');
                 return;
             }
@@ -1427,8 +2037,8 @@
             const spinner = submitButton.querySelector('.loading-spinner');
 
             try {
-                btnText.style.display = 'none';
-                spinner.style.display = 'inline-block';
+                if (btnText) btnText.style.display = 'none';
+                if (spinner) spinner.style.display = 'inline-block';
                 submitButton.disabled = true;
 
                 if (currentEditId) {
@@ -1442,13 +2052,14 @@
                 resetPostForm();
                 loadPostsTable();
                 loadDashboardStats();
+                loadFeaturedPostSection();
                 showSection('posts');
             } catch (error) {
                 console.error('Error saving post:', error);
                 showMessage('Failed to save post: ' + error.message, 'error');
             } finally {
-                btnText.style.display = 'inline';
-                spinner.style.display = 'none';
+                if (btnText) btnText.style.display = 'inline';
+                if (spinner) spinner.style.display = 'none';
                 submitButton.disabled = false;
             }
         }
@@ -1471,8 +2082,18 @@
                 submitButton.textContent = 'Save Post';
             }
 
+            // Reset content format to markdown
+            setContentFormat('markdown');
+            
             // Clear uploaded images
             clearUploadedImages();
+            
+            // Reset featured controls
+            const featuredImageUpload = document.getElementById('featuredImageUpload');
+            const featuredImagePreview = document.getElementById('featuredImagePreview');
+            
+            if (featuredImageUpload) featuredImageUpload.style.display = 'none';
+            if (featuredImagePreview) featuredImagePreview.innerHTML = '';
         }
 
         function cancelEdit() {
@@ -1543,8 +2164,8 @@
             const spinner = changePasswordBtn.querySelector('.loading-spinner');
 
             try {
-                btnText.style.display = 'none';
-                spinner.style.display = 'inline-block';
+                if (btnText) btnText.style.display = 'none';
+                if (spinner) spinner.style.display = 'inline-block';
                 changePasswordBtn.disabled = true;
 
                 await SoleraBlogAPI.changePassword(newPassword, confirmPassword);
@@ -1555,8 +2176,8 @@
                 console.error('Error changing password:', error);
                 showMessage('Failed to change password: ' + error.message, 'error');
             } finally {
-                btnText.style.display = 'inline';
-                spinner.style.display = 'none';
+                if (btnText) btnText.style.display = 'inline';
+                if (spinner) spinner.style.display = 'none';
                 changePasswordBtn.disabled = false;
             }
         }
@@ -1582,60 +2203,19 @@
         }
 
         function importData() {
-            document.getElementById('importFile').click();
-        }
-
-        // Import file handler
-        document.addEventListener('DOMContentLoaded', function() {
-            const importFileInput = document.getElementById('importFile');
-            if (importFileInput) {
-                importFileInput.addEventListener('change', async function(event) {
-                    const file = event.target.files[0];
-                    if (!file) return;
-                    
-                    const reader = new FileReader();
-                    reader.onload = async function(e) {
-                        try {
-                            const postsData = JSON.parse(e.target.result);
-                            
-                            if (!Array.isArray(postsData)) {
-                                throw new Error('Invalid file format. Expected JSON array of posts.');
-                            }
-                            
-                            showMessage('Importing posts...', 'info');
-                            
-                            // Import posts one by one
-                            let imported = 0;
-                            for (const postData of postsData) {
-                                try {
-                                    await SoleraBlogAPI.addPost(postData);
-                                    imported++;
-                                } catch (error) {
-                                    console.warn('Failed to import post:', postData.title, error);
-                                }
-                            }
-                            
-                            showMessage(`Successfully imported ${imported} of ${postsData.length} posts`, 'success');
-                            loadPostsTable();
-                            loadDashboardStats();
-                            
-                            // Clear the file input
-                            event.target.value = '';
-                        } catch (error) {
-                            console.error('Error importing posts:', error);
-                            showMessage('Error importing posts: ' + error.message, 'error');
-                        }
-                    };
-                    reader.readAsText(file);
-                });
+            const importFile = document.getElementById('importFile');
+            if (importFile) {
+                importFile.click();
             }
-        });
+        }
 
         // Export functions for global use
         window.showSection = showSection;
         window.logout = logout;
         window.editPost = editPost;
         window.viewPost = viewPost;
+        window.toggleFeatured = toggleFeatured;
+        window.updateFeaturedPost = updateFeaturedPost;
         window.duplicatePost = duplicatePost;
         window.deletePost = deletePost;
         window.cancelEdit = cancelEdit;
@@ -1645,6 +2225,8 @@
         window.copyImageCode = copyImageCode;
         window.insertImageAtCursor = insertImageAtCursor;
         window.removeImage = removeImage;
+        window.setContentFormat = setContentFormat;
+        window.refreshHTMLPreview = refreshHTMLPreview;
     </script>
 </body>
 </html>

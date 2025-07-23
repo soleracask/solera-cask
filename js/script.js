@@ -1437,4 +1437,227 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     console.log('Hero search functionality initialized successfully');
+
+    class SoleraHomepageIntegration {
+        constructor() {
+            this.API_BASE = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+                ? '/api' // Local development
+                : '/.netlify/functions'; // Netlify production
+        }
+    
+        // Fetch featured post from API
+        async getFeaturedPost() {
+            try {
+                const response = await fetch(`${this.API_BASE}/featured-post`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching featured post:', error);
+                return null;
+            }
+        }
+    
+        // Create post slug for URL
+        createPostSlug(post) {
+            return post.title
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim('-');
+        }
+    
+        // Update the featured story section
+        async updateFeaturedStorySection() {
+            const featuredPost = await this.getFeaturedPost();
+            
+            if (!featuredPost) {
+                console.log('No featured post found, using default content');
+                return;
+            }
+    
+            // Find the featured story section
+            const storySection = document.querySelector('#story .story-grid');
+            if (!storySection) {
+                console.error('Featured story section not found');
+                return;
+            }
+    
+            // Create post URL
+            const postSlug = this.createPostSlug(featuredPost);
+            const postUrl = `/post/${postSlug}`;
+    
+            // Get existing elements
+            const storyImage = storySection.querySelector('.story-image');
+            const storyContent = storySection.querySelector('.story-content');
+    
+            if (storyImage && storyContent) {
+                // Update image section
+                if (featuredPost.featuredImage) {
+                    const existingImg = storyImage.querySelector('.story-bg-image');
+                    if (existingImg) {
+                        existingImg.src = featuredPost.featuredImage;
+                        existingImg.alt = `${featuredPost.title} - Featured Story`;
+                        storyImage.classList.add('has-image');
+                    } else {
+                        // Create new image if it doesn't exist
+                        const newImg = document.createElement('img');
+                        newImg.src = featuredPost.featuredImage;
+                        newImg.alt = `${featuredPost.title} - Featured Story`;
+                        newImg.className = 'story-bg-image';
+                        storyImage.appendChild(newImg);
+                        storyImage.classList.add('has-image');
+                    }
+                }
+    
+                // Update content section
+                const sectionLabel = storyContent.querySelector('.section-label');
+                const title = storyContent.querySelector('h2');
+                const subtitle = storyContent.querySelector('.story-subtitle');
+                const paragraphs = storyContent.querySelectorAll('p:not(.story-subtitle)');
+                const ctaButton = storyContent.querySelector('.btn-outline');
+    
+                if (sectionLabel) {
+                    sectionLabel.textContent = `Featured ${featuredPost.type}`;
+                }
+    
+                if (title) {
+                    title.textContent = featuredPost.title;
+                }
+    
+                if (subtitle) {
+                    // Extract subtitle from excerpt or use default
+                    subtitle.textContent = this.extractSubtitle(featuredPost);
+                }
+    
+                // Update description paragraphs
+                if (paragraphs.length >= 2) {
+                    const contentPreview = this.formatContentPreview(featuredPost);
+                    paragraphs[0].textContent = contentPreview.first;
+                    paragraphs[1].textContent = contentPreview.second;
+                }
+    
+                if (ctaButton) {
+                    ctaButton.href = postUrl;
+                    ctaButton.textContent = 'Read Full Story';
+                }
+            }
+        }
+    
+        // Extract subtitle from post data
+        extractSubtitle(post) {
+            // Use excerpt as subtitle, or create one from content
+            if (post.excerpt && post.excerpt.length > 0) {
+                return post.excerpt.length > 80 
+                    ? post.excerpt.substring(0, 80) + '...'
+                    : post.excerpt;
+            }
+            
+            // Fallback based on post type
+            switch (post.type) {
+                case 'Partnership':
+                    return 'Family, Tradition, and a dedication to Craft';
+                case 'Education':
+                    return 'Mastering the Art of Sherry Barrel Aging';
+                case 'Tasting Notes':
+                    return 'Exceptional Flavors from Historic Solera Systems';
+                case 'Stories':
+                    return 'Heritage Stories from Jerez de la Frontera';
+                default:
+                    return 'Premium Sherry Barrels from Spain';
+            }
+        }
+    
+        // Format content preview for homepage
+        formatContentPreview(post) {
+            let content = post.content || post.contentHtml || '';
+            
+            // Remove HTML tags if present
+            content = content.replace(/<[^>]*>/g, '');
+            
+            // Remove markdown formatting
+            content = content.replace(/[#*`]/g, '');
+            
+            // Split into sentences
+            const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 20);
+            
+            const first = sentences[0] 
+                ? sentences[0].trim() + '.'
+                : 'Discover exceptional sherry barrels from our historic solera systems in Jerez de la Frontera.';
+                
+            const second = sentences[1] 
+                ? sentences[1].trim() + '.'
+                : 'This collaboration showcases the transformative power of authentic Spanish cooperage, where centuries-old traditions meet modern craft excellence.';
+    
+            return { first, second };
+        }
+    
+        // Initialize the integration
+        async init() {
+            // Wait for DOM to be ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.updateFeaturedStorySection());
+            } else {
+                await this.updateFeaturedStorySection();
+            }
+        }
+    }
+    
+    // Enhanced post content rendering for HTML support
+    class SoleraPostRenderer {
+        static formatPostContent(post) {
+            // If HTML content exists, use it directly
+            if (post.contentHtml && post.contentHtml.trim()) {
+                return post.contentHtml;
+            }
+            
+            // Otherwise, format markdown content
+            if (!post.content) return '';
+            
+            // Split into paragraphs and format
+            const paragraphs = post.content.split('\n\n').filter(p => p.trim());
+            
+            return paragraphs.map(paragraph => {
+                const trimmed = paragraph.trim();
+                if (!trimmed) return '';
+                
+                // Handle images first (markdown format)
+                if (trimmed.match(/^!\[.*?\]\(.*?\)$/)) {
+                    const match = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
+                    if (match) {
+                        const altText = match[1];
+                        const src = match[2];
+                        return `<figure><img src="${src}" alt="${altText}" loading="lazy"><figcaption>${altText}</figcaption></figure>`;
+                    }
+                }
+                
+                // Format markdown-style elements
+                let formatted = trimmed
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>')
+                    .replace(/\n/g, '<br>');
+                
+                // Handle headers
+                if (formatted.startsWith('## ')) {
+                    return `<h2>${formatted.substring(3)}</h2>`;
+                } else if (formatted.startsWith('# ')) {
+                    return `<h3>${formatted.substring(2)}</h3>`;
+                }
+                
+                return `<p>${formatted}</p>`;
+            }).join('');
+        }
+    }
+    
+    // Initialize homepage integration
+    const soleraHomepage = new SoleraHomepageIntegration();
+    soleraHomepage.init();
+    
+    // Export for use in other scripts
+    window.SoleraHomepageIntegration = SoleraHomepageIntegration;
+    window.SoleraPostRenderer = SoleraPostRenderer;
+    
 });

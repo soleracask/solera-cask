@@ -85,9 +85,12 @@ const PostSchema = new mongoose.Schema({
   date: { type: String, required: true },
   excerpt: String,
   content: { type: String, required: true },
+  contentHtml: String, // For rich HTML content
+  featuredImage: String, // For homepage featured story images
   link: String,
   tags: [String],
   status: { type: String, enum: ['published', 'draft'], default: 'published' },
+  featured: { type: Boolean, default: false }, // NEW: For marking posts as featured
   images: [String], // Array of image URLs/data
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
@@ -721,6 +724,63 @@ initializeDefaultUser().then(() => {
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`Admin user: ${process.env.ADMIN_USERNAME}`);
   });
+});
+
+// Add this to your server.js file after your existing public API routes
+
+// Get featured post (the most recent published post)
+app.get('/api/featured-post', async (req, res) => {
+  try {
+    const featuredPost = await Post.findOne({ 
+      status: 'published' 
+    })
+    .select('-_id -__v')
+    .sort({ createdAt: -1 });
+    
+    if (!featuredPost) {
+      return res.status(404).json({ message: 'No featured post found' });
+    }
+    
+    console.log(`Featured post: ${featuredPost.title}`);
+    res.set('Cache-Control', 'public, max-age=300');
+    res.json(featuredPost);
+  } catch (error) {
+    console.error('Error fetching featured post:', error);
+    res.status(500).json({ message: 'Error fetching featured post' });
+  }
+});
+
+// Alternative: Get featured post by specific criteria (e.g., featured flag)
+app.get('/api/featured-post-advanced', async (req, res) => {
+  try {
+    // First try to find a post specifically marked as featured
+    let featuredPost = await Post.findOne({ 
+      status: 'published',
+      tags: { $in: ['featured'] }  // Look for posts tagged with 'featured'
+    })
+    .select('-_id -__v')
+    .sort({ createdAt: -1 });
+    
+    // If no featured post found, get the most recent
+    if (!featuredPost) {
+      featuredPost = await Post.findOne({ 
+        status: 'published' 
+      })
+      .select('-_id -__v')
+      .sort({ createdAt: -1 });
+    }
+    
+    if (!featuredPost) {
+      return res.status(404).json({ message: 'No featured post found' });
+    }
+    
+    console.log(`Featured post: ${featuredPost.title}`);
+    res.set('Cache-Control', 'public, max-age=300');
+    res.json(featuredPost);
+  } catch (error) {
+    console.error('Error fetching featured post:', error);
+    res.status(500).json({ message: 'Error fetching featured post' });
+  }
 });
 
 module.exports = app;

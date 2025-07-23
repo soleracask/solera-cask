@@ -2071,6 +2071,34 @@
             }
         }
 
+        function addImageToPost(imageId, imageUrl, filename) {
+            const uploadedImagesContainer = document.getElementById('uploadedImages');
+            if (!uploadedImagesContainer) return;
+
+            const imageElement = document.createElement('div');
+            imageElement.className = 'uploaded-image';
+            imageElement.setAttribute('data-image-id', imageId);
+
+            const imageCode = currentContentFormat === 'html' 
+                ? `<img src="${imageUrl}" alt="${filename}" style="max-width: 100%; height: auto;">`
+                : `![${filename}](${imageUrl})`;
+            
+            imageElement.innerHTML = `
+                <img src="${imageUrl}" alt="${filename}">
+                <div class="image-info">${filename}</div>
+                <div class="image-code" onclick="copyImageCode(this)" title="Click to copy">
+                    ${imageCode}
+                    <div class="copy-tooltip">Click to copy</div>
+                </div>
+                <div class="image-actions">
+                    <button class="image-btn" onclick="insertImageAtCursor('${imageCode.replace(/'/g, "\\'")}')">Insert</button>
+                    <button class="image-btn danger" onclick="removeImage(this)">Delete</button>
+                </div>
+            `;
+
+            uploadedImagesContainer.appendChild(imageElement);
+        }
+
         function resetPostForm() {
             const form = document.getElementById('postForm');
             if (form) {

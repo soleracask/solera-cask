@@ -3,7 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post - Solera Cask</title>
+    
+    <!-- SEO Meta Tags - Will be dynamically updated -->
+    <title id="pageTitle">Post - Solera Cask</title>
+    <meta name="description" id="pageDescription" content="Premium sherry barrels from Jerez de la Frontera, Spain">
+    <meta name="keywords" id="pageKeywords" content="sherry barrels, whisky aging, rum finishing, Jerez, Spain">
+    <meta name="author" content="Solera Cask">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Solera Cask">
+    <meta property="og:title" id="ogTitle" content="Post - Solera Cask">
+    <meta property="og:description" id="ogDescription" content="Premium sherry barrels from Jerez de la Frontera, Spain">
+    <meta property="og:url" id="ogUrl" content="">
+    <meta property="og:image" id="ogImage" content="/images/logos/Solera-Cask-Logo.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@soleracask">
+    <meta name="twitter:title" id="twitterTitle" content="Post - Solera Cask">
+    <meta name="twitter:description" id="twitterDescription" content="Premium sherry barrels from Jerez de la Frontera, Spain">
+    <meta name="twitter:image" id="twitterImage" content="/images/logos/Solera-Cask-Logo.png">
+    
+    <!-- Article Meta Tags -->
+    <meta property="article:author" id="articleAuthor" content="Solera Cask">
+    <meta property="article:published_time" id="articlePublished" content="">
+    <meta property="article:modified_time" id="articleModified" content="">
+    <meta property="article:section" id="articleSection" content="">
+    <meta property="article:tag" id="articleTags" content="">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" id="canonicalUrl" href="">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" id="structuredData">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "",
+        "description": "",
+        "author": {
+            "@type": "Organization",
+            "name": "Solera Cask"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Solera Cask",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "/images/logos/Solera-Cask-Logo.png"
+            }
+        },
+        "datePublished": "",
+        "dateModified": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": ""
+        },
+        "image": {
+            "@type": "ImageObject",
+            "url": "/images/logos/Solera-Cask-Logo.png"
+        }
+    }
+    </script>
+    
     <link rel="stylesheet" href="/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -15,15 +81,15 @@
         }
 
         .post-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 0 40px 80px;
-        transition: max-width 0.3s ease;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 40px 80px;
+            transition: max-width 0.3s ease;
         }
 
         /* Wide container for HTML posts */
         .post-container.html-content {
-            max-width: 1200px; /* or whatever width you prefer */
+            max-width: 1200px;
         }
 
         /* Full-width container for HTML posts if needed */
@@ -462,323 +528,404 @@
     </footer>
 
     <script>
-        // Solera Cask Individual Post Page JavaScript - Database Connected
+        // Enhanced Solera Cask Individual Post Page JavaScript with SEO Support
         const SoleraBlogAPI = {
-    // Determine API base URL based on environment
-    API_BASE: window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-        ? '/api' // Local development
-        : '/.netlify/functions', // Netlify production
+            // Determine API base URL based on environment
+            API_BASE: window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
+                ? '/api' // Local development
+                : '/.netlify/functions', // Netlify production
 
-    // Get all published posts from database
-    getAllPosts: async function() {
-        try {
-            const response = await fetch(`${this.API_BASE}/posts-public`);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+            // Get all published posts from database
+            getAllPosts: async function() {
+                try {
+                    const response = await fetch(`${this.API_BASE}/posts-public`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching posts:', error);
+                    return [];
+                }
+            },
+
+            // Get single post by ID from database
+            getPost: async function(id) {
+                try {
+                    const response = await fetch(`${this.API_BASE}/posts-public?id=${id}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching post:', error);
+                    return null;
+                }
+            },
+
+            // Get single post by slug from database
+            getPostBySlug: async function(slug) {
+                try {
+                    const response = await fetch(`${this.API_BASE}/posts-public?slug=${slug}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching post by slug:', error);
+                    return null;
+                }
+            },
+
+            createPostSlug: function(post) {
+                return post.title
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim('-');
             }
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-            return [];
-        }
-    },
+        };
 
-    // Get single post by ID from database
-    getPost: async function(id) {
-        try {
-            const response = await fetch(`${this.API_BASE}/posts-public?id=${id}`);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+        // SEO Meta Tag Updates
+        function updateSEOMetaTags(post) {
+            const currentUrl = window.location.href;
+            const baseUrl = window.location.origin;
+            
+            // Generate SEO content with fallbacks
+            const seoTitle = post.seoTitle || `${post.title} - Solera Cask`;
+            const seoDescription = post.seoDescription || post.excerpt || 
+                (post.content ? post.content.substring(0, 160) + '...' : 'Premium sherry barrels from Jerez de la Frontera, Spain');
+            const seoKeywords = post.seoKeywords || (post.tags ? post.tags.join(', ') : 'sherry barrels, whisky aging, rum finishing, Jerez, Spain');
+            const seoImage = post.seoImage || post.featuredImage || '/images/logos/Solera-Cask-Logo.png';
+            
+            // Update basic meta tags
+            document.getElementById('pageTitle').textContent = seoTitle;
+            document.getElementById('pageDescription').setAttribute('content', seoDescription);
+            document.getElementById('pageKeywords').setAttribute('content', seoKeywords);
+            
+            // Update Open Graph tags
+            document.getElementById('ogTitle').setAttribute('content', seoTitle);
+            document.getElementById('ogDescription').setAttribute('content', seoDescription);
+            document.getElementById('ogUrl').setAttribute('content', currentUrl);
+            document.getElementById('ogImage').setAttribute('content', baseUrl + seoImage);
+            
+            // Update Twitter Card tags
+            document.getElementById('twitterTitle').setAttribute('content', seoTitle);
+            document.getElementById('twitterDescription').setAttribute('content', seoDescription);
+            document.getElementById('twitterImage').setAttribute('content', baseUrl + seoImage);
+            
+            // Update Article meta tags
+            document.getElementById('articleAuthor').setAttribute('content', post.author || 'Solera Cask');
+            document.getElementById('articlePublished').setAttribute('content', new Date(post.date).toISOString());
+            document.getElementById('articleModified').setAttribute('content', new Date(post.updatedAt || post.date).toISOString());
+            document.getElementById('articleSection').setAttribute('content', post.type || 'Article');
+            document.getElementById('articleTags').setAttribute('content', post.tags ? post.tags.join(', ') : '');
+            
+            // Update canonical URL
+            document.getElementById('canonicalUrl').setAttribute('href', currentUrl);
+            
+            // Update JSON-LD structured data
+            const structuredData = {
+                "@context": "https://schema.org",
+                "@type": "Article",
+                "headline": post.title,
+                "description": seoDescription,
+                "author": {
+                    "@type": "Organization",
+                    "name": post.author || "Solera Cask"
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Solera Cask",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": baseUrl + "/images/logos/Solera-Cask-Logo.png"
+                    }
+                },
+                "datePublished": new Date(post.date).toISOString(),
+                "dateModified": new Date(post.updatedAt || post.date).toISOString(),
+                "mainEntityOfPage": {
+                    "@type": "WebPage",
+                    "@id": currentUrl
+                },
+                "image": {
+                    "@type": "ImageObject",
+                    "url": baseUrl + seoImage
+                },
+                "keywords": seoKeywords,
+                "articleSection": post.type || "Article",
+                "wordCount": post.content ? post.content.split(' ').length : 0
+            };
+            
+            // Add tags to structured data if they exist
+            if (post.tags && post.tags.length > 0) {
+                structuredData.keywords = post.tags.join(', ');
             }
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching post:', error);
-            return null;
+            
+            document.getElementById('structuredData').textContent = JSON.stringify(structuredData, null, 2);
+            
+            // Update page title in browser tab
+            document.title = seoTitle;
         }
-    },
 
-    // Get single post by slug from database
-    getPostBySlug: async function(slug) {
-        try {
-            const response = await fetch(`${this.API_BASE}/posts-public?slug=${slug}`);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+        // Get current post slug from URL
+        function getCurrentPostSlug() {
+            const path = window.location.pathname;
+            const segments = path.split('/');
+            
+            // Handle different URL structures
+            if (segments.includes('post') && segments.length > segments.indexOf('post') + 1) {
+                return segments[segments.indexOf('post') + 1];
             }
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching post by slug:', error);
-            return null;
+            
+            // Fallback: check for slug parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('slug') || urlParams.get('post');
         }
-    },
 
-    createPostSlug: function(post) {
-        return post.title
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim('-');
-    }
-};
+        // Initialize post page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePostPage();
+        });
 
-// Get current post slug from URL
-function getCurrentPostSlug() {
-    const path = window.location.pathname;
-    const segments = path.split('/');
-    
-    // Handle different URL structures
-    if (segments.includes('post') && segments.length > segments.indexOf('post') + 1) {
-        return segments[segments.indexOf('post') + 1];
-    }
-    
-    // Fallback: check for slug parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('slug') || urlParams.get('post');
-}
-
-// Initialize post page
-document.addEventListener('DOMContentLoaded', function() {
-    initializePostPage();
-});
-
-async function initializePostPage() {
-    const postSlug = getCurrentPostSlug();
-    
-    if (!postSlug) {
-        showError('No post specified');
-        return;
-    }
-    
-    console.log('Looking for post with slug:', postSlug);
-    
-    try {
-        // Find post by slug from database
-        const post = await SoleraBlogAPI.getPostBySlug(postSlug);
-        
-        if (!post || post.status !== 'published') {
-            console.error('Post not found for slug:', postSlug);
-            showError('Story not found');
-            return;
+        async function initializePostPage() {
+            const postSlug = getCurrentPostSlug();
+            
+            if (!postSlug) {
+                showError('No post specified');
+                return;
+            }
+            
+            console.log('Looking for post with slug:', postSlug);
+            
+            try {
+                // Find post by slug from database
+                const post = await SoleraBlogAPI.getPostBySlug(postSlug);
+                
+                if (!post || post.status !== 'published') {
+                    console.error('Post not found for slug:', postSlug);
+                    showError('Story not found');
+                    return;
+                }
+                
+                // Update SEO meta tags first
+                updateSEOMetaTags(post);
+                
+                // Render the post
+                renderPost(post);
+                await loadRelatedPosts(post);
+                
+            } catch (error) {
+                console.error('Error loading post:', error);
+                showError('Failed to load story');
+            }
         }
-        
-        // Render the post
-        renderPost(post);
-        await loadRelatedPosts(post);
-        
-        // Update page title
-        document.title = `${post.title} - Solera Cask`;
-    } catch (error) {
-        console.error('Error loading post:', error);
-        showError('Failed to load story');
-    }
-}
 
-function renderPost(post) {
-    const loadingMessage = document.getElementById('loadingMessage');
-    const postContent = document.getElementById('postContent');
-    const postContainer = document.querySelector('.post-container');
-    
-    if (loadingMessage) loadingMessage.style.display = 'none';
-    if (postContent) postContent.style.display = 'block';
-    
-    // ✅ NEW: Detect if this is an HTML post and adjust container width
-    const isHtmlPost = post.contentHtml && post.contentHtml.trim();
-    if (postContainer) {
-        if (isHtmlPost) {
-            postContainer.classList.add('html-content');
-        } else {
-            postContainer.classList.remove('html-content');
-        }
-    }
-    
-    // Update meta information
-    const postMeta = document.getElementById('postMeta');
-    if (postMeta) {
-        let metaHtml = `<span class="post-type">${post.type}</span>`;
-        metaHtml += `<span class="post-date">${formatDate(post.date)}</span>`;
-        
-        if (post.featured) {
-            metaHtml += `<span class="featured-indicator">FEATURED</span>`;
-        }
-        
-        postMeta.innerHTML = metaHtml;
-    }
-    
-    // Update title
-    const postTitle = document.getElementById('postTitle');
-    if (postTitle) {
-        postTitle.textContent = post.title;
-    }
-    
-    // Update content with HTML support
-    const postText = document.getElementById('postText');
-    if (postText) {
-        // ✅ NEW: Add class for HTML formatting
-        if (isHtmlPost) {
-            postText.classList.add('html-format');
-        } else {
-            postText.classList.remove('html-format');
-        }
-        
-        postText.innerHTML = formatPostContent(post);
-    }
-    
-    // Handle external link
-    const externalLinkContainer = document.getElementById('externalLinkContainer');
-    if (externalLinkContainer && post.link && post.link.trim() !== '') {
-        externalLinkContainer.innerHTML = `
-            <div class="external-link">
-                <a href="${post.link}" target="_blank" rel="noopener noreferrer">
-                    Read Original Source →
-                </a>
-            </div>
-        `;
-    }
-    
-    // Update tags
-    const postTags = document.getElementById('postTags');
-    if (postTags && post.tags && post.tags.length > 0) {
-        postTags.innerHTML = post.tags.map(tag => `
-            <a href="/blog?search=${encodeURIComponent(tag)}" class="post-tag">#${tag}</a>
-        `).join('');
-    }
-}
-
-async function loadRelatedPosts(currentPost) {
-    try {
-        const allPosts = await SoleraBlogAPI.getAllPosts();
-        const otherPosts = allPosts.filter(post => post.id !== currentPost.id);
-        
-        // Find posts with shared tags or same type
-        const relatedPosts = otherPosts
-            .map(post => {
-                let score = 0;
-                const sharedTags = post.tags.filter(tag => currentPost.tags.includes(tag));
-                score += sharedTags.length * 2;
-                if (post.type === currentPost.type) score += 1;
-                return { post, score };
-            })
-            .filter(item => item.score > 0)
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 3)
-            .map(item => item.post);
-        
-        const relatedContainer = document.getElementById('relatedPosts');
-        if (relatedContainer) {
-            if (relatedPosts.length === 0) {
-                relatedContainer.innerHTML = '<p style="text-align: center; color: var(--text-light);">No related stories found.</p>';
-            } else {
-                relatedContainer.innerHTML = relatedPosts.map(post => `
-                    <div class="related-post" onclick="navigateToPost('${post.id}')">
-                        <div class="related-post-meta">
-                            <span class="post-type">${post.type}</span>
-                            <span class="post-date">${formatDate(post.date)}</span>
-                        </div>
-                        <h4>${post.title}</h4>
-                        <p>${post.excerpt || (post.content || post.contentHtml).substring(0, 100)}...</p>
+        function renderPost(post) {
+            const loadingMessage = document.getElementById('loadingMessage');
+            const postContent = document.getElementById('postContent');
+            const postContainer = document.querySelector('.post-container');
+            
+            if (loadingMessage) loadingMessage.style.display = 'none';
+            if (postContent) postContent.style.display = 'block';
+            
+            // Detect if this is an HTML post and adjust container width
+            const isHtmlPost = post.contentHtml && post.contentHtml.trim();
+            if (postContainer) {
+                if (isHtmlPost) {
+                    postContainer.classList.add('html-content');
+                } else {
+                    postContainer.classList.remove('html-content');
+                }
+            }
+            
+            // Update meta information
+            const postMeta = document.getElementById('postMeta');
+            if (postMeta) {
+                let metaHtml = `<span class="post-type">${post.type}</span>`;
+                metaHtml += `<span class="post-date">${formatDate(post.date)}</span>`;
+                
+                if (post.featured) {
+                    metaHtml += `<span class="featured-indicator">FEATURED</span>`;
+                }
+                
+                postMeta.innerHTML = metaHtml;
+            }
+            
+            // Update title
+            const postTitle = document.getElementById('postTitle');
+            if (postTitle) {
+                postTitle.textContent = post.title;
+            }
+            
+            // Update content with HTML support
+            const postText = document.getElementById('postText');
+            if (postText) {
+                if (isHtmlPost) {
+                    postText.classList.add('html-format');
+                } else {
+                    postText.classList.remove('html-format');
+                }
+                
+                postText.innerHTML = formatPostContent(post);
+            }
+            
+            // Handle external link
+            const externalLinkContainer = document.getElementById('externalLinkContainer');
+            if (externalLinkContainer && post.link && post.link.trim() !== '') {
+                externalLinkContainer.innerHTML = `
+                    <div class="external-link">
+                        <a href="${post.link}" target="_blank" rel="noopener noreferrer">
+                            Read Original Source →
+                        </a>
                     </div>
+                `;
+            }
+            
+            // Update tags
+            const postTags = document.getElementById('postTags');
+            if (postTags && post.tags && post.tags.length > 0) {
+                postTags.innerHTML = post.tags.map(tag => `
+                    <a href="/blog?search=${encodeURIComponent(tag)}" class="post-tag">#${tag}</a>
                 `).join('');
             }
         }
-    } catch (error) {
-        console.error('Error loading related posts:', error);
-    }
-}
 
-async function navigateToPost(postId) {
-    try {
-        const post = await SoleraBlogAPI.getPost(postId);
-        if (post) {
-            const postSlug = SoleraBlogAPI.createPostSlug(post);
-            window.location.href = `/post/${postSlug}`;
+        async function loadRelatedPosts(currentPost) {
+            try {
+                const allPosts = await SoleraBlogAPI.getAllPosts();
+                const otherPosts = allPosts.filter(post => post.id !== currentPost.id);
+                
+                // Find posts with shared tags or same type
+                const relatedPosts = otherPosts
+                    .map(post => {
+                        let score = 0;
+                        const sharedTags = post.tags.filter(tag => currentPost.tags.includes(tag));
+                        score += sharedTags.length * 2;
+                        if (post.type === currentPost.type) score += 1;
+                        return { post, score };
+                    })
+                    .filter(item => item.score > 0)
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, 3)
+                    .map(item => item.post);
+                
+                const relatedContainer = document.getElementById('relatedPosts');
+                if (relatedContainer) {
+                    if (relatedPosts.length === 0) {
+                        relatedContainer.innerHTML = '<p style="text-align: center; color: var(--text-light);">No related stories found.</p>';
+                    } else {
+                        relatedContainer.innerHTML = relatedPosts.map(post => `
+                            <div class="related-post" onclick="navigateToPost('${post.id}')">
+                                <div class="related-post-meta">
+                                    <span class="post-type">${post.type}</span>
+                                    <span class="post-date">${formatDate(post.date)}</span>
+                                </div>
+                                <h4>${post.title}</h4>
+                                <p>${post.excerpt || (post.content || post.contentHtml).substring(0, 100)}...</p>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading related posts:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error navigating to post:', error);
-    }
-}
 
-// Enhanced content formatting with HTML support
-// Replace this section in your post.html:
-function formatPostContent(post) {
-    // If HTML content exists, use it directly
-    if (post.contentHtml && post.contentHtml.trim()) {
-        return post.contentHtml;
-    }
-    
-    // Otherwise, format markdown content
-    if (!post.content) return '';
-    
-    // Process all image markdown first, anywhere in content
-    let content = post.content;
-    
-    // Convert markdown images to HTML (anywhere in text)
-    content = content.replace(/!\[(.*?)\]\((.*?)\)/g, 
-        '<figure><img src="$2" alt="$1" loading="lazy"><figcaption>$1</figcaption></figure>'
-    );
-    
-    // Split into paragraphs and format
-    const paragraphs = content.split('\n\n').filter(p => p.trim());
-    
-    return paragraphs.map(paragraph => {
-        const trimmed = paragraph.trim();
-        if (!trimmed) return '';
-        
-        // Format markdown-style elements
-        let formatted = trimmed
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/`(.*?)`/g, '<code>$1</code>')
-            .replace(/\n/g, '<br>');
-        
-        // Handle headers
-        if (formatted.startsWith('## ')) {
-            return `<h2>${formatted.substring(3)}</h2>`;
-        } else if (formatted.startsWith('# ')) {
-            return `<h3>${formatted.substring(2)}</h3>`;
+        async function navigateToPost(postId) {
+            try {
+                const post = await SoleraBlogAPI.getPost(postId);
+                if (post) {
+                    const postSlug = SoleraBlogAPI.createPostSlug(post);
+                    window.location.href = `/post/${postSlug}`;
+                }
+            } catch (error) {
+                console.error('Error navigating to post:', error);
+            }
         }
-        
-        return `<p>${formatted}</p>`;
-    }).join('');
-}
 
+        // Enhanced content formatting with HTML support
+        function formatPostContent(post) {
+            // If HTML content exists, use it directly
+            if (post.contentHtml && post.contentHtml.trim()) {
+                return post.contentHtml;
+            }
+            
+            // Otherwise, format markdown content
+            if (!post.content) return '';
+            
+            // Process all image markdown first, anywhere in content
+            let content = post.content;
+            
+            // Convert markdown images to HTML (anywhere in text)
+            content = content.replace(/!\[(.*?)\]\((.*?)\)/g, 
+                '<figure><img src="$2" alt="$1" loading="lazy"><figcaption>$1</figcaption></figure>'
+            );
+            
+            // Split into paragraphs and format
+            const paragraphs = content.split('\n\n').filter(p => p.trim());
+            
+            return paragraphs.map(paragraph => {
+                const trimmed = paragraph.trim();
+                if (!trimmed) return '';
+                
+                // Format markdown-style elements
+                let formatted = trimmed
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>')
+                    .replace(/\n/g, '<br>');
+                
+                // Handle headers
+                if (formatted.startsWith('## ')) {
+                    return `<h2>${formatted.substring(3)}</h2>`;
+                } else if (formatted.startsWith('# ')) {
+                    return `<h3>${formatted.substring(2)}</h3>`;
+                }
+                
+                return `<p>${formatted}</p>`;
+            }).join('');
+        }
 
-function formatDate(dateStr) {
-    if (!dateStr) return 'Unknown date';
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-}
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Unknown date';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
 
-function showError(message) {
-    const loadingMessage = document.getElementById('loadingMessage');
-    const postContent = document.getElementById('postContent');
-    const errorContent = document.getElementById('errorContent');
-    
-    if (loadingMessage) loadingMessage.style.display = 'none';
-    if (postContent) postContent.style.display = 'none';
-    if (errorContent) errorContent.style.display = 'block';
-    
-    console.error('Post page error:', message);
-}
+        function showError(message) {
+            const loadingMessage = document.getElementById('loadingMessage');
+            const postContent = document.getElementById('postContent');
+            const errorContent = document.getElementById('errorContent');
+            
+            if (loadingMessage) loadingMessage.style.display = 'none';
+            if (postContent) postContent.style.display = 'none';
+            if (errorContent) errorContent.style.display = 'block';
+            
+            console.error('Post page error:', message);
+        }
 
-function closeMobileMenu() {
-    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    
-    if (mobileMenuOverlay && mobileMenuToggle) {
-        mobileMenuOverlay.classList.remove('active');
-        mobileMenuToggle.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }
-}
+        function closeMobileMenu() {
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            
+            if (mobileMenuOverlay && mobileMenuToggle) {
+                mobileMenuOverlay.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
 
-// Export functions
-window.navigateToPost = navigateToPost;
-window.closeMobileMenu = closeMobileMenu;
-window.SoleraBlogAPI = SoleraBlogAPI;
+        // Export functions
+        window.navigateToPost = navigateToPost;
+        window.closeMobileMenu = closeMobileMenu;
+        window.SoleraBlogAPI = SoleraBlogAPI;
+        window.updateSEOMetaTags = updateSEOMetaTags;
     </script>
 
 </body>

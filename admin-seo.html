@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Management - Solera Cask Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1a202c;
+            line-height: 1.6;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #718096;
+        }
+
+        .seo-form {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .icon {
+            width: 20px;
+            height: 20px;
+            fill: #4299e1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .char-count {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .char-count.warning {
+            color: #f59e0b;
+        }
+
+        .char-count.error {
+            color: #ef4444;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .preview-section {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        .preview-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .search-preview,
+        .social-preview {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .search-preview h3 {
+            color: #1a0dab;
+            font-size: 18px;
+            margin-bottom: 4px;
+            text-decoration: underline;
+        }
+
+        .search-preview .url {
+            color: #006621;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .search-preview .description {
+            color: #545454;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .social-preview {
+            border: 1px solid #dadde1;
+        }
+
+        .social-preview img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            background: #f0f0f0;
+        }
+
+        .social-preview h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1d2129;
+            margin-bottom: 4px;
+        }
+
+        .social-preview .description {
+            color: #606770;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+
+        .social-preview .domain {
+            color: #90949c;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .button {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background: #3182ce;
+        }
+
+        .button.secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .button.secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .auto-generate-btn {
+            background: #48bb78;
+            font-size: 12px;
+            padding: 6px 12px;
+            margin-left: 8px;
+        }
+
+        .auto-generate-btn:hover {
+            background: #38a169;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .validation-error {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .success-message {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            color: #276749;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="header">
+            <h1>SEO Management</h1>
+            <p>Optimize your blog posts for search engines and social media</p>
+        </div>
+
+        <div id="successMessage" class="success-message" style="display: none;">
+            SEO settings updated successfully!
+        </div>
+
+        <form class="seo-form" id="seoForm">
+            <!-- Basic Post Info -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Basic Information
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="postTitle">Post Title</label>
+                        <input type="text" id="postTitle" name="title" placeholder="Enter your post title">
+                    </div>
+                    <div class="form-group">
+                        <label for="postType">Post Type</label>
+                        <input type="text" id="postType" name="type" placeholder="News, Guide, Story">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEO Meta Tags -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                    </svg>
+                    Search Engine Optimization
+                </div>
+
+                <div class="form-group">
+                    <label for="seoTitle">SEO Title</label>
+                    <input type="text" id="seoTitle" name="seoTitle" maxlength="60" placeholder="Optimized title for search results">
+                    <button type="button" class="auto-generate-btn" onclick="generateSEOTitle()">Auto Generate</button>
+                    <div class="char-count" id="seoTitleCount">0/60</div>
+                    <div class="help-text">Recommended: 50-60 characters. This appears as the clickable headline in search results.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="seoDescription">SEO Description</label>
+                    <textarea id="seoDescription" name="seoDescription" maxlength="160" placeholder="Compelling description that encourages clicks from search results"></textarea>
+                    <button type="button" class="auto-generate-btn" onclick="generateSEODescription()">Auto Generate</button>
+                    <div class="char-count" id="seoDescriptionCount">0/160</div>
+                    <div class="help-text">Recommended: 150-160 characters. This appears below your title in search results.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="seoKeywords">Focus Keywords</label>
+                    <input type="text" id="seoKeywords" name="seoKeywords" placeholder="sherry barrels, whisky aging, Jerez, Spain">
+                    <button type="button" class="auto-generate-btn" onclick="generateSEOKeywords()">Auto Generate</button>
+                    <div class="help-text">Comma-separated keywords that describe your content. Include 3-5 relevant terms.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="seoImage">Featured Image URL</label>
+                    <input type="text" id="seoImage" name="seoImage" placeholder="/images/blog/your-featured-image.jpg">
+                    <div class="help-text">Image that appears when shared on social media. Recommended: 1200x630px</div>
+                </div>
+            </div>
+
+            <!-- Open Graph (Facebook) -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    Facebook & Open Graph
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="useCustomOG" name="useCustomOG">
+                    <label for="useCustomOG">Use custom Open Graph settings (leave unchecked to use SEO settings)</label>
+                </div>
+
+                <div id="customOGFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="ogTitle">Facebook Title</label>
+                        <input type="text" id="ogTitle" name="ogTitle" maxlength="60" placeholder="Custom title for Facebook shares">
+                        <div class="char-count" id="ogTitleCount">0/60</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ogDescription">Facebook Description</label>
+                        <textarea id="ogDescription" name="ogDescription" maxlength="160" placeholder="Custom description for Facebook shares"></textarea>
+                        <div class="char-count" id="ogDescriptionCount">0/160</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ogImage">Facebook Image</label>
+                        <input type="text" id="ogImage" name="ogImage" placeholder="Custom image for Facebook shares">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Twitter Cards -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                    </svg>
+                    Twitter Cards
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="useCustomTwitter" name="useCustomTwitter">
+                    <label for="useCustomTwitter">Use custom Twitter settings (leave unchecked to use SEO settings)</label>
+                </div>
+
+                <div id="customTwitterFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="twitterTitle">Twitter Title</label>
+                        <input type="text" id="twitterTitle" name="twitterTitle" maxlength="60" placeholder="Custom title for Twitter shares">
+                        <div class="char-count" id="twitterTitleCount">0/60</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="twitterDescription">Twitter Description</label>
+                        <textarea id="twitterDescription" name="twitterDescription" maxlength="160" placeholder="Custom description for Twitter shares"></textarea>
+                        <div class="char-count" id="twitterDescriptionCount">0/160</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="twitterImage">Twitter Image</label>
+                        <input type="text" id="twitterImage" name="twitterImage" placeholder="Custom image for Twitter shares">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced SEO -->
+            <div class="form-section">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                    </svg>
+                    Advanced Settings
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="canonicalUrl">Canonical URL (optional)</label>
+                        <input type="text" id="canonicalUrl" name="canonicalUrl" placeholder="https://soleracask.com/post/custom-url">
+                        <div class="help-text">Use only if this content appears on multiple URLs</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="author">Author</label>
+                        <input type="text" id="author" name="author" placeholder="Author name">
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="noIndex" name="noIndex">
+                    <label for="noIndex">No Index (prevent search engines from indexing this post)</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="noFollow" name="noFollow">
+                    <label for="noFollow">No Follow (prevent search engines from following links in this post)</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="autoGenerateSEO" name="autoGenerateSEO" checked>
+                    <label for="autoGenerateSEO">Auto-generate missing SEO fields when saving</label>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <div class="preview-title">Search Result Preview</div>
+                <div class="search-preview">
+                    <h3 id="previewTitle">Your SEO Title - Solera Cask</h3>
+                    <div class="url" id="previewUrl">https://soleracask.com/post/your-post-slug</div>
+                    <div class="description" id="previewDescription">Your SEO description will appear here...</div>
+                </div>
+
+                <div class="preview-title">Facebook Preview</div>
+                <div class="social-preview">
+                    <img id="previewFacebookImage" src="/images/logos/Solera-Cask-Logo.png" alt="Preview">
+                    <div class="domain">SOLERACASK.COM</div>
+                    <h4 id="previewFacebookTitle">Your SEO Title - Solera Cask</h4>
+                    <div class="description" id="previewFacebookDescription">Your SEO description will appear here...</div>
+                </div>
+
+                <div class="preview-title">Twitter Preview</div>
+                <div class="social-preview">
+                    <img id="previewTwitterImage" src="/images/logos/Solera-Cask-Logo.png" alt="Preview">
+                    <h4 id="previewTwitterTitle">Your SEO Title - Solera Cask</h4>
+                    <div class="description" id="previewTwitterDescription">Your SEO description will appear here...</div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="button">Save SEO Settings</button>
+                <button type="button" class="button secondary" onclick="generateAllSEO()">Auto-Generate All SEO</button>
+                <button type="button" class="button secondary" onclick="resetForm()">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Character counting and validation
+        function setupCharacterCounters() {
+            const fields = [
+                { id: 'seoTitle', countId: 'seoTitleCount', max: 60 },
+                { id: 'seoDescription', countId: 'seoDescriptionCount', max: 160 },
+                { id: 'ogTitle', countId: 'ogTitleCount', max: 60 },
+                { id: 'ogDescription', countId: 'ogDescriptionCount', max: 160 },
+                { id: 'twitterTitle', countId: 'twitterTitleCount', max: 60 },
+                { id: 'twitterDescription', countId: 'twitterDescriptionCount', max: 160 }
+            ];
+
+            fields.forEach(field => {
+                const input = document.getElementById(field.id);
+                const counter = document.getElementById(field.countId);
+                
+                if (input && counter) {
+                    input.addEventListener('input', function() {
+                        const length = this.value.length;
+                        counter.textContent = `${length}/${field.max}`;
+                        
+                        counter.className = 'char-count';
+                        if (length > field.max * 0.9) {
+                            counter.classList.add('warning');
+                        }
+                        if (length > field.max) {
+                            counter.classList.add('error');
+                        }
+                        
+                        updatePreviews();
+                    });
+                }
+            });
+        }
+
+        // Custom field toggles
+        function setupCustomFieldToggles() {
+            const ogToggle = document.getElementById('useCustomOG');
+            const ogFields = document.getElementById('customOGFields');
+            const twitterToggle = document.getElementById('useCustomTwitter');
+            const twitterFields = document.getElementById('customTwitterFields');
+
+            ogToggle.addEventListener('change', function() {
+                ogFields.style.display = this.checked ? 'block' : 'none';
+                updatePreviews();
+            });
+
+            twitterToggle.addEventListener('change', function() {
+                twitterFields.style.display = this.checked ? 'block' : 'none';
+                updatePreviews();
+            });
+        }
+
+        // SEO Auto-generation functions
+        function generateSEOTitle() {
+            const postTitle = document.getElementById('postTitle').value;
+            if (postTitle) {
+                let seoTitle = `${postTitle} - Solera Cask`;
+                if (seoTitle.length > 60) {
+                    seoTitle = seoTitle.substring(0, 57) + '...';
+                }
+                document.getElementById('seoTitle').value = seoTitle;
+                document.getElementById('seoTitle').dispatchEvent(new Event('input'));
+            }
+        }
+
+        function generateSEODescription() {
+            const postTitle = document.getElementById('postTitle').value;
+            const postType = document.getElementById('postType').value || 'article';
+            
+            const templates = {
+                'Guide': `Learn about ${postTitle.toLowerCase()} with expert guidance from Solera Cask. Discover premium sherry barrels from Jerez de la Frontera, Spain.`,
+                'News': `Latest news: ${postTitle}. Stay updated with Solera Cask's premium sherry barrel innovations from Jerez de la Frontera, Spain.`,
+                'Story': `Discover the story behind ${postTitle.toLowerCase()}. Premium sherry barrels and authentic craftsmanship from Jerez de la Frontera, Spain.`,
+                'default': `Read about ${postTitle.toLowerCase()} and discover premium sherry barrels from Jerez de la Frontera, Spain.`
+            };
+
+            let description = templates[postType] || templates['default'];
+            if (description.length > 160) {
+                const lastSpace = description.lastIndexOf(' ', 157);
+                description = description.substring(0, lastSpace) + '...';
+            }
+
+            document.getElementById('seoDescription').value = description;
+            document.getElementById('seoDescription').dispatchEvent(new Event('input'));
+        }
+
+        function generateSEOKeywords() {
+            const postTitle = document.getElementById('postTitle').value;
+            const postType = document.getElementById('postType').value;
+            
+            const baseKeywords = ['sherry barrels', 'Solera Cask', 'Jerez de la Frontera', 'Spain'];
+            const titleKeywords = postTitle.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .split(' ')
+                .filter(word => word.length > 3)
+                .slice(0, 3);
+            
+            if (postType) {
+                titleKeywords.push(postType.toLowerCase());
+            }
+            
+            const allKeywords = [...baseKeywords, ...titleKeywords];
+            document.getElementById('seoKeywords').value = allKeywords.join(', ');
+        }
+
+        function generateAllSEO() {
+            generateSEOTitle();
+            generateSEODescription();
+            generateSEOKeywords();
+        }
+
+        // Preview updates
+        function updatePreviews() {
+            const seoTitle = document.getElementById('seoTitle').value || 'Your SEO Title - Solera Cask';
+            const seoDescription = document.getElementById('seoDescription').value || 'Your SEO description will appear here...';
+            const seoImage = document.getElementById('seoImage').value || '/images/logos/Solera-Cask-Logo.png';
+            
+            // Update search preview
+            document.getElementById('previewTitle').textContent = seoTitle;
+            document.getElementById('previewDescription').textContent = seoDescription;
+            
+            // Update Facebook preview
+            const fbTitle = document.getElementById('useCustomOG').checked ? 
+                (document.getElementById('ogTitle').value || seoTitle) : seoTitle;
+            const fbDescription = document.getElementById('useCustomOG').checked ? 
+                (document.getElementById('ogDescription').value || seoDescription) : seoDescription;
+            const fbImage = document.getElementById('useCustomOG').checked ? 
+                (document.getElementById('ogImage').value || seoImage) : seoImage;
+            
+            document.getElementById('previewFacebookTitle').textContent = fbTitle;
+            document.getElementById('previewFacebookDescription').textContent = fbDescription;
+            document.getElementById('previewFacebookImage').src = fbImage;
+            
+            // Update Twitter preview
+            const twitterTitle = document.getElementById('useCustomTwitter').checked ? 
+                (document.getElementById('twitterTitle').value || seoTitle) : seoTitle;
+            const twitterDescription = document.getElementById('useCustomTwitter').checked ? 
+                (document.getElementById('twitterDescription').value || seoDescription) : seoDescription;
+            const twitterImage = document.getElementById('useCustomTwitter').checked ? 
+                (document.getElementById('twitterImage').value || seoImage) : seoImage;
+            
+            document.getElementById('previewTwitterTitle').textContent = twitterTitle;
+            document.getElementById('previewTwitterDescription').textContent = twitterDescription;
+            document.getElementById('previewTwitterImage').src = twitterImage;
+            
+            // Update URL preview
+            const postTitle = document.getElementById('postTitle').value;
+            if (postTitle) {
+                const slug = postTitle.toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim('-');
+                document.getElementById('previewUrl').textContent = `https://soleracask.com/post/${slug}`;
+            }
+        }
+
+        // Form submission
+        document.getElementById('seoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Here you would normally send the data to your server
+            // For now, we'll just show a success message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+            
+            console.log('SEO form data:', new FormData(this));
+        });
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('seoForm').reset();
+            setupCharacterCounters();
+            updatePreviews();
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            setupCharacterCounters();
+            setupCustomFieldToggles();
+            updatePreviews();
+            
+            // Add event listeners for live preview updates
+            document.getElementById('postTitle').addEventListener('input', updatePreviews);
+            document.getElementById('seoTitle').addEventListener('input', updatePreviews);
+            document.getElementById('seoDescription').addEventListener('input', updatePreviews);
+            document.getElementById('seoImage').addEventListener('input', updatePreviews);
+        });
+
+        // Global functions
+        window.generateSEOTitle = generateSEOTitle;
+        window.generateSEODescription = generateSEODescription;
+        window.generateSEOKeywords = generateSEOKeywords;
+        window.generateAllSEO = generateAllSEO;
+        window.resetForm = resetForm;
+    </script>
+</body>
+</html>

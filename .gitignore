@@ -60,9 +60,9 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# ===== ADD THESE LINES =====
 # Server files (not needed for Netlify functions)
 server.js
-package.json
-package-lock.json
 uploads/
+
+# NOTE: package.json and package-lock.json are NOT excluded
+# They are needed for Netlify functions to install dependencies

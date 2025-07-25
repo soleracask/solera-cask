@@ -6,10 +6,7 @@ let cachedDb = null;
 async function connectDB() {
   if (cachedDb) return cachedDb;
   
-  await mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
+  await mongoose.connect(process.env.MONGO_URI);
   
   cachedDb = mongoose.connection;
   return cachedDb;
@@ -22,6 +19,9 @@ const PostSchema = new mongoose.Schema({
   date: String,
   excerpt: String,
   content: String,
+  contentHtml: String,  // Added for HTML content
+  featuredImage: String, // Added for featured images
+  featured: { type: Boolean, default: false }, // Added for featured posts
   link: String,
   tags: [String],
   status: String,
@@ -69,13 +69,17 @@ exports.handler = async (event, context) => {
     // Authenticate user
     const user = authenticateToken(event.headers.authorization);
     
-    const { httpMethod, queryStringParameters } = event;
+    const { httpMethod, path } = event;
+    
+    // Extract post ID from path: /posts/123 -> 123
+    const pathParts = path.split('/');
+    const postId = pathParts[pathParts.length - 1];
+    const isSpecificPost = pathParts.length > 2 && postId !== 'posts';
     
     // GET /posts - Get all posts (admin)
     if (httpMethod === 'GET') {
-      // Check if it's a specific post request
-      if (queryStringParameters && queryStringParameters.id) {
-        const post = await Post.findOne({ id: queryStringParameters.id }).select('-_id -__v');
+      if (isSpecificPost) {
+        const post = await Post.findOne({ id: postId }).select('-_id -__v');
         
         if (!post) {
           return {
@@ -108,7 +112,7 @@ exports.handler = async (event, context) => {
     if (httpMethod === 'POST') {
       const postData = JSON.parse(event.body);
       
-      if (!postData.title || !postData.content) {
+      if (!postData.title || (!postData.content && !postData.contentHtml)) {
         return {
           statusCode: 400,
           headers,
@@ -121,7 +125,10 @@ exports.handler = async (event, context) => {
         title: postData.title.trim(),
         type: postData.type || 'News',
         excerpt: postData.excerpt ? postData.excerpt.trim() : '',
-        content: postData.content.trim(),
+        content: postData.content ? postData.content.trim() : '',
+        contentHtml: postData.contentHtml ? postData.contentHtml.trim() : '',
+        featuredImage: postData.featuredImage || '',
+        featured: postData.featured || false,
         link: postData.link ? postData.link.trim() : '',
         tags: Array.isArray(postData.tags) ? postData.tags : 
               (typeof postData.tags === 'string' ? postData.tags.split(',').map(t => t.trim()) : []),
@@ -141,15 +148,13 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // PUT /posts - Update post (ID in query params)
+    // PUT /posts/123 - Update post
     if (httpMethod === 'PUT') {
-      const postId = queryStringParameters?.id;
-      
-      if (!postId) {
+      if (!isSpecificPost) {
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ message: 'Post ID is required' })
+          body: JSON.stringify({ message: 'Post ID is required in URL path' })
         };
       }
       
@@ -182,15 +187,13 @@ exports.handler = async (event, context) => {
       };
     }
     
-    // DELETE /posts - Delete post (ID in query params)
+    // DELETE /posts/123 - Delete post
     if (httpMethod === 'DELETE') {
-      const postId = queryStringParameters?.id;
-      
-      if (!postId) {
+      if (!isSpecificPost) {
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ message: 'Post ID is required' })
+          body: JSON.stringify({ message: 'Post ID is required in URL path' })
         };
       }
       

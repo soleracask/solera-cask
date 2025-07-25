@@ -37,7 +37,7 @@
     --btn-secondary-border-hover: #2C2C2C;
     
     /* HERO SEARCH BUTTON COLORS */
-    --btn-hero-search-bg: #e8cd9b;
+    --btn-hero-search-bg: #eadabd;
     --btn-hero-search-bg-hover: #1c1c1c;
     --btn-hero-search-text: #1c1c1c;
     --btn-hero-search-text-hover: #e8cd9b;
@@ -366,7 +366,7 @@ header.scrolled .logo-small {
 }
 
 .hero-subtitle {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -378,7 +378,7 @@ header.scrolled .logo-small {
 }
 
 .hero h1 {
-    font-size: clamp(48px, 8vw, 80px);
+    font-size: clamp(48px, 8vw, 70px);
     font-weight: 300;
     margin-bottom: 32px;
     line-height: 1.1;
@@ -386,7 +386,7 @@ header.scrolled .logo-small {
 }
 
 .hero-description {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 300;
     line-height: 1.6;
     margin-bottom: 48px;
@@ -1295,7 +1295,7 @@ footer {
     }
     
     .hero h1 {
-        font-size: 36px;
+        font-size: 48px;
     }
     
     .hero-description {
@@ -1422,7 +1422,7 @@ footer {
     }
     
     .hero h1 {
-        font-size: 28px;
+        font-size: 48px;
         margin-bottom: 20px;
         text-align: center;
     }

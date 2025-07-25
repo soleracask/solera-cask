@@ -18,35 +18,94 @@ function parseMultipartData(event) {
   }
   
   const body = Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'utf8');
-  const parts = body.toString().split(`--${boundary}`);
+  const parts = body.toString('binary').split(`--${boundary}`);
   
   for (const part of parts) {
     if (part.includes('Content-Disposition: form-data; name="image"')) {
-      // Extract filename
       const filenameMatch = part.match(/filename="([^"]+)"/);
       const filename = filenameMatch ? filenameMatch[1] : 'upload.jpg';
       
-      // Find the start of binary data (after double CRLF)
       const dataStartIndex = part.indexOf('\r\n\r\n') + 4;
       const dataEndIndex = part.lastIndexOf('\r\n');
       
       if (dataStartIndex < dataEndIndex) {
         const imageData = part.slice(dataStartIndex, dataEndIndex);
-        
-        // Convert to base64 for storage
-        const base64Data = Buffer.from(imageData, 'binary').toString('base64');
-        const dataUrl = `data:image/${filename.split('.').pop()};base64,${base64Data}`;
+        const buffer = Buffer.from(imageData, 'binary');
         
         return {
           filename,
-          data: dataUrl,
-          size: imageData.length
+          buffer,
+          size: buffer.length
         };
       }
     }
   }
   
   throw new Error('No image found in multipart data');
+}
+
+// Upload to Cloudinary
+async function uploadToCloudinary(imageBuffer, filename) {
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+  
+  if (!cloudName || !apiKey || !apiSecret) {
+    throw new Error('Cloudinary credentials not configured');
+  }
+
+  // Create signature for Cloudinary
+  const timestamp = Math.round(Date.now() / 1000);
+  const crypto = require('crypto');
+  
+  const publicId = `solera-cask/${uuidv4()}`;
+  const params = {
+    timestamp: timestamp,
+    public_id: publicId,
+    folder: 'solera-cask'
+  };
+  
+  // Create signature
+  const sortedParams = Object.keys(params)
+    .sort()
+    .map(key => `${key}=${params[key]}`)
+    .join('&');
+  
+  const signature = crypto
+    .createHash('sha1')
+    .update(sortedParams + apiSecret)
+    .digest('hex');
+
+  // Create form data for Cloudinary
+  const FormData = require('form-data');
+  const form = new FormData();
+  
+  form.append('file', imageBuffer, { filename });
+  form.append('api_key', apiKey);
+  form.append('timestamp', timestamp);
+  form.append('public_id', publicId);
+  form.append('folder', 'solera-cask');
+  form.append('signature', signature);
+
+  // Upload to Cloudinary
+  const fetch = require('node-fetch');
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    method: 'POST',
+    body: form
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Cloudinary upload failed: ${error}`);
+  }
+
+  const result = await response.json();
+  return {
+    url: result.secure_url,
+    publicId: result.public_id,
+    width: result.width,
+    height: result.height
+  };
 }
 
 exports.handler = async (event, context) => {
@@ -87,27 +146,32 @@ exports.handler = async (event, context) => {
     // Parse the uploaded image
     const imageData = parseMultipartData(event);
     
-    // Validate file size (5MB limit)
-    if (imageData.size > 5 * 1024 * 1024) {
+    // Validate file size (10MB limit for Cloudinary)
+    if (imageData.size > 10 * 1024 * 1024) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ message: 'File size must be less than 5MB' })
+        body: JSON.stringify({ message: 'File size must be less than 10MB' })
       };
     }
     
-    // Generate unique ID and create response
-    const imageId = uuidv4();
+    // Upload to Cloudinary
+    const cloudinaryResult = await uploadToCloudinary(imageData.buffer, imageData.filename);
+    
+    // Generate response
     const response = {
-      id: imageId,
-      url: imageData.data,
+      id: uuidv4(),
+      url: cloudinaryResult.url,
       filename: imageData.filename,
       size: imageData.size,
+      width: cloudinaryResult.width,
+      height: cloudinaryResult.height,
+      publicId: cloudinaryResult.publicId,
       uploadedAt: new Date().toISOString(),
       uploadedBy: user.username
     };
     
-    console.log(`Image uploaded: ${imageData.filename} (${imageData.size} bytes) by ${user.username}`);
+    console.log(`Image uploaded to Cloudinary: ${imageData.filename} (${imageData.size} bytes) by ${user.username}`);
     
     return {
       statusCode: 200,

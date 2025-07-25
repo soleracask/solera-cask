@@ -15,9 +15,30 @@
         }
 
         .post-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 40px 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 40px 80px;
+        transition: max-width 0.3s ease;
+        }
+
+        /* Wide container for HTML posts */
+        .post-container.html-content {
+            max-width: 1200px; /* or whatever width you prefer */
+        }
+
+        /* Full-width container for HTML posts if needed */
+        .post-container.html-content-full {
+            max-width: 95%;
+        }
+
+        /* HTML content should respect its own width settings */
+        .post-content.html-format {
+            /* Let HTML content control its own width */
+        }
+
+        .post-content.html-format > div {
+            /* This allows your HTML content's max-width to take precedence */
+            margin: 0;
         }
 
         .post-header {
@@ -555,9 +576,20 @@ async function initializePostPage() {
 function renderPost(post) {
     const loadingMessage = document.getElementById('loadingMessage');
     const postContent = document.getElementById('postContent');
+    const postContainer = document.querySelector('.post-container');
     
     if (loadingMessage) loadingMessage.style.display = 'none';
     if (postContent) postContent.style.display = 'block';
+    
+    // ✅ NEW: Detect if this is an HTML post and adjust container width
+    const isHtmlPost = post.contentHtml && post.contentHtml.trim();
+    if (postContainer) {
+        if (isHtmlPost) {
+            postContainer.classList.add('html-content');
+        } else {
+            postContainer.classList.remove('html-content');
+        }
+    }
     
     // Update meta information
     const postMeta = document.getElementById('postMeta');
@@ -565,7 +597,6 @@ function renderPost(post) {
         let metaHtml = `<span class="post-type">${post.type}</span>`;
         metaHtml += `<span class="post-date">${formatDate(post.date)}</span>`;
         
-        // Add featured indicator if this is a featured post
         if (post.featured) {
             metaHtml += `<span class="featured-indicator">FEATURED</span>`;
         }
@@ -582,6 +613,13 @@ function renderPost(post) {
     // Update content with HTML support
     const postText = document.getElementById('postText');
     if (postText) {
+        // ✅ NEW: Add class for HTML formatting
+        if (isHtmlPost) {
+            postText.classList.add('html-format');
+        } else {
+            postText.classList.remove('html-format');
+        }
+        
         postText.innerHTML = formatPostContent(post);
     }
     

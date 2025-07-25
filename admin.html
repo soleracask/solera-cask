@@ -1635,7 +1635,6 @@
             if (adminDashboard) adminDashboard.style.display = 'block';
         }
 
-        // Authentication
         async function handleLogin(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
@@ -1651,6 +1650,11 @@
                 submitButton.disabled = true;
 
                 const response = await SoleraBlogAPI.login(username, password);
+                
+                // ADD THESE LINES:
+                authToken = response.token;
+                localStorage.setItem('solera-admin-token', authToken);
+                localStorage.setItem('solera-admin-user', JSON.stringify(response.user));
                 
                 const welcomeElement = document.getElementById('welcomeUser');
                 if (welcomeElement) {
@@ -1670,14 +1674,6 @@
                 if (spinner) spinner.style.display = 'none';
                 submitButton.disabled = false;
             }
-        }
-
-        function logout() {
-            authToken = null;
-            localStorage.removeItem('solera-admin-token');
-            localStorage.removeItem('solera-admin-user');
-            showLoginForm();
-            showMessage('Logged out successfully', 'success');
         }
 
         // Section navigation

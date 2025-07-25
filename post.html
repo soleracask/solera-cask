@@ -660,6 +660,7 @@ async function navigateToPost(postId) {
 }
 
 // Enhanced content formatting with HTML support
+// Replace this section in your post.html:
 function formatPostContent(post) {
     // If HTML content exists, use it directly
     if (post.contentHtml && post.contentHtml.trim()) {
@@ -669,22 +670,20 @@ function formatPostContent(post) {
     // Otherwise, format markdown content
     if (!post.content) return '';
     
+    // Process all image markdown first, anywhere in content
+    let content = post.content;
+    
+    // Convert markdown images to HTML (anywhere in text)
+    content = content.replace(/!\[(.*?)\]\((.*?)\)/g, 
+        '<figure><img src="$2" alt="$1" loading="lazy"><figcaption>$1</figcaption></figure>'
+    );
+    
     // Split into paragraphs and format
-    const paragraphs = post.content.split('\n\n').filter(p => p.trim());
+    const paragraphs = content.split('\n\n').filter(p => p.trim());
     
     return paragraphs.map(paragraph => {
         const trimmed = paragraph.trim();
         if (!trimmed) return '';
-        
-        // Handle images first (markdown format)
-        if (trimmed.match(/^!\[.*?\]\(.*?\)$/)) {
-            const match = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
-            if (match) {
-                const altText = match[1];
-                const src = match[2];
-                return `<figure><img src="${src}" alt="${altText}" loading="lazy"><figcaption>${altText}</figcaption></figure>`;
-            }
-        }
         
         // Format markdown-style elements
         let formatted = trimmed
@@ -703,6 +702,7 @@ function formatPostContent(post) {
         return `<p>${formatted}</p>`;
     }).join('');
 }
+
 
 function formatDate(dateStr) {
     if (!dateStr) return 'Unknown date';

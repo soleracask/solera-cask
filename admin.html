@@ -1635,7 +1635,8 @@
             if (adminDashboard) adminDashboard.style.display = 'block';
         }
 
-        async function handleLogin(e) {
+      // Authentication
+            async function handleLogin(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -1651,31 +1652,38 @@
 
                 const response = await SoleraBlogAPI.login(username, password);
                 
-                // ADD THESE LINES:
+                // ✅ SAVE THE TOKEN (This was missing before!)
                 authToken = response.token;
                 localStorage.setItem('solera-admin-token', authToken);
                 localStorage.setItem('solera-admin-user', JSON.stringify(response.user));
                 
                 const welcomeElement = document.getElementById('welcomeUser');
                 if (welcomeElement) {
-                    welcomeElement.textContent = `Welcome, ${response.user.username}`;
+                            welcomeElement.textContent = `Welcome, ${response.user.username}`;
+                        }
+                        
+                        showAdminDashboard();
+                        loadPostsTable();
+                        loadDashboardStats();
+                        loadFeaturedPostSection();
+                        showMessage('Welcome to Solera Cask Admin!', 'success');
+                    } catch (error) {
+                        console.error('Login error:', error);
+                        showMessage('Login failed: ' + error.message, 'error');
+                    } finally {
+                        if (btnText) btnText.style.display = 'inline';
+                        if (spinner) spinner.style.display = 'none';
+                        submitButton.disabled = false;
+                    }
                 }
-                
-                showAdminDashboard();
-                loadPostsTable();
-                loadDashboardStats();
-                loadFeaturedPostSection();
-                showMessage('Welcome to Solera Cask Admin!', 'success');
-            } catch (error) {
-                console.error('Login error:', error);
-                showMessage('Login failed: ' + error.message, 'error');
-            } finally {
-                if (btnText) btnText.style.display = 'inline';
-                if (spinner) spinner.style.display = 'none';
-                submitButton.disabled = false;
-            }
-        }
 
+                function logout() {
+                    authToken = null;
+                    localStorage.removeItem('solera-admin-token');
+                    localStorage.removeItem('solera-admin-user');
+                    showLoginForm();
+                    showMessage('Logged out successfully', 'success');
+                }
         // Section navigation
         function showSection(sectionName) {
             const sections = document.querySelectorAll('.admin-section');

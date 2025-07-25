@@ -1631,7 +1631,7 @@
             }
         }
 
-        // Content format switching
+       // ✅ FIXED: Content format switching with proper required field handling
         function setContentFormat(format) {
             currentContentFormat = format;
             
@@ -1645,17 +1645,33 @@
                 activeBtn.classList.add('active');
             }
             
-            // Show/hide content areas
+            // Get the textareas
             const markdownContent = document.getElementById('markdownContent');
             const htmlContent = document.getElementById('htmlContent');
+            const markdownTextarea = document.getElementById('postContent');
+            const htmlTextarea = document.getElementById('postContentHtml');
             
-            if (markdownContent && htmlContent) {
+            if (markdownContent && htmlContent && markdownTextarea && htmlTextarea) {
                 if (format === 'markdown') {
+                    // Show markdown, hide HTML
                     markdownContent.style.display = 'block';
                     htmlContent.style.display = 'none';
+                    
+                    // ✅ FIX: Set required attributes properly
+                    markdownTextarea.required = true;
+                    htmlTextarea.required = false;
+                    htmlTextarea.removeAttribute('required');
+                    
                 } else {
+                    // Show HTML, hide markdown
                     markdownContent.style.display = 'none';
                     htmlContent.style.display = 'block';
+                    
+                    // ✅ FIX: Set required attributes properly
+                    htmlTextarea.required = true;
+                    markdownTextarea.required = false;
+                    markdownTextarea.removeAttribute('required');
+                    
                     refreshHTMLPreview();
                 }
             }

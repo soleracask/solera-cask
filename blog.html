@@ -24,7 +24,11 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><pattern id="grain" width="100" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="rgba(255,255,255,0.03)"/><circle cx="30" cy="5" r="1" fill="rgba(255,255,255,0.02)"/><circle cx="60" cy="15" r="1.2" fill="rgba(255,255,255,0.03)"/><circle cx="80" cy="8" r="0.8" fill="rgba(255,255,255,0.02)"/></pattern></defs><rect width="100" height="20" fill="url(%23grain)"/></svg>') repeat;
+            background: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><pattern id="grain" width="100" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="20" fill="url(%23grain)"/></svg>') repeat,
+                url('/images/heritage/solera-hero.jpg');
+            background-size: auto, cover;
+            background-position: center, center;
             opacity: 0.5;
         }
 
@@ -42,6 +46,7 @@
             font-weight: 300;
             margin-bottom: 24px;
             line-height: 1.1;
+            color: #fff;
         }
 
         .hero-content p {
@@ -182,8 +187,8 @@
 
         .posts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
             margin-bottom: 60px;
         }
 
@@ -193,6 +198,11 @@
             transition: all 0.4s ease;
             cursor: pointer;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 275px; /* Add this - adjust the value as needed */
+            padding: 0;
         }
 
         .post-card:hover {
@@ -204,7 +214,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 30px 0;
+            padding: 24px 24px 0 24px; /* Match the padding */
             margin-bottom: 20px;
         }
 
@@ -226,7 +236,10 @@
         }
 
         .post-content {
-            padding: 0 30px 30px;
+            padding: 0 24px 24px 24px; /* Match the header padding */
+            flex-grow: 1;
+            flex-direction: column;
+            display: flex;
         }
 
         .post-content h3 {
@@ -242,7 +255,8 @@
             font-size: 15px;
             line-height: 1.6;
             color: var(--text-secondary);
-            margin-bottom: 20px;
+            margin-bottom: 0px;
+            flex-grow: 1;
         }
 
         .post-link {
@@ -265,7 +279,11 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 20px;
+            margin-top: auto;
+            padding-top: 20px;
+            margin-left: 24px;  /* Add left margin to match content */
+            margin-right: 24px; /* Add right margin to match content */
+            margin-bottom: 24px; /* Add bottom margin for spacing */
         }
 
         .post-tag {

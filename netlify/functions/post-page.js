@@ -6,14 +6,20 @@ let cachedDb = null;
 async function connectDB() {
   if (cachedDb) return cachedDb;
   
-  // ✅ FIXED: Use same connection pattern as posts.js
+  console.log('🔍 MONGO_URI exists:', !!process.env.MONGO_URI);
+  console.log('🔍 MONGO_URI length:', process.env.MONGO_URI ? process.env.MONGO_URI.length : 0);
+  
+  if (!process.env.MONGO_URI) {
+    throw new Error('MONGO_URI environment variable is not set');
+  }
+  
   await mongoose.connect(process.env.MONGO_URI);
   
   cachedDb = mongoose.connection;
+  console.log('✅ Database connected successfully');
   return cachedDb;
 }
 
-// ✅ FIXED: Use exact same schema as posts.js
 const PostSchema = new mongoose.Schema({
   id: String,
   title: String,
@@ -490,29 +496,66 @@ function generatePostHTML(post) {
 exports.handler = async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false;
   
+  console.log('🚀 Function called');
+  console.log('📝 Event:', JSON.stringify(event, null, 2));
+  
   try {
     await connectDB();
     
     const slug = event.queryStringParameters?.slug;
+    console.log('🔍 Looking for slug:', slug);
+    
     if (!slug) {
+      console.log('❌ No slug provided');
       return { 
         statusCode: 404, 
         headers: { 'Content-Type': 'text/html' },
-        body: '<h1>Post not found</h1><p><a href="/blog">← Back to Blog</a></p>' 
+        body: '<h1>Post not found</h1><p>No slug provided</p><p><a href="/blog">← Back to Blog</a></p>' 
       };
     }
     
-    // Get the post by slug
+    // Get all posts and log them
     const posts = await Post.find({ status: 'published' });
+    console.log('📊 Found', posts.length, 'published posts');
+    
+    if (posts.length === 0) {
+      console.log('⚠️ No published posts found in database');
+      return { 
+        statusCode: 404, 
+        headers: { 'Content-Type': 'text/html' },
+        body: '<h1>Post not found</h1><p>No published posts in database</p><p><a href="/blog">← Back to Blog</a></p>' 
+      };
+    }
+    
+    // Log all available slugs for debugging
+    const availablePosts = posts.map(p => ({
+      id: p.id,
+      title: p.title,
+      slug: createPostSlug(p),
+      status: p.status
+    }));
+    
+    console.log('📋 Available posts and slugs:');
+    availablePosts.forEach(p => {
+      console.log(`  - "${p.title}" -> slug: "${p.slug}" (id: ${p.id}, status: ${p.status})`);
+    });
+    
     const post = posts.find(p => createPostSlug(p) === slug);
     
     if (!post) {
+      console.log('❌ Post not found for slug:', slug);
       return { 
         statusCode: 404, 
         headers: { 'Content-Type': 'text/html' },
-        body: '<h1>Post not found</h1><p><a href="/blog">← Back to Blog</a></p>' 
+        body: `<h1>Post not found</h1>
+               <p>Looking for slug: <strong>${slug}</strong></p>
+               <p>Available slugs:</p>
+               <ul>${availablePosts.map(p => `<li><strong>${p.slug}</strong> - ${p.title}</li>`).join('')}</ul>
+               <p><a href="/blog">← Back to Blog</a></p>` 
       };
     }
+    
+    console.log('✅ Found post:', post.title);
     
     // Generate the complete HTML with proper meta tags
     const html = generatePostHTML(post);
@@ -528,11 +571,14 @@ exports.handler = async (event, context) => {
     };
     
   } catch (error) {
-    console.error('Error generating post page:', error);
+    console.error('💥 Function error:', error);
     return { 
       statusCode: 500, 
       headers: { 'Content-Type': 'text/html' },
-      body: '<h1>Internal Server Error</h1><p><a href="/blog">← Back to Blog</a></p>' 
+      body: `<h1>Internal Server Error</h1>
+             <p>Error: ${error.message}</p>
+             <p>Stack: ${error.stack}</p>
+             <p><a href="/blog">← Back to Blog</a></p>` 
     };
   }
 };

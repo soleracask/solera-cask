@@ -1,5 +1,5 @@
 # Post page redirects - Server-side rendering for SEO
-/post/:slug /.netlify/functions/post-page?slug=:slug 200
+/post/* /.netlify/functions/post-page 200
 
 # Fallback for any other routes
 /* /index.html 200

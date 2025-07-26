@@ -6,17 +6,9 @@ let cachedDb = null;
 async function connectDB() {
   if (cachedDb) return cachedDb;
   
-  console.log('🔍 MONGO_URI exists:', !!process.env.MONGO_URI);
-  console.log('🔍 MONGO_URI length:', process.env.MONGO_URI ? process.env.MONGO_URI.length : 0);
-  
-  if (!process.env.MONGO_URI) {
-    throw new Error('MONGO_URI environment variable is not set');
-  }
-  
   await mongoose.connect(process.env.MONGO_URI);
   
   cachedDb = mongoose.connection;
-  console.log('✅ Database connected successfully');
   return cachedDb;
 }
 
@@ -497,12 +489,16 @@ exports.handler = async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false;
   
   console.log('🚀 Function called');
-  console.log('📝 Event:', JSON.stringify(event, null, 2));
+  console.log('📝 Path:', event.path);
   
   try {
     await connectDB();
     
-    const slug = event.queryStringParameters?.slug;
+    // ✅ FIXED: Extract slug from path instead of query parameters
+    // Path will be: /post/welcome-to-solera-cask-stories
+    const pathParts = event.path.split('/');
+    const slug = pathParts[2]; // /post/SLUG -> pathParts[2]
+    
     console.log('🔍 Looking for slug:', slug);
     
     if (!slug) {

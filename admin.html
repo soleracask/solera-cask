@@ -1311,10 +1311,9 @@
         let currentContentFormat = 'markdown';
         const uploadedImages = new Map();
 
-        // Determine API base URL based on environment
         const API_BASE = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-            ? '/api'
-            : '/api'; // Update to your production API URL if not using Netlify Functions
+        ? '/api'  // Local development
+        : '/.netlify/functions';  // Production with Netlify Functions
 
         // Enhanced error handling for API requests
         async function apiRequest(endpoint, options = {}) {

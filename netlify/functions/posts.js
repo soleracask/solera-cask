@@ -12,6 +12,7 @@ async function connectDB() {
   return cachedDb;
 }
 
+
 const PostSchema = new mongoose.Schema({
   id: String,
   title: String,
@@ -19,13 +20,23 @@ const PostSchema = new mongoose.Schema({
   date: String,
   excerpt: String,
   content: String,
-  contentHtml: String,  // Added for HTML content
-  featuredImage: String, // Added for featured images
-  featured: { type: Boolean, default: false }, // Added for featured posts
+  contentHtml: String,
   link: String,
   tags: [String],
   status: String,
+  featured: { type: Boolean, default: false },
+  featuredImage: String,
   author: String,
+  
+  // ✅ ADD THESE SEO FIELDS:
+  seoTitle: String,
+  seoDescription: String,
+  seoKeywords: String,
+  seoImage: String,
+  canonicalUrl: String,
+  noIndex: { type: Boolean, default: false },
+  autoGenerateSEO: { type: Boolean, default: true },
+  
   createdAt: Date,
   updatedAt: Date
 });

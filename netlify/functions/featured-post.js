@@ -15,24 +15,33 @@ async function connectDB() {
   return cachedDb;
 }
 
-// Post Schema - UPDATED to match your server.js schema exactly
+
 const PostSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
-  title: { type: String, required: true },
-  type: { type: String, required: true },
-  date: { type: String, required: true },
+  id: String,
+  title: String,
+  type: String,
+  date: String,
   excerpt: String,
-  content: { type: String, required: true },
-  contentHtml: String, // Added - your homepage integration expects this
-  featuredImage: String, // Added - your homepage integration expects this
+  content: String,
+  contentHtml: String,
   link: String,
   tags: [String],
-  status: { type: String, enum: ['published', 'draft'], default: 'published' },
-  featured: { type: Boolean, default: false }, // Keep this for featured functionality
-  images: [String],
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  author: String
+  status: String,
+  featured: { type: Boolean, default: false },
+  featuredImage: String,
+  author: String,
+  
+  // ✅ ADD THESE SEO FIELDS:
+  seoTitle: String,
+  seoDescription: String,
+  seoKeywords: String,
+  seoImage: String,
+  canonicalUrl: String,
+  noIndex: { type: Boolean, default: false },
+  autoGenerateSEO: { type: Boolean, default: true },
+  
+  createdAt: Date,
+  updatedAt: Date
 });
 
 const Post = mongoose.models.Post || mongoose.model('Post', PostSchema);

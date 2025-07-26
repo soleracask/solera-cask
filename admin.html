@@ -2526,17 +2526,17 @@
                 type: formData.get('type'),
                 excerpt: formData.get('excerpt').trim(),
                 link: formData.get('link').trim(),
+                author: document.getElementById('postAuthor').value.trim() || 'admin',
                 tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
                 status: formData.get('status'),
                 featured: document.getElementById('postFeatured').checked,
                 
-                // ✅ ADD SEO FIELDS
+                // SEO FIELDS
                 seoTitle: document.getElementById('seoTitle').value.trim(),
                 seoDescription: document.getElementById('seoDescription').value.trim(),
                 seoKeywords: document.getElementById('seoKeywords').value.trim(),
                 seoImage: document.getElementById('seoImage').value.trim(),
                 canonicalUrl: document.getElementById('canonicalUrl').value.trim(),
-                author: document.getElementById('postAuthor').value.trim() || 'admin',
                 noIndex: document.getElementById('noIndex').checked,
                 autoGenerateSEO: document.getElementById('autoGenerateSEO').checked
             };
@@ -2594,18 +2594,37 @@
                 submitButton.disabled = true;
 
                 if (currentEditId) {
+                    // ✅ UPDATING EXISTING POST
                     await SoleraBlogAPI.updatePost(currentEditId, postData);
                     showMessage(`Post "${postData.title}" updated successfully!`, 'success');
+                    
+                    // ✅ DON'T reset form - just refresh data and stay on edit page
+                    loadPostsTable();
+                    loadDashboardStats();
+                    loadFeaturedPostSection();
+                    
+                    // Show visual feedback that it was saved
+                    const formTitle = document.getElementById('postFormTitle');
+                    if (formTitle) {
+                        const originalTitle = formTitle.textContent;
+                        formTitle.textContent = `${originalTitle} ✓ Saved`;
+                        setTimeout(() => {
+                            formTitle.textContent = originalTitle;
+                        }, 2000);
+                    }
+                    
                 } else {
+                    // ✅ CREATING NEW POST
                     await SoleraBlogAPI.addPost(postData);
                     showMessage(`Post "${postData.title}" created successfully!`, 'success');
+                    
+                    // ✅ ONLY reset form for new posts and redirect to posts list
+                    resetPostForm();
+                    loadPostsTable();
+                    loadDashboardStats();
+                    loadFeaturedPostSection();
+                    showSection('posts');
                 }
-
-                resetPostForm();
-                loadPostsTable();
-                loadDashboardStats();
-                loadFeaturedPostSection();
-                showSection('posts');
                 
             } catch (error) {
                 console.error('Error saving post:', error);

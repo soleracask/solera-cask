@@ -1056,17 +1056,7 @@
                                     <label for="postExcerpt">Excerpt/Summary *</label>
                                     <textarea id="postExcerpt" name="excerpt" rows="3" placeholder="Brief summary for post preview..." required></textarea>
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="postContent">Full Content *</label>
-                                    <textarea id="postContent" name="content" rows="10" placeholder="Full post content..." required></textarea>
-                                    <div class="content-helper">
-                                        <small style="color: var(--text-light); font-size: 12px; margin-top: 8px; display: block;">
-                                            Tip: Add images by dragging them to the upload area below, then copy the image code into your content where you want it to appear.
-                                        </small>
-                                    </div>
-                                </div>
-
+                                
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="postLink">External Link (Optional)</label>
@@ -1077,7 +1067,7 @@
                                         <input type="text" id="postTags" name="tags" placeholder="sherry, barrels, whisky, aging">
                                     </div>
                                 </div>
-
+                                
                                 <div class="form-group">
                                     <label for="postStatus">Status</label>
                                     <select id="postStatus" name="status">
@@ -1177,7 +1167,7 @@
                                 </div>
                             </div>
 
-                            <!-- Content Format Toggle -->
+                           <!-- Content Format Toggle -->
                             <div class="form-group">
                                 <label>Content Format</label>
                                 <div class="content-format-toggle">
@@ -1205,12 +1195,12 @@
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                                     <div>
                                         <textarea id="postContentHtml" name="contentHtml" class="html-editor" placeholder="<h2>Your HTML content here...</h2>
-<p>You can use full HTML markup including:</p>
-<ul>
-  <li>Images and videos</li>
-  <li>Custom styling</li>
-  <li>Interactive elements</li>
-</ul>"></textarea>
+                            <p>You can use full HTML markup including:</p>
+                            <ul>
+                            <li>Images and videos</li>
+                            <li>Custom styling</li>
+                            <li>Interactive elements</li>
+                            </ul>"></textarea>
                                     </div>
                                     <div>
                                         <div class="preview-header">
@@ -1224,6 +1214,7 @@
                                 </div>
                             </div>
 
+                            <!-- Image Upload Section -->
                             <div class="form-group">
                                 <label for="imageUpload">Post Images</label>
                                 <div class="image-upload-container">
@@ -1245,25 +1236,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="postLink">External Link</label>
-                                    <input type="url" id="postLink" name="link" placeholder="https://...">
-                                </div>
-                                <div class="form-group">
-                                    <label for="postTags">Tags</label>
-                                    <input type="text" id="postTags" name="tags" placeholder="sherry, barrels, whisky, aging (comma separated)">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="postStatus">Status</label>
-                                <select id="postStatus" name="status">
-                                    <option value="published">Published</option>
-                                    <option value="draft">Draft</option>
-                                </select>
-                            </div>
-
+                            <!-- Form Actions -->
                             <div class="form-actions">
                                 <button type="submit" class="btn-primary">
                                     <span class="btn-text">Save Post</span>

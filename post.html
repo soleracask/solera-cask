@@ -8,7 +8,8 @@
     <title id="pageTitle">Post - Solera Cask</title>
     <meta name="description" id="pageDescription" content="Premium sherry barrels from Jerez de la Frontera, Spain">
     <meta name="keywords" id="pageKeywords" content="sherry barrels, whisky aging, rum finishing, Jerez, Spain">
-    <meta name="author" content="Solera Cask">
+    <meta name="author" id="pageAuthor" content="Solera Cask">
+    <meta name="robots" id="pageRobots" content="index, follow">
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="article">
@@ -38,6 +39,11 @@
     <!-- Canonical URL -->
     <link rel="canonical" id="canonicalUrl" href="">
     
+    <!-- Additional SEO Tags -->
+    <meta name="theme-color" content="#8B4513">
+    <meta name="msapplication-TileColor" content="#8B4513">
+    <meta name="application-name" content="Solera Cask">
+    
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" id="structuredData">
     {
@@ -47,14 +53,22 @@
         "description": "",
         "author": {
             "@type": "Organization",
-            "name": "Solera Cask"
+            "name": "Solera Cask",
+            "url": "https://soleracask.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "/images/logos/Solera-Cask-Logo.png"
+            }
         },
         "publisher": {
             "@type": "Organization",
             "name": "Solera Cask",
+            "url": "https://soleracask.com",
             "logo": {
                 "@type": "ImageObject",
-                "url": "/images/logos/Solera-Cask-Logo.png"
+                "url": "/images/logos/Solera-Cask-Logo.png",
+                "width": 400,
+                "height": 400
             }
         },
         "datePublished": "",
@@ -65,7 +79,18 @@
         },
         "image": {
             "@type": "ImageObject",
-            "url": "/images/logos/Solera-Cask-Logo.png"
+            "url": "/images/logos/Solera-Cask-Logo.png",
+            "width": 1200,
+            "height": 630
+        },
+        "keywords": "",
+        "articleSection": "",
+        "inLanguage": "en-US",
+        "isPartOf": {
+            "@type": "WebSite",
+            "@id": "https://soleracask.com",
+            "name": "Solera Cask",
+            "description": "Premium sherry barrels from Jerez de la Frontera, Spain"
         }
     }
     </script>
@@ -134,6 +159,13 @@
         }
 
         .post-date {
+            font-size: 14px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .reading-time {
             font-size: 14px;
             color: var(--text-light);
             text-transform: uppercase;
@@ -347,6 +379,25 @@
             font-style: italic;
         }
 
+        /* Featured image styling */
+        .featured-image {
+            width: 100%;
+            max-width: 1200px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 0 auto 40px;
+            display: block;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .post-author {
+            font-size: 14px;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .post-container {
@@ -369,6 +420,10 @@
             .related-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
+            }
+
+            .featured-image {
+                height: 250px;
             }
         }
     </style>
@@ -421,6 +476,14 @@
                         <!-- Meta info will be loaded here -->
                     </div>
                     <h1 class="post-title" id="postTitle">Loading...</h1>
+                    <div class="post-author" id="postAuthor" style="display: none;">
+                        <!-- Author will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Featured Image -->
+                <div id="featuredImageContainer" style="display: none;">
+                    <img id="featuredImage" class="featured-image" alt="" loading="lazy">
                 </div>
 
                 <div class="post-content" id="postText">
@@ -528,7 +591,7 @@
     </footer>
 
     <script>
-        // Enhanced Solera Cask Individual Post Page JavaScript with SEO Support
+        // Enhanced Solera Cask Individual Post Page JavaScript with Full SEO Integration
         const SoleraBlogAPI = {
             // Determine API base URL based on environment
             API_BASE: window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
@@ -587,86 +650,163 @@
             }
         };
 
-        // SEO Meta Tag Updates
+        // Enhanced SEO Meta Tag Updates with full integration
         function updateSEOMetaTags(post) {
             const currentUrl = window.location.href;
             const baseUrl = window.location.origin;
             
-            // Generate SEO content with fallbacks
-            const seoTitle = post.seoTitle || `${post.title} - Solera Cask`;
-            const seoDescription = post.seoDescription || post.excerpt || 
-                (post.content ? post.content.substring(0, 160) + '...' : 'Premium sherry barrels from Jerez de la Frontera, Spain');
-            const seoKeywords = post.seoKeywords || (post.tags ? post.tags.join(', ') : 'sherry barrels, whisky aging, rum finishing, Jerez, Spain');
-            const seoImage = post.seoImage || post.featuredImage || '/images/logos/Solera-Cask-Logo.png';
+            // Generate SEO content with comprehensive fallbacks
+            const seoData = generateSEOData(post, currentUrl, baseUrl);
             
             // Update basic meta tags
-            document.getElementById('pageTitle').textContent = seoTitle;
-            document.getElementById('pageDescription').setAttribute('content', seoDescription);
-            document.getElementById('pageKeywords').setAttribute('content', seoKeywords);
+            document.getElementById('pageTitle').textContent = seoData.title;
+            document.getElementById('pageDescription').setAttribute('content', seoData.description);
+            document.getElementById('pageKeywords').setAttribute('content', seoData.keywords);
+            document.getElementById('pageAuthor').setAttribute('content', seoData.author);
+            
+            // Handle robots meta tag for SEO control
+            const robotsContent = seoData.noIndex ? 'noindex, nofollow' : 'index, follow';
+            document.getElementById('pageRobots').setAttribute('content', robotsContent);
             
             // Update Open Graph tags
-            document.getElementById('ogTitle').setAttribute('content', seoTitle);
-            document.getElementById('ogDescription').setAttribute('content', seoDescription);
+            document.getElementById('ogTitle').setAttribute('content', seoData.ogTitle);
+            document.getElementById('ogDescription').setAttribute('content', seoData.ogDescription);
             document.getElementById('ogUrl').setAttribute('content', currentUrl);
-            document.getElementById('ogImage').setAttribute('content', baseUrl + seoImage);
+            document.getElementById('ogImage').setAttribute('content', seoData.ogImage);
             
             // Update Twitter Card tags
-            document.getElementById('twitterTitle').setAttribute('content', seoTitle);
-            document.getElementById('twitterDescription').setAttribute('content', seoDescription);
-            document.getElementById('twitterImage').setAttribute('content', baseUrl + seoImage);
+            document.getElementById('twitterTitle').setAttribute('content', seoData.twitterTitle);
+            document.getElementById('twitterDescription').setAttribute('content', seoData.twitterDescription);
+            document.getElementById('twitterImage').setAttribute('content', seoData.twitterImage);
             
             // Update Article meta tags
-            document.getElementById('articleAuthor').setAttribute('content', post.author || 'Solera Cask');
-            document.getElementById('articlePublished').setAttribute('content', new Date(post.date).toISOString());
-            document.getElementById('articleModified').setAttribute('content', new Date(post.updatedAt || post.date).toISOString());
-            document.getElementById('articleSection').setAttribute('content', post.type || 'Article');
-            document.getElementById('articleTags').setAttribute('content', post.tags ? post.tags.join(', ') : '');
+            document.getElementById('articleAuthor').setAttribute('content', seoData.author);
+            document.getElementById('articlePublished').setAttribute('content', seoData.publishedTime);
+            document.getElementById('articleModified').setAttribute('content', seoData.modifiedTime);
+            document.getElementById('articleSection').setAttribute('content', seoData.section);
+            document.getElementById('articleTags').setAttribute('content', seoData.tags);
             
             // Update canonical URL
-            document.getElementById('canonicalUrl').setAttribute('href', currentUrl);
+            const canonicalUrl = seoData.canonicalUrl || currentUrl;
+            document.getElementById('canonicalUrl').setAttribute('href', canonicalUrl);
             
-            // Update JSON-LD structured data
+            // Update comprehensive JSON-LD structured data
+            updateStructuredData(post, seoData, currentUrl, baseUrl);
+            
+            // Update page title in browser tab
+            document.title = seoData.title;
+            
+            console.log('SEO meta tags updated:', seoData);
+        }
+
+        // Generate comprehensive SEO data with all fallbacks
+        function generateSEOData(post, currentUrl, baseUrl) {
+            // Base data with smart fallbacks
+            const baseTitle = post.seoTitle || `${post.title} - Solera Cask`;
+            const baseDescription = post.seoDescription || post.excerpt || 
+                (post.content ? post.content.substring(0, 160).replace(/[#*`_\[\]()]/g, '').trim() + '...' : 'Premium sherry barrels from Jerez de la Frontera, Spain');
+            
+            const baseKeywords = post.seoKeywords || (post.tags ? post.tags.join(', ') : 'sherry barrels, whisky aging, rum finishing, Jerez, Spain');
+            const baseImage = post.seoImage || post.featuredImage || '/images/logos/Solera-Cask-Logo.png';
+            const fullImageUrl = baseImage.startsWith('http') ? baseImage : baseUrl + baseImage;
+            
+            return {
+                // Basic SEO
+                title: baseTitle,
+                description: baseDescription,
+                keywords: baseKeywords,
+                author: post.author || 'Solera Cask',
+                
+                // Open Graph (with custom overrides if available)
+                ogTitle: post.ogTitle || baseTitle,
+                ogDescription: post.ogDescription || baseDescription,
+                ogImage: fullImageUrl,
+                
+                // Twitter Cards (with custom overrides if available)
+                twitterTitle: post.twitterTitle || baseTitle,
+                twitterDescription: post.twitterDescription || baseDescription,
+                twitterImage: fullImageUrl,
+                
+                // Article metadata
+                publishedTime: new Date(post.date || post.createdAt).toISOString(),
+                modifiedTime: new Date(post.updatedAt || post.date || post.createdAt).toISOString(),
+                section: post.type || 'Article',
+                tags: post.tags ? post.tags.join(', ') : '',
+                
+                // Advanced SEO
+                canonicalUrl: post.canonicalUrl,
+                noIndex: post.noIndex || false,
+                
+                // Additional metadata
+                wordCount: post.wordCount || (post.content ? post.content.split(' ').length : 0),
+                readingTime: post.readingTime || Math.ceil((post.content ? post.content.split(' ').length : 0) / 200)
+            };
+        }
+
+        // Update comprehensive JSON-LD structured data
+        function updateStructuredData(post, seoData, currentUrl, baseUrl) {
             const structuredData = {
                 "@context": "https://schema.org",
                 "@type": "Article",
                 "headline": post.title,
-                "description": seoDescription,
+                "description": seoData.description,
                 "author": {
                     "@type": "Organization",
-                    "name": post.author || "Solera Cask"
-                },
-                "publisher": {
-                    "@type": "Organization",
-                    "name": "Solera Cask",
+                    "name": seoData.author,
+                    "url": baseUrl,
                     "logo": {
                         "@type": "ImageObject",
                         "url": baseUrl + "/images/logos/Solera-Cask-Logo.png"
                     }
                 },
-                "datePublished": new Date(post.date).toISOString(),
-                "dateModified": new Date(post.updatedAt || post.date).toISOString(),
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Solera Cask",
+                    "url": baseUrl,
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": baseUrl + "/images/logos/Solera-Cask-Logo.png",
+                        "width": 400,
+                        "height": 400
+                    }
+                },
+                "datePublished": seoData.publishedTime,
+                "dateModified": seoData.modifiedTime,
                 "mainEntityOfPage": {
                     "@type": "WebPage",
                     "@id": currentUrl
                 },
                 "image": {
                     "@type": "ImageObject",
-                    "url": baseUrl + seoImage
+                    "url": seoData.ogImage,
+                    "width": 1200,
+                    "height": 630
                 },
-                "keywords": seoKeywords,
-                "articleSection": post.type || "Article",
-                "wordCount": post.content ? post.content.split(' ').length : 0
+                "keywords": seoData.keywords,
+                "articleSection": seoData.section,
+                "wordCount": seoData.wordCount,
+                "inLanguage": "en-US",
+                "isPartOf": {
+                    "@type": "WebSite",
+                    "@id": baseUrl,
+                    "name": "Solera Cask",
+                    "description": "Premium sherry barrels from Jerez de la Frontera, Spain"
+                }
             };
-            
-            // Add tags to structured data if they exist
+
+            // Add optional fields if available
             if (post.tags && post.tags.length > 0) {
-                structuredData.keywords = post.tags.join(', ');
+                structuredData.about = post.tags.map(tag => ({
+                    "@type": "Thing",
+                    "name": tag
+                }));
             }
-            
+
+            if (seoData.readingTime) {
+                structuredData.timeRequired = `PT${seoData.readingTime}M`;
+            }
+
             document.getElementById('structuredData').textContent = JSON.stringify(structuredData, null, 2);
-            
-            // Update page title in browser tab
-            document.title = seoTitle;
         }
 
         // Get current post slug from URL
@@ -709,11 +849,13 @@
                     return;
                 }
                 
-                // Update SEO meta tags first
+                // Update SEO meta tags first (critical for social sharing)
                 updateSEOMetaTags(post);
                 
-                // Render the post
+                // Render the post content
                 renderPost(post);
+                
+                // Load related posts
                 await loadRelatedPosts(post);
                 
             } catch (error) {
@@ -740,11 +882,17 @@
                 }
             }
             
-            // Update meta information
+            // Update meta information with enhanced data
             const postMeta = document.getElementById('postMeta');
             if (postMeta) {
                 let metaHtml = `<span class="post-type">${post.type}</span>`;
                 metaHtml += `<span class="post-date">${formatDate(post.date)}</span>`;
+                
+                // Add reading time if available
+                const readingTime = post.readingTime || Math.ceil((post.content ? post.content.split(' ').length : 0) / 200);
+                if (readingTime > 0) {
+                    metaHtml += `<span class="reading-time">${readingTime} min read</span>`;
+                }
                 
                 if (post.featured) {
                     metaHtml += `<span class="featured-indicator">FEATURED</span>`;
@@ -759,7 +907,25 @@
                 postTitle.textContent = post.title;
             }
             
-            // Update content with HTML support
+            // Update author if provided
+            const postAuthor = document.getElementById('postAuthor');
+            if (postAuthor && post.author && post.author !== 'Solera Cask') {
+                postAuthor.textContent = `By ${post.author}`;
+                postAuthor.style.display = 'block';
+            }
+            
+            // Handle featured image
+            const featuredImageContainer = document.getElementById('featuredImageContainer');
+            const featuredImage = document.getElementById('featuredImage');
+            const imageUrl = post.seoImage || post.featuredImage;
+            
+            if (featuredImageContainer && featuredImage && imageUrl && imageUrl !== '/images/logos/Solera-Cask-Logo.png') {
+                featuredImage.src = imageUrl;
+                featuredImage.alt = post.title;
+                featuredImageContainer.style.display = 'block';
+            }
+            
+            // Update content with enhanced HTML support
             const postText = document.getElementById('postText');
             if (postText) {
                 if (isHtmlPost) {
@@ -789,6 +955,8 @@
                 postTags.innerHTML = post.tags.map(tag => `
                     <a href="/blog?search=${encodeURIComponent(tag)}" class="post-tag">#${tag}</a>
                 `).join('');
+            } else if (postTags) {
+                postTags.style.display = 'none';
             }
         }
 
@@ -797,13 +965,19 @@
                 const allPosts = await SoleraBlogAPI.getAllPosts();
                 const otherPosts = allPosts.filter(post => post.id !== currentPost.id);
                 
-                // Find posts with shared tags or same type
+                // Enhanced related posts algorithm
                 const relatedPosts = otherPosts
                     .map(post => {
                         let score = 0;
-                        const sharedTags = post.tags.filter(tag => currentPost.tags.includes(tag));
-                        score += sharedTags.length * 2;
-                        if (post.type === currentPost.type) score += 1;
+                        const sharedTags = post.tags ? post.tags.filter(tag => currentPost.tags && currentPost.tags.includes(tag)) : [];
+                        score += sharedTags.length * 3; // Increased weight for shared tags
+                        
+                        if (post.type === currentPost.type) score += 2; // Same type gets points
+                        
+                        // Bonus for recent posts
+                        const daysDiff = Math.abs(new Date(post.date) - new Date(currentPost.date)) / (1000 * 60 * 60 * 24);
+                        if (daysDiff < 30) score += 1; // Recent posts get bonus
+                        
                         return { post, score };
                     })
                     .filter(item => item.score > 0)
@@ -823,7 +997,7 @@
                                     <span class="post-date">${formatDate(post.date)}</span>
                                 </div>
                                 <h4>${post.title}</h4>
-                                <p>${post.excerpt || (post.content || post.contentHtml).substring(0, 100)}...</p>
+                                <p>${post.excerpt || (post.content || post.contentHtml || '').substring(0, 100)}...</p>
                             </div>
                         `).join('');
                     }
@@ -845,7 +1019,7 @@
             }
         }
 
-        // Enhanced content formatting with HTML support
+        // Enhanced content formatting with better HTML support
         function formatPostContent(post) {
             // If HTML content exists, use it directly
             if (post.contentHtml && post.contentHtml.trim()) {
@@ -863,6 +1037,9 @@
                 '<figure><img src="$2" alt="$1" loading="lazy"><figcaption>$1</figcaption></figure>'
             );
             
+            // Convert markdown links
+            content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            
             // Split into paragraphs and format
             const paragraphs = content.split('\n\n').filter(p => p.trim());
             
@@ -878,10 +1055,17 @@
                     .replace(/\n/g, '<br>');
                 
                 // Handle headers
-                if (formatted.startsWith('## ')) {
+                if (formatted.startsWith('### ')) {
+                    return `<h3>${formatted.substring(4)}</h3>`;
+                } else if (formatted.startsWith('## ')) {
                     return `<h2>${formatted.substring(3)}</h2>`;
                 } else if (formatted.startsWith('# ')) {
                     return `<h3>${formatted.substring(2)}</h3>`;
+                }
+                
+                // Handle blockquotes
+                if (formatted.startsWith('> ')) {
+                    return `<blockquote>${formatted.substring(2)}</blockquote>`;
                 }
                 
                 return `<p>${formatted}</p>`;

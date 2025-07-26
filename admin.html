@@ -547,6 +547,147 @@
             color: var(--text-white);
         }
 
+        .form-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .section-icon {
+            font-size: 18px;
+        }
+
+        .seo-section {
+            background: #f0fff4;
+            border-color: #9ae6b4;
+        }
+
+        .auto-seo-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .auto-seo-btn:hover {
+            background: #38a169;
+        }
+
+        .char-count {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .char-count.warning {
+            color: #f59e0b;
+        }
+
+        .char-count.error {
+            color: #ef4444;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .seo-preview {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .seo-preview h4 {
+            margin-bottom: 12px;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .search-preview {
+            font-family: arial, sans-serif;
+        }
+
+        .preview-title {
+            color: #1a0dab;
+            font-size: 18px;
+            margin-bottom: 4px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .preview-url {
+            color: #006621;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .preview-description {
+            color: #545454;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .advanced-seo {
+            margin-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+
+        .toggle-advanced {
+            background: none;
+            border: none;
+            color: #4299e1;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-advanced:hover {
+            color: #3182ce;
+        }
+
+        .advanced-seo-content {
+            margin-top: 16px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
         .admin-message {
             position: fixed;
             top: 100px;
@@ -882,31 +1023,144 @@
                         </div>
                     </div>
 
-                    <!-- Add/Edit Post Section -->
+                   <!-- Enhanced Add/Edit Post Section with SEO -->
                     <div class="admin-section" id="add-post-section">
                         <h2 id="postFormTitle">Add New Post</h2>
                         <form class="post-form" id="postForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="postTitle">Title *</label>
-                                    <input type="text" id="postTitle" name="title" required>
+                            <!-- Basic Post Information -->
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <span class="section-icon">📝</span>
+                                    Post Content
+                                </h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="postTitle">Title *</label>
+                                        <input type="text" id="postTitle" name="title" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="postType">Type *</label>
+                                        <select id="postType" name="type" required>
+                                            <option value="News">News & Updates</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Tasting Notes">Tasting Notes</option>
+                                            <option value="Stories">Stories & Heritage</option>
+                                            <option value="Partnership">Partnership</option>
+                                            <option value="Product Launch">Product Launch</option>
+                                        </select>
+                                    </div>
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="postType">Type *</label>
-                                    <select id="postType" name="type" required>
-                                        <option value="News">News & Updates</option>
-                                        <option value="Education">Education</option>
-                                        <option value="Tasting Notes">Tasting Notes</option>
-                                        <option value="Stories">Stories & Heritage</option>
-                                        <option value="Partnership">Partnership</option>
-                                        <option value="Product Launch">Product Launch</option>
+                                    <label for="postExcerpt">Excerpt/Summary *</label>
+                                    <textarea id="postExcerpt" name="excerpt" rows="3" placeholder="Brief summary for post preview..." required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="postContent">Full Content *</label>
+                                    <textarea id="postContent" name="content" rows="10" placeholder="Full post content..." required></textarea>
+                                    <div class="content-helper">
+                                        <small style="color: var(--text-light); font-size: 12px; margin-top: 8px; display: block;">
+                                            Tip: Add images by dragging them to the upload area below, then copy the image code into your content where you want it to appear.
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="postLink">External Link (Optional)</label>
+                                        <input type="url" id="postLink" name="link" placeholder="https://example.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="postTags">Tags (comma-separated)</label>
+                                        <input type="text" id="postTags" name="tags" placeholder="sherry, barrels, whisky, aging">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="postStatus">Status</label>
+                                    <select id="postStatus" name="status">
+                                        <option value="published">Published</option>
+                                        <option value="draft">Draft</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="postExcerpt">Excerpt/Summary *</label>
-                                <textarea id="postExcerpt" name="excerpt" rows="3" placeholder="Brief summary for post preview..." required></textarea>
+                            <!-- SEO Optimization Section -->
+                            <div class="form-section seo-section">
+                                <h3 class="section-title">
+                                    <span class="section-icon">🔍</span>
+                                    SEO Optimization
+                                    <button type="button" class="auto-seo-btn" onclick="generateAllSEO()">Auto-Generate SEO</button>
+                                </h3>
+                                
+                                <div class="form-group">
+                                    <label for="seoTitle">SEO Title</label>
+                                    <input type="text" id="seoTitle" name="seoTitle" maxlength="60" placeholder="Optimized title for search results">
+                                    <div class="char-count" id="seoTitleCount">0/60</div>
+                                    <div class="help-text">Recommended: 50-60 characters. This appears as the clickable headline in search results.</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="seoDescription">SEO Description</label>
+                                    <textarea id="seoDescription" name="seoDescription" maxlength="160" rows="3" placeholder="Compelling description that encourages clicks from search results"></textarea>
+                                    <div class="char-count" id="seoDescriptionCount">0/160</div>
+                                    <div class="help-text">Recommended: 150-160 characters. This appears below your title in search results.</div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="seoKeywords">Focus Keywords</label>
+                                        <input type="text" id="seoKeywords" name="seoKeywords" placeholder="sherry barrels, whisky aging, Jerez, Spain">
+                                        <div class="help-text">Comma-separated keywords that describe your content.</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="seoImage">Featured Image URL</label>
+                                        <input type="text" id="seoImage" name="seoImage" placeholder="/images/blog/your-featured-image.jpg">
+                                        <div class="help-text">Image for social media sharing (1200x630px recommended).</div>
+                                    </div>
+                                </div>
+
+                                <!-- SEO Preview -->
+                                <div class="seo-preview">
+                                    <h4>Search Result Preview</h4>
+                                    <div class="search-preview">
+                                        <div class="preview-title" id="previewTitle">Your SEO Title - Solera Cask</div>
+                                        <div class="preview-url" id="previewUrl">https://soleracask.com/post/your-post-slug</div>
+                                        <div class="preview-description" id="previewDescription">Your SEO description will appear here...</div>
+                                    </div>
+                                </div>
+
+                                <!-- Advanced SEO (Collapsible) -->
+                                <div class="advanced-seo">
+                                    <button type="button" class="toggle-advanced" onclick="toggleAdvancedSEO()">
+                                        <span id="advancedToggleIcon">▶</span> Advanced SEO Settings
+                                    </button>
+                                    <div class="advanced-seo-content" id="advancedSEOContent" style="display: none;">
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="canonicalUrl">Canonical URL (optional)</label>
+                                                <input type="text" id="canonicalUrl" name="canonicalUrl" placeholder="https://soleracask.com/post/custom-url">
+                                                <div class="help-text">Use only if this content appears on multiple URLs</div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="author">Author</label>
+                                                <input type="text" id="author" name="author" placeholder="Author name">
+                                            </div>
+                                        </div>
+
+                                        <div class="checkbox-group">
+                                            <input type="checkbox" id="noIndex" name="noIndex">
+                                            <label for="noIndex">No Index (prevent search engines from indexing this post)</label>
+                                        </div>
+
+                                        <div class="checkbox-group">
+                                            <input type="checkbox" id="autoGenerateSEO" name="autoGenerateSEO" checked>
+                                            <label for="autoGenerateSEO">Auto-generate missing SEO fields when saving</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Featured Post Controls -->
@@ -2498,7 +2752,315 @@
                 importFile.click();
             }
         }
+        // Enhanced SEO functionality
+        function setupSEOFeatures() {
+            // Character counting
+            const seoFields = [
+                { id: 'seoTitle', countId: 'seoTitleCount', max: 60 },
+                { id: 'seoDescription', countId: 'seoDescriptionCount', max: 160 }
+            ];
 
+            seoFields.forEach(field => {
+                const input = document.getElementById(field.id);
+                const counter = document.getElementById(field.countId);
+                
+                if (input && counter) {
+                    input.addEventListener('input', function() {
+                        const length = this.value.length;
+                        counter.textContent = `${length}/${field.max}`;
+                        
+                        counter.className = 'char-count';
+                        if (length > field.max * 0.9) {
+                            counter.classList.add('warning');
+                        }
+                        if (length > field.max) {
+                            counter.classList.add('error');
+                        }
+                        
+                        updateSEOPreview();
+                    });
+                }
+            });
+
+            // Auto-update preview when main fields change
+            ['postTitle', 'seoTitle', 'seoDescription'].forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', updateSEOPreview);
+                }
+            });
+
+            // Initial setup
+            updateSEOPreview();
+        }
+
+        function generateAllSEO() {
+            generateSEOTitle();
+            generateSEODescription();
+            generateSEOKeywords();
+        }
+
+        function generateSEOTitle() {
+            const postTitle = document.getElementById('postTitle').value;
+            if (postTitle) {
+                let seoTitle = `${postTitle} - Solera Cask`;
+                if (seoTitle.length > 60) {
+                    seoTitle = seoTitle.substring(0, 57) + '...';
+                }
+                document.getElementById('seoTitle').value = seoTitle;
+                document.getElementById('seoTitle').dispatchEvent(new Event('input'));
+            }
+        }
+
+        function generateSEODescription() {
+            const postTitle = document.getElementById('postTitle').value;
+            const postType = document.getElementById('postType').value || 'article';
+            const excerpt = document.getElementById('postExcerpt').value;
+            
+            let description = '';
+            
+            if (excerpt) {
+                description = excerpt;
+            } else {
+                const templates = {
+                    'Education': `Learn about ${postTitle.toLowerCase()} with expert guidance from Solera Cask. Discover premium sherry barrels from Jerez de la Frontera, Spain.`,
+                    'News': `Latest news: ${postTitle}. Stay updated with Solera Cask's premium sherry barrel innovations from Jerez de la Frontera, Spain.`,
+                    'Stories': `Discover the story behind ${postTitle.toLowerCase()}. Premium sherry barrels and authentic craftsmanship from Jerez de la Frontera, Spain.`,
+                    'default': `Read about ${postTitle.toLowerCase()} and discover premium sherry barrels from Jerez de la Frontera, Spain.`
+                };
+                description = templates[postType] || templates['default'];
+            }
+            
+            if (description.length > 160) {
+                const lastSpace = description.lastIndexOf(' ', 157);
+                description = description.substring(0, lastSpace) + '...';
+            }
+
+            document.getElementById('seoDescription').value = description;
+            document.getElementById('seoDescription').dispatchEvent(new Event('input'));
+        }
+
+        function generateSEOKeywords() {
+            const postTitle = document.getElementById('postTitle').value;
+            const postType = document.getElementById('postType').value;
+            const postTags = document.getElementById('postTags').value;
+            
+            const baseKeywords = ['sherry barrels', 'Solera Cask', 'Jerez de la Frontera', 'Spain'];
+            let keywords = [...baseKeywords];
+            
+            // Add tags if provided
+            if (postTags) {
+                const tags = postTags.split(',').map(tag => tag.trim()).filter(tag => tag);
+                keywords.push(...tags.slice(0, 3));
+            }
+            
+            // Add keywords from title
+            const titleKeywords = postTitle.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .split(' ')
+                .filter(word => word.length > 3)
+                .slice(0, 2);
+            keywords.push(...titleKeywords);
+            
+            if (postType) {
+                keywords.push(postType.toLowerCase());
+            }
+            
+            // Remove duplicates and limit to 8 keywords
+            keywords = [...new Set(keywords)].slice(0, 8);
+            document.getElementById('seoKeywords').value = keywords.join(', ');
+        }
+
+        function updateSEOPreview() {
+            const postTitle = document.getElementById('postTitle').value;
+            const seoTitle = document.getElementById('seoTitle').value || (postTitle ? `${postTitle} - Solera Cask` : 'Your SEO Title - Solera Cask');
+            const seoDescription = document.getElementById('seoDescription').value || 'Your SEO description will appear here...';
+            
+            document.getElementById('previewTitle').textContent = seoTitle;
+            document.getElementById('previewDescription').textContent = seoDescription;
+            
+            // Update URL preview
+            if (postTitle) {
+                const slug = postTitle.toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim('-');
+                document.getElementById('previewUrl').textContent = `https://soleracask.com/post/${slug}`;
+            }
+        }
+
+        function toggleAdvancedSEO() {
+            const content = document.getElementById('advancedSEOContent');
+            const icon = document.getElementById('advancedToggleIcon');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.textContent = '▼';
+            } else {
+                content.style.display = 'none';
+                icon.textContent = '▶';
+            }
+        }
+
+        // Enhanced image upload functionality
+        function setupImageUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const imageInput = document.getElementById('imageInput');
+            
+            uploadArea.addEventListener('click', () => imageInput.click());
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                handleImageFiles(files);
+            });
+            
+            imageInput.addEventListener('change', (e) => {
+                handleImageFiles(e.target.files);
+            });
+        }
+
+        function handleImageFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        addUploadedImage(file.name, e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function addUploadedImage(filename, dataUrl) {
+            const uploadedImages = document.getElementById('uploadedImages');
+            const imageId = 'img-' + Date.now();
+            
+            const imageDiv = document.createElement('div');
+            imageDiv.className = 'uploaded-image';
+            imageDiv.innerHTML = `
+                <img src="${dataUrl}" alt="${filename}">
+                <div class="image-actions">
+                    <button class="image-action-btn" onclick="copyImageCode('${imageId}')">Copy</button>
+                    <button class="image-action-btn" onclick="removeImage('${imageId}')">×</button>
+                </div>
+                <div class="image-info">
+                    <div>${filename}</div>
+                    <div id="${imageId}" style="font-family: monospace; font-size: 10px; word-break: break-all;">
+                        ![${filename}](${dataUrl})
+                    </div>
+                </div>
+            `;
+            imageDiv.id = imageId;
+            
+            uploadedImages.appendChild(imageDiv);
+        }
+
+        function copyImageCode(imageId) {
+            const codeElement = document.getElementById(imageId).lastElementChild;
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showMessage('Image code copied to clipboard!', 'success');
+            });
+        }
+
+        function removeImage(imageId) {
+            const imageElement = document.getElementById(imageId);
+            if (imageElement) {
+                imageElement.remove();
+            }
+        }
+
+        function clearUploadedImages() {
+            document.getElementById('uploadedImages').innerHTML = '';
+        }
+
+        // Enhanced form submission to include SEO data
+        function enhancedSavePost() {
+            const formData = new FormData(document.getElementById('postForm'));
+            
+            // Collect all form data including SEO fields
+            const postData = {
+                title: formData.get('title').trim(),
+                type: formData.get('type'),
+                excerpt: formData.get('excerpt').trim(),
+                content: formData.get('content').trim(),
+                link: formData.get('link').trim(),
+                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
+                status: formData.get('status'),
+                
+                // SEO fields
+                seoTitle: formData.get('seoTitle').trim(),
+                seoDescription: formData.get('seoDescription').trim(),
+                seoKeywords: formData.get('seoKeywords').trim(),
+                seoImage: formData.get('seoImage').trim(),
+                canonicalUrl: formData.get('canonicalUrl').trim(),
+                author: formData.get('author').trim(),
+                noIndex: formData.get('noIndex') === 'on',
+                autoGenerateSEO: formData.get('autoGenerateSEO') === 'on'
+            };
+
+            if (!postData.title || !postData.content) {
+                showMessage('Title and content are required', 'error');
+                return;
+            }
+
+            const submitButton = document.querySelector('#postForm button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Saving...';
+            submitButton.disabled = true;
+
+            try {
+                if (currentEditId) {
+                    SoleraBlogAPI.updatePost(currentEditId, postData);
+                    showMessage(`Post "${postData.title}" updated successfully!`, 'success');
+                } else {
+                    SoleraBlogAPI.addPost(postData);
+                    showMessage(`Post "${postData.title}" created successfully!`, 'success');
+                }
+
+                resetPostForm();
+                loadPostsTable();
+                loadDashboardStats();
+                showSection('posts');
+            } catch (error) {
+                console.error('Error saving post:', error);
+                showMessage('Error saving post: ' + error.message, 'error');
+            } finally {
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        }
+
+        // Initialize all features when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setupSEOFeatures();
+            setupImageUpload();
+            
+            // Replace the original savePost function
+            window.savePost = enhancedSavePost;
+        });
+
+        // Global functions
+        window.generateAllSEO = generateAllSEO;
+        window.generateSEOTitle = generateSEOTitle;
+        window.generateSEODescription = generateSEODescription;
+        window.generateSEOKeywords = generateSEOKeywords;
+        window.toggleAdvancedSEO = toggleAdvancedSEO;
+        window.copyImageCode = copyImageCode;
+        window.removeImage = removeImage;
         // Export functions for global use
         window.showSection = showSection;
         window.logout = logout;

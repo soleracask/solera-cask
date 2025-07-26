@@ -2500,7 +2500,17 @@
                 link: formData.get('link').trim(),
                 tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
                 status: formData.get('status'),
-                featured: document.getElementById('postFeatured').checked
+                featured: document.getElementById('postFeatured').checked,
+                
+                // ✅ ADD SEO FIELDS
+                seoTitle: document.getElementById('seoTitle').value.trim(),
+                seoDescription: document.getElementById('seoDescription').value.trim(),
+                seoKeywords: document.getElementById('seoKeywords').value.trim(),
+                seoImage: document.getElementById('seoImage').value.trim(),
+                canonicalUrl: document.getElementById('canonicalUrl').value.trim(),
+                author: document.getElementById('author').value.trim(),
+                noIndex: document.getElementById('noIndex').checked,
+                autoGenerateSEO: document.getElementById('autoGenerateSEO').checked
             };
 
             // Handle content based on format

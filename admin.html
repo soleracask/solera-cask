@@ -1652,95 +1652,98 @@
 
         // ✅ UPDATED: Save post with Cloudinary featured image support
         async function savePost() {
-            const formData = new FormData(document.getElementById('postForm'));
-            const postData = {
-                title: formData.get('title').trim(),
-                type: formData.get('type'),
-                excerpt: formData.get('excerpt').trim(),
-                link: formData.get('link').trim(),
-                author: formData.get('author').trim() || 'admin', // Add this line
-                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
-                status: formData.get('status'),
-                featured: document.getElementById('postFeatured').checked,
-                
-                // SEO FIELDS
-                seoTitle: document.getElementById('seoTitle').value.trim(),
-                seoDescription: document.getElementById('seoDescription').value.trim(),
-                seoKeywords: document.getElementById('seoKeywords').value.trim(),
-                seoImage: document.getElementById('seoImage').value.trim(),
-                canonicalUrl: document.getElementById('canonicalUrl').value.trim(),
-                // Remove duplicate author field since we moved it to main section
-                noIndex: document.getElementById('noIndex').checked,
-                autoGenerateSEO: document.getElementById('autoGenerateSEO').checked
-            };
+        const formData = new FormData(document.getElementById('postForm'));
+        const postData = {
+            title: formData.get('title').trim(),
+            type: formData.get('type'),
+            excerpt: formData.get('excerpt').trim(),
+            link: formData.get('link').trim(),
+            author: document.getElementById('postAuthor').value.trim() || 'admin', // ✅ This is correct
+            tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
+            status: formData.get('status'),
+            featured: document.getElementById('postFeatured').checked,
+            
+            // SEO FIELDS
+            seoTitle: document.getElementById('seoTitle').value.trim(),
+            seoDescription: document.getElementById('seoDescription').value.trim(),
+            seoKeywords: document.getElementById('seoKeywords').value.trim(),
+            seoImage: document.getElementById('seoImage').value.trim(),
+            canonicalUrl: document.getElementById('canonicalUrl').value.trim(),
+            noIndex: document.getElementById('noIndex').checked,
+            autoGenerateSEO: document.getElementById('autoGenerateSEO').checked
+        };
 
-            // ✅ FIXED: Handle featured image upload to Cloudinary
-            if (postData.featured) {
-                const featuredImageFile = document.getElementById('featuredImage').files[0];
-                
-                console.log('Featured image handling:', {
-                    featured: postData.featured,
-                    hasFile: !!featuredImageFile,
-                    fileName: featuredImageFile?.name,
-                    currentEditId: currentEditId
-                });
-                
-                if (featuredImageFile) {
-                    try {
-                        showMessage('Uploading featured image to Cloudinary...', 'info');
-                        const cloudinaryUrl = await handleFeaturedImageUpload(featuredImageFile);
-                        postData.featuredImage = cloudinaryUrl;
-                        console.log('Featured image uploaded to Cloudinary successfully:', cloudinaryUrl);
-                    } catch (error) {
-                        console.error('Featured image Cloudinary upload failed:', error);
-                        showMessage('Featured image upload failed, saving post without featured image', 'warning');
-                        postData.featuredImage = '';
-                    }
-                } else if (currentEditId) {
-                    // Preserve existing featured image if editing and no new file is uploaded
-                    const existingPost = posts.find(p => p.id === currentEditId);
-                    postData.featuredImage = existingPost?.featuredImage || '';
-                } else {
+        // Handle content based on format
+        if (currentContentFormat === 'html') {
+            postData.contentHtml = document.getElementById('postContentHtml').value.trim();
+            postData.content = '';
+        } else {
+            postData.content = document.getElementById('postContent').value.trim();
+            postData.contentHtml = '';
+        }
+
+        // Handle featured image (your existing code)
+        if (postData.featured) {
+            const featuredImageFile = document.getElementById('featuredImage').files[0];
+            
+            if (featuredImageFile) {
+                try {
+                    showMessage('Uploading featured image to Cloudinary...', 'info');
+                    const cloudinaryUrl = await handleFeaturedImageUpload(featuredImageFile);
+                    postData.featuredImage = cloudinaryUrl;
+                } catch (error) {
+                    console.error('Featured image Cloudinary upload failed:', error);
+                    showMessage('Featured image upload failed, saving post without featured image', 'warning');
                     postData.featuredImage = '';
                 }
+            } else if (currentEditId) {
+                const existingPost = posts.find(p => p.id === currentEditId);
+                postData.featuredImage = existingPost?.featuredImage || '';
             } else {
                 postData.featuredImage = '';
             }
+        } else {
+            postData.featuredImage = '';
+        }
 
-            const submitButton = document.querySelector('#postForm button[type="submit"]');
-            const btnText = submitButton.querySelector('.btn-text');
-            const spinner = submitButton.querySelector('.loading-spinner');
+        const submitButton = document.querySelector('#postForm button[type="submit"]');
+        const btnText = submitButton.querySelector('.btn-text');
+        const spinner = submitButton.querySelector('.loading-spinner');
 
-            try {
-                // Show loading state
-                if (btnText) btnText.style.display = 'none';
-                if (spinner) spinner.style.display = 'inline-block';
-                submitButton.disabled = true;
+        try {
+            // Show loading state
+            if (btnText) btnText.style.display = 'none';
+            if (spinner) spinner.style.display = 'inline-block';
+            submitButton.disabled = true;
 
-                if (currentEditId) {
-                    await SoleraBlogAPI.updatePost(currentEditId, postData);
-                    showMessage(`Post "${postData.title}" updated successfully!`, 'success');
-                } else {
-                    await SoleraBlogAPI.addPost(postData);
-                    showMessage(`Post "${postData.title}" created successfully!`, 'success');
-                }
-
+            if (currentEditId) {
+                await SoleraBlogAPI.updatePost(currentEditId, postData);
+                showMessage(`Post "${postData.title}" updated successfully!`, 'success');
+                // ✅ DON'T reset form when updating - just refresh the data
+                loadPostsTable();
+                loadDashboardStats();
+                loadFeaturedPostSection();
+            } else {
+                await SoleraBlogAPI.addPost(postData);
+                showMessage(`Post "${postData.title}" created successfully!`, 'success');
+                // ✅ ONLY reset form for NEW posts
                 resetPostForm();
                 loadPostsTable();
                 loadDashboardStats();
                 loadFeaturedPostSection();
                 showSection('posts');
-                
-            } catch (error) {
-                console.error('Error saving post:', error);
-                showMessage('Failed to save post: ' + error.message, 'error');
-            } finally {
-                // Restore button state
-                if (btnText) btnText.style.display = 'inline';
-                if (spinner) spinner.style.display = 'none';
-                submitButton.disabled = false;
             }
+            
+        } catch (error) {
+            console.error('Error saving post:', error);
+            showMessage('Failed to save post: ' + error.message, 'error');
+        } finally {
+            // Restore button state
+            if (btnText) btnText.style.display = 'inline';
+            if (spinner) spinner.style.display = 'none';
+            submitButton.disabled = false;
         }
+    }
 
         // Initialize admin panel
         document.addEventListener('DOMContentLoaded', function() {

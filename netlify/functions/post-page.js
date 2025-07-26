@@ -115,7 +115,7 @@ function generatePostHTML(post) {
   const seoKeywords = post.seoKeywords || (post.tags ? post.tags.join(', ') : 'sherry barrels, whisky aging, rum finishing, Jerez, Spain');
   const featuredImage = post.seoImage || post.featuredImage || '/images/logos/Solera-Cask-Logo.png';
   const fullImageUrl = featuredImage.startsWith('http') ? featuredImage : baseUrl + featuredImage;
-  const author = post.author || 'Solera Cask';
+  const author = post.author || 'admin';
   const publishedTime = new Date(post.date || post.createdAt).toISOString();
   const robotsContent = post.noIndex ? 'noindex, nofollow' : 'index, follow';
   
@@ -416,7 +416,7 @@ function generatePostHTML(post) {
                     ${post.featured ? '<span class="featured-indicator">FEATURED</span>' : ''}
                 </div>
                 <h1 class="post-title">${post.title}</h1>
-                ${author !== 'Solera Cask' ? `<div class="post-author">By ${author}</div>` : ''}
+                ${author && author !== 'admin' ? `<div class="post-author">By ${author}</div>` : ''}
             </div>
 
             ${featuredImage !== '/images/logos/Solera-Cask-Logo.png' ? `

@@ -641,13 +641,23 @@ app.post('/api/posts', authenticateToken, async (req, res) => {
       featured: req.body.featured || false,
       date: req.body.date || new Date().toISOString().split('T')[0],
       images: req.body.images || [],
-      author: req.user.username,
+      // ✅ FIX: Use author from form, fallback to logged-in username
+      author: req.body.author || req.user.username,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      
+      // ✅ ADD: SEO fields support
+      seoTitle: req.body.seoTitle || '',
+      seoDescription: req.body.seoDescription || '',
+      seoKeywords: req.body.seoKeywords || '',
+      seoImage: req.body.seoImage || '',
+      canonicalUrl: req.body.canonicalUrl || '',
+      noIndex: req.body.noIndex || false,
+      autoGenerateSEO: req.body.autoGenerateSEO !== undefined ? req.body.autoGenerateSEO : true
     };
     
     const post = await Post.create(postData);
-    console.log(`Created post: ${post.title} by ${req.user.username}`);
+    console.log(`Created post: ${post.title} by ${post.author}`);
     
     res.status(201).json(post);
   } catch (error) {
@@ -666,7 +676,8 @@ app.put('/api/posts/:id', authenticateToken, async (req, res) => {
     const updateData = {
       ...req.body,
       updatedAt: new Date(),
-      author: req.user.username
+      // ✅ FIX: Use author from form, fallback to logged-in username
+      author: req.body.author || req.user.username
     };
     
     if (updateData.tags && typeof updateData.tags === 'string') {
@@ -683,7 +694,7 @@ app.put('/api/posts/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
     
-    console.log(`Updated post: ${post.title} by ${req.user.username}`);
+    console.log(`Updated post: ${post.title} by ${post.author}`);
     res.json(post);
   } catch (error) {
     console.error('Error updating post:', error);

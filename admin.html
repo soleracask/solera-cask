@@ -1052,30 +1052,29 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="postExcerpt">Excerpt/Summary *</label>
-                                    <textarea id="postExcerpt" name="excerpt" rows="3" placeholder="Brief summary for post preview..." required></textarea>
-                                </div>
-                                
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="postLink">External Link (Optional)</label>
                                         <input type="url" id="postLink" name="link" placeholder="https://example.com">
                                     </div>
                                     <div class="form-group">
+                                        <label for="postAuthor">Author *</label>
+                                        <input type="text" id="postAuthor" name="author" value="admin" required placeholder="Post author name">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
                                         <label for="postTags">Tags (comma-separated)</label>
                                         <input type="text" id="postTags" name="tags" placeholder="sherry, barrels, whisky, aging">
                                     </div>
+                                    <div class="form-group">
+                                        <label for="postStatus">Status</label>
+                                        <select id="postStatus" name="status">
+                                            <option value="published">Published</option>
+                                            <option value="draft">Draft</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                
-                                <div class="form-group">
-                                    <label for="postStatus">Status</label>
-                                    <select id="postStatus" name="status">
-                                        <option value="published">Published</option>
-                                        <option value="draft">Draft</option>
-                                    </select>
-                                </div>
-                            </div>
 
                             <!-- SEO Optimization Section -->
                             <div class="form-section seo-section">
@@ -1128,23 +1127,17 @@
                                         <span id="advancedToggleIcon">▶</span> Advanced SEO Settings
                                     </button>
                                     <div class="advanced-seo-content" id="advancedSEOContent" style="display: none;">
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label for="canonicalUrl">Canonical URL (optional)</label>
-                                                <input type="text" id="canonicalUrl" name="canonicalUrl" placeholder="https://soleracask.com/post/custom-url">
-                                                <div class="help-text">Use only if this content appears on multiple URLs</div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="author">Author</label>
-                                                <input type="text" id="author" name="author" placeholder="Author name">
-                                            </div>
+                                        <div class="form-group">
+                                            <label for="canonicalUrl">Canonical URL (optional)</label>
+                                            <input type="text" id="canonicalUrl" name="canonicalUrl" placeholder="https://soleracask.com/post/custom-url">
+                                            <div class="help-text">Use only if this content appears on multiple URLs</div>
                                         </div>
-
+                                    
                                         <div class="checkbox-group">
                                             <input type="checkbox" id="noIndex" name="noIndex">
                                             <label for="noIndex">No Index (prevent search engines from indexing this post)</label>
                                         </div>
-
+                                    
                                         <div class="checkbox-group">
                                             <input type="checkbox" id="autoGenerateSEO" name="autoGenerateSEO" checked>
                                             <label for="autoGenerateSEO">Auto-generate missing SEO fields when saving</label>
@@ -1658,19 +1651,21 @@
                 type: formData.get('type'),
                 excerpt: formData.get('excerpt').trim(),
                 link: formData.get('link').trim(),
+                author: formData.get('author').trim() || 'admin', // Add this line
                 tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
                 status: formData.get('status'),
-                featured: document.getElementById('postFeatured').checked
+                featured: document.getElementById('postFeatured').checked,
+                
+                // SEO FIELDS
+                seoTitle: document.getElementById('seoTitle').value.trim(),
+                seoDescription: document.getElementById('seoDescription').value.trim(),
+                seoKeywords: document.getElementById('seoKeywords').value.trim(),
+                seoImage: document.getElementById('seoImage').value.trim(),
+                canonicalUrl: document.getElementById('canonicalUrl').value.trim(),
+                // Remove duplicate author field since we moved it to main section
+                noIndex: document.getElementById('noIndex').checked,
+                autoGenerateSEO: document.getElementById('autoGenerateSEO').checked
             };
-
-            // Handle content based on format
-            if (currentContentFormat === 'html') {
-                postData.contentHtml = document.getElementById('postContentHtml').value.trim();
-                postData.content = '';
-            } else {
-                postData.content = document.getElementById('postContent').value.trim();
-                postData.contentHtml = '';
-            }
 
             // ✅ FIXED: Handle featured image upload to Cloudinary
             if (postData.featured) {
@@ -2217,23 +2212,45 @@
             `).join('');
         }
 
+        // Replace the existing loadDashboardStats function around line 1358
         async function loadDashboardStats() {
             try {
+                // Make sure we have the latest posts data
+                if (!posts || posts.length === 0) {
+                    posts = await SoleraBlogAPI.getAllPosts();
+                }
+                
                 const stats = SoleraBlogAPI.getStats(posts);
                 
                 const elements = {
                     total: document.getElementById('stat-total'),
-                    published: document.getElementById('stat-published'),
+                    published: document.getElementById('stat-published'), 
                     drafts: document.getElementById('stat-drafts'),
                     featured: document.getElementById('stat-featured')
                 };
 
+                // Update each stat element if it exists
                 if (elements.total) elements.total.textContent = stats.total;
                 if (elements.published) elements.published.textContent = stats.published;
                 if (elements.drafts) elements.drafts.textContent = stats.drafts;
                 if (elements.featured) elements.featured.textContent = stats.featured;
+                
+                console.log('Dashboard stats updated:', stats);
             } catch (error) {
                 console.error('Error loading stats:', error);
+                // Show fallback stats
+                const fallbackStats = { total: 0, published: 0, drafts: 0, featured: 0 };
+                const elements = {
+                    total: document.getElementById('stat-total'),
+                    published: document.getElementById('stat-published'),
+                    drafts: document.getElementById('stat-drafts'), 
+                    featured: document.getElementById('stat-featured')
+                };
+                
+                if (elements.total) elements.total.textContent = fallbackStats.total;
+                if (elements.published) elements.published.textContent = fallbackStats.published;
+                if (elements.drafts) elements.drafts.textContent = fallbackStats.drafts;
+                if (elements.featured) elements.featured.textContent = fallbackStats.featured;
             }
         }
 
@@ -2358,6 +2375,7 @@
             }
             
             document.getElementById('postLink').value = post.link || '';
+            document.getElementById('postAuthor').value = post.author || 'admin'; // Add this line
             document.getElementById('postTags').value = Array.isArray(post.tags) ? post.tags.join(', ') : '';
             document.getElementById('postStatus').value = post.status || 'published';
             document.getElementById('postFeatured').checked = post.featured || false;
@@ -2596,6 +2614,9 @@
             if (form) {
                 form.reset();
             }
+            
+            // Reset author to default
+            document.getElementById('postAuthor').value = 'admin';
             
             currentEditId = null;
             

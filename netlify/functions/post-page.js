@@ -6,16 +6,14 @@ let cachedDb = null;
 async function connectDB() {
   if (cachedDb) return cachedDb;
   
-  await mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
+  // ✅ FIXED: Use same connection pattern as posts.js
+  await mongoose.connect(process.env.MONGO_URI);
   
   cachedDb = mongoose.connection;
   return cachedDb;
 }
 
-// Post Schema - SAME as your other functions
+// ✅ FIXED: Use exact same schema as posts.js
 const PostSchema = new mongoose.Schema({
   id: String,
   title: String,
@@ -108,7 +106,7 @@ function formatContent(content) {
 }
 
 function generatePostHTML(post) {
-  const baseUrl = 'https://soleracask.netlify.app'; // Update with your domain
+  const baseUrl = 'https://soleracask.netlify.app';
   const currentUrl = `${baseUrl}/post/${createPostSlug(post)}`;
   
   // Generate SEO data with fallbacks

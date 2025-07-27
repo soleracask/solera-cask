@@ -385,8 +385,8 @@ function generatePostHTML(post) {
     <header>
         <nav class="container">
             <a href="/" class="logo">
-                <img src="/images/logos/Solera-Cask-Logo.png" alt="Solera Cask" class="logo-image logo-large">
-                <img src="/images/logos/SC-Logo.png" alt="Solera Cask" class="logo-image logo-small">
+                <img src="images/logos/Solera-Cask-Logo.png" alt="Solera Cask" class="logo-image logo-large">
+                <img src="images/logos/SC-Logo.png" alt="Solera Cask" class="logo-image logo-small">
             </a>
             
             <ul class="nav-menu">
@@ -404,6 +404,17 @@ function generatePostHTML(post) {
                 <span></span>
             </div>
         </nav>
+
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+            <button class="close-mobile-menu" onclick="closeMobileMenu()">&times;</button>
+            <div class="mobile-menu-content">
+                <a href="/#heritage" class="mobile-menu-item">Heritage</a>
+                <a href="/#products" class="mobile-menu-item">Casks</a>
+                <a href="/#product-finder" class="mobile-menu-item">Sherry Barrel Butler</a>
+                <a href="/blog" class="mobile-menu-item">Stories</a>
+                <a href="/#contact" class="mobile-menu-item mobile-cta">Get Quote</a>
+            </div>
+        </div>
     </header>
 
     <div class="post-page">

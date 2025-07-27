@@ -406,7 +406,6 @@ function generatePostHTML(post) {
         </nav>
 
         <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-            <button class="close-mobile-menu" onclick="closeMobileMenu()">&times;</button>
             <div class="mobile-menu-content">
                 <a href="/#heritage" class="mobile-menu-item">Heritage</a>
                 <a href="/#products" class="mobile-menu-item">Casks</a>

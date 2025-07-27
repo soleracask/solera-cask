@@ -1,383 +1,404 @@
-class SoleraTranslationToolbar {
+// Universal Auto-Translate Widget
+// Positioned below accessibility toolbar with matching circular design
+
+class UniversalTranslator {
     constructor() {
-        this.settings = {
-            language: 'en' // Default language: English
+        this.currentLanguage = 'en';
+        this.isTranslating = false;
+        this.translationCache = new Map();
+        this.observer = null;
+        this.translatedElements = new Set();
+        
+        // Supported languages with better coverage
+        this.languages = {
+            'en': { name: 'English', flag: '🇺🇸' },
+            'es': { name: 'Español', flag: '🇪🇸' },
+            'fr': { name: 'Français', flag: '🇫🇷' },
+            'de': { name: 'Deutsch', flag: '🇩🇪' },
+            'it': { name: 'Italiano', flag: '🇮🇹' },
+            'pt': { name: 'Português', flag: '🇵🇹' },
+            'ru': { name: 'Русский', flag: '🇷🇺' },
+            'ja': { name: '日本語', flag: '🇯🇵' },
+            'ko': { name: '한국어', flag: '🇰🇷' },
+            'zh': { name: '中文', flag: '🇨🇳' },
+            'ar': { name: 'العربية', flag: '🇸🇦' },
+            'hi': { name: 'हिन्दी', flag: '🇮🇳' },
+            'tr': { name: 'Türkçe', flag: '🇹🇷' },
+            'pl': { name: 'Polski', flag: '🇵🇱' },
+            'nl': { name: 'Nederlands', flag: '🇳🇱' }
         };
-
-        this.isOpen = false;
-        this.isInitialized = false;
-        this.eventListenersAttached = false;
-
+        
         this.init();
     }
 
     init() {
-        if (this.isInitialized) return;
-
-        console.log('Initializing Solera Translation Toolbar');
-        this.loadGoogleTranslate(() => {
-            console.log('Google Translate script loaded');
-            this.loadSettings();
-            this.addStyles();
-            this.createToggleButton();
-            this.createToolbar();
-            this.setupPersistentEventListeners();
-            this.initializeGoogleTranslate();
-            this.applySettings();
-            this.updateUI();
-            this.ensureToolbarVisibility();
-
-            this.isInitialized = true;
-            console.log('Solera Translation Toolbar fully initialized');
-        });
-    }
-
-    loadGoogleTranslate(callback) {
-        if (window.google && window.google.translate) {
-            console.log('Google Translate already loaded');
-            callback();
-            return;
-        }
-        const script = document.createElement('script');
-        script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-        script.onload = () => {
-            console.log('Google Translate script loaded successfully');
-            callback();
-        };
-        script.onerror = () => console.error('Failed to load Google Translate script');
-        document.head.appendChild(script);
-
-        window.googleTranslateElementInit = () => {
-            console.log('Google Translate element initialized');
-            this.initializeGoogleTranslate();
-            callback();
-        };
-    }
-
-    initializeGoogleTranslate() {
-        const googleWidget = document.getElementById('google_translate_element');
-        if (!googleWidget) {
-            console.error('Google Translate widget container not found. Ensure <div id="google_translate_element"> exists in HTML.');
-            return;
-        }
-        try {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'en,es,fr',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-            }, 'google_translate_element');
-            console.log('Google Translate widget initialized');
-        } catch (error) {
-            console.error('Error initializing Google Translate:', error);
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.setup());
+        } else {
+            this.setup();
         }
     }
 
-    loadSettings() {
-        const stored = localStorage.getItem('solera-trans-language');
-        if (stored !== null) {
-            this.settings.language = stored;
-        }
-        console.log('Loaded settings:', this.settings);
+    setup() {
+        this.createTranslateWidget();
+        this.startObserver();
+        this.loadSavedLanguage();
+        console.log('🌐 Universal Translator initialized - positioned below accessibility');
     }
 
-    saveSettings() {
-        localStorage.setItem('solera-trans-language', this.settings.language);
-        console.log('Saved settings:', this.settings);
-    }
+    createTranslateWidget() {
+        // Remove existing widget if present
+        const existing = document.getElementById('universal-translator');
+        if (existing) existing.remove();
 
-    createToggleButton() {
-        let button = document.getElementById('soleraTranslationToggle');
-        if (!button) {
-            button = document.createElement('button');
-            button.id = 'soleraTranslationToggle';
-            button.className = 'solera-translation-toggle-btn';
-            button.setAttribute('data-solera-trans-toggle', 'true');
-            button.setAttribute('aria-label', 'Select Language');
-            button.innerHTML = `
-                <span class="solera-translation-icon" aria-hidden="true">🌐</span>
-            `;
-            document.body.appendChild(button);
-            console.log('Solera translation toggle button created');
-        }
-    }
-
-    createToolbar() {
-        let toolbar = document.getElementById('solera-translation-toolbar');
-        if (!toolbar) {
-            toolbar = document.createElement('div');
-            toolbar.id = 'solera-translation-toolbar';
-            toolbar.className = 'solera-translation-toolbar';
-            toolbar.setAttribute('data-solera-trans-toolbar', 'true');
-            toolbar.innerHTML = `
-                <div class="solera-trans-header">
-                    <div class="solera-trans-title">
-                        <span class="solera-trans-icon">🌐</span>
-                        <span>Language</span>
+        // Create widget HTML
+        const widget = document.createElement('div');
+        widget.id = 'universal-translator';
+        widget.innerHTML = `
+            <button id="translate-toggle" class="translate-btn">
+                <span class="translate-icon">🌐</span>
+            </button>
+            <div id="translate-dropdown" class="translate-dropdown">
+                <div class="translate-header">
+                    <div class="header-title">
+                        <span class="header-icon">🌐</span>
+                        <span>Choose Language</span>
                     </div>
-                    <button class="solera-trans-close" data-solera-trans-close="true" aria-label="Close translation options">
+                    <button class="translate-close" id="translate-close" aria-label="Close language selector">
                         <span>✕</span>
                     </button>
                 </div>
-                <div class="solera-trans-content" data-solera-trans-content="true">
-                    <div class="solera-trans-section">
-                        <h3>Language</h3>
-                        <select class="solera-trans-language-select" data-solera-trans-action="changeLanguage">
-                            <option value="en" ${this.settings.language === 'en' ? 'selected' : ''}>English</option>
-                            <option value="es" ${this.settings.language === 'es' ? 'selected' : ''}>Español</option>
-                            <option value="fr" ${this.settings.language === 'fr' ? 'selected' : ''}>Français</option>
-                        </select>
-                    </div>
+                <div class="translate-content">
+                    ${Object.entries(this.languages).map(([code, lang]) => `
+                        <button class="translate-option ${code === this.currentLanguage ? 'active' : ''}" 
+                                data-lang="${code}">
+                            <span class="lang-flag">${lang.flag}</span>
+                            <span class="lang-name">${lang.name}</span>
+                            <span class="lang-code">${code.toUpperCase()}</span>
+                        </button>
+                    `).join('')}
                 </div>
-            `;
-            document.body.appendChild(toolbar);
-            console.log('Solera translation toolbar created');
-        }
+                <div class="translate-footer">
+                    <small>Powered by Google Translate</small>
+                </div>
+            </div>
+            <div id="translate-loading" class="translate-loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span>Translating...</span>
+            </div>
+        `;
+
+        // Add styles
+        this.addStyles();
+        
+        // Append to body
+        document.body.appendChild(widget);
+        
+        // Add event listeners
+        this.attachEvents();
     }
 
     addStyles() {
-        let styles = document.getElementById('solera-translation-toolbar-styles');
-        if (!styles) {
-            styles = document.createElement('style');
-            styles.id = 'solera-translation-toolbar-styles';
-            document.head.appendChild(styles);
-        }
+        if (document.getElementById('universal-translator-styles')) return;
 
+        const styles = document.createElement('style');
+        styles.id = 'universal-translator-styles';
         styles.textContent = `
-            /* Solera Translation Toggle Button */
-            .solera-translation-toggle-btn {
-                position: fixed !important;
-                top: calc(50% + 60px) !important;
-                right: 20px !important;
-                transform: translateY(-50%) !important;
-                background: var(--primary, #3B2F2F) !important;
-                border: 1px solid var(--border, #D4A373) !important;
-                color: var(--text-white, #FFFFFF) !important;
-                font-family: 'Inter', sans-serif !important;
-                font-size: 20px !important;
-                padding: 12px !important;
-                cursor: pointer !important;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                border-radius: 50% !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                width: 48px !important;
-                height: 48px !important;
-                box-shadow: var(--shadow-medium, 0 4px 6px rgba(0,0,0,0.1)) !important;
-                z-index: 9997 !important;
-                filter: none !important;
-                -webkit-filter: none !important;
-                isolation: isolate !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                pointer-events: auto !important;
+            #universal-translator {
+                position: fixed;
+                top: calc(50% + 50px); /* Position closer to accessibility button */
+                right: 20px;
+                z-index: 9997; /* One level below accessibility toolbar */
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             }
 
-            .solera-translation-toggle-btn:hover {
-                background: var(--accent-gold, #D4A373) !important;
-                color: var(--text-primary, #3B2F2F) !important;
-                transform: translateY(-50%) scale(1.05) !important;
-                box-shadow: var(--shadow-strong, 0 6px 12px rgba(0,0,0,0.15)) !important;
+            .translate-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 48px;
+                background: var(--primary, #8B4513);
+                border: 1px solid var(--border, #ddd);
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 20px;
+                color: var(--text-white, white);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: var(--shadow-medium, 0 4px 12px rgba(0,0,0,0.1));
+                position: relative;
             }
 
-            .solera-translation-icon {
-                color: inherit !important;
-                font-size: 20px !important;
-                filter: none !important;
-                -webkit-filter: none !important;
-                line-height: 1 !important;
+            .translate-btn:hover {
+                background: var(--accent-gold, #DAA520);
+                color: var(--text-primary, #333);
+                transform: scale(1.05);
+                box-shadow: var(--shadow-strong, 0 6px 16px rgba(0,0,0,0.15));
             }
 
-            /* Solera Translation Toolbar */
-            .solera-translation-toolbar {
-                position: fixed !important;
+            .translate-icon {
+                font-size: 20px;
+                line-height: 1;
+            }
+
+            .translate-dropdown {
+                position: fixed;
                 top: 50% !important;
                 right: -420px !important;
                 transform: translateY(-50%) !important;
-                width: 380px !important;
-                max-height: 80vh !important;
-                background: var(--warm-white, #F8F1E9) !important;
-                border: 1px solid var(--border, #D4A373) !important;
-                border-radius: 0 !important;
-                box-shadow: var(--shadow-strong, 0 6px 12px rgba(0,0,0,0.15)) !important;
-                z-index: 9998 !important;
-                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                font-family: 'Inter', sans-serif !important;
-                filter: none !important;
-                -webkit-filter: none !important;
-                isolation: isolate !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                pointer-events: auto !important;
-                overflow: hidden !important;
+                background: var(--warm-white, white);
+                border: 1px solid var(--border, #ddd);
+                border-radius: 0;
+                box-shadow: var(--shadow-strong, 0 8px 25px rgba(0,0,0,0.15));
+                opacity: 1;
+                visibility: visible;
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                width: 380px;
+                max-height: 80vh;
+                overflow: hidden;
+                z-index: 10000;
             }
 
-            .solera-translation-toolbar.open {
+            .translate-dropdown.open {
                 right: 20px !important;
             }
 
-            /* Elegant Header */
-            .solera-trans-header {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                padding: 24px !important;
-                background: linear-gradient(135deg, var(--primary, #3B2F2F) 0%, var(--primary-dark, #2A1F1F) 100%) !important;
-                color: var(--text-white, #FFFFFF) !important;
-                position: relative !important;
+            .translate-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 24px;
+                border-bottom: 1px solid var(--border-light, #eee);
+                font-weight: 600;
+                color: var(--text-white, white);
+                background: linear-gradient(135deg, var(--primary, #8B4513) 0%, var(--primary-dark, #654321) 100%);
+                font-family: 'Playfair Display', serif;
+                font-size: 18px;
             }
 
-            .solera-trans-title {
-                display: flex !important;
-                align-items: center !important;
-                gap: 12px !important;
-                font-family: 'Playfair Display', serif !important;
-                font-weight: 400 !important;
-                font-size: 18px !important;
-                color: var(--text-white, #FFFFFF) !important;
+            .translate-header .header-title {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                color: var(--text-white, white);
             }
 
-            .solera-trans-icon {
-                font-size: 24px !important;
-                color: var(--accent-gold, #D4A373) !important;
-                filter: none !important;
-                -webkit-filter: none !important;
+            .translate-header .header-icon {
+                font-size: 24px;
+                color: var(--accent-gold, #DAA520);
             }
 
-            .solera-trans-close {
-                background: transparent !important;
-                border: 1px solid rgba(255, 255, 255, 0.3) !important;
-                color: var(--text-white, #FFFFFF) !important;
-                cursor: pointer !important;
-                padding: 8px !important;
-                border-radius: 4px !important;
-                font-size: 14px !important;
-                font-family: 'Inter', sans-serif !important;
-                transition: all 0.3s ease !important;
-                width: 32px !important;
-                height: 32px !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                filter: none !important;
-                -webkit-filter: none !important;
+            .translate-close {
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                color: var(--text-white, white);
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 4px;
+                font-size: 14px;
+                font-family: 'Inter', sans-serif;
+                transition: all 0.3s ease;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
-            .solera-trans-close:hover {
-                background: rgba(255, 255, 255, 0.1) !important;
-                border-color: rgba(255, 255, 255, 0.5) !important;
-                transform: scale(1.05) !important;
+            .translate-close:hover {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.5);
+                transform: scale(1.05);
             }
 
-            /* Content Area */
-            .solera-trans-content {
-                padding: 24px !important;
-                background: var(--warm-white, #F8F1E9) !important;
-                color: var(--text-primary, #3B2F2F) !important;
-                max-height: calc(80vh - 96px) !important;
-                overflow-y: auto !important;
-                -webkit-overflow-scrolling: touch !important;
+            .translate-content {
+                padding: 24px;
+                background: var(--warm-white, white);
+                color: var(--text-primary, #333);
+                max-height: calc(80vh - 96px);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             /* Custom scrollbar for webkit browsers */
-            .solera-trans-content::-webkit-scrollbar {
-                width: 6px !important;
+            .translate-content::-webkit-scrollbar {
+                width: 6px;
             }
 
-            .solera-trans-content::-webkit-scrollbar-track {
-                background: var(--light-beige, #EDE4D3) !important;
+            .translate-content::-webkit-scrollbar-track {
+                background: var(--light-beige, #f8f9fa);
             }
 
-            .solera-trans-content::-webkit-scrollbar-thumb {
-                background: var(--accent-gold, #D4A373) !important;
-                border-radius: 3px !important;
+            .translate-content::-webkit-scrollbar-thumb {
+                background: var(--accent-gold, #DAA520);
+                border-radius: 3px;
             }
 
-            .solera-trans-content::-webkit-scrollbar-thumb:hover {
-                background: var(--primary-dark, #2A1F1F) !important;
+            .translate-content::-webkit-scrollbar-thumb:hover {
+                background: var(--primary-dark, #654321);
             }
 
-            /* Sections */
-            .solera-trans-section {
-                margin-bottom: 32px !important;
+            .translate-option {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                width: 100%;
+                padding: 12px 16px;
+                border: none;
+                background: var(--cream, #fdf5e6);
+                cursor: pointer;
+                font-size: 14px;
+                color: var(--text-primary, #333);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                text-align: left;
+                margin-bottom: 8px;
+                border: 1px solid var(--border, #ddd);
+                border-radius: 4px;
+                position: relative;
+                overflow: hidden;
+                font-family: 'Inter', sans-serif;
+                font-weight: 500;
             }
 
-            .solera-trans-section:last-child {
-                margin-bottom: 0 !important;
+            .translate-option::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: var(--accent-gold, #DAA520);
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: -1;
             }
 
-            .solera-trans-section h3 {
-                font-family: 'Playfair Display', serif !important;
-                font-weight: 400 !important;
-                font-size: 16px !important;
-                color: var(--text-primary, #3B2F2F) !important;
-                margin-bottom: 16px !important;
-                padding-bottom: 8px !important;
-                border-bottom: 1px solid var(--border-light, #E0E0E0) !important;
+            .translate-option:hover::before {
+                left: 0;
             }
 
-            /* Language Selector */
-            .solera-trans-language-select {
-                width: 100% !important;
-                padding: 12px 16px !important;
-                background: var(--cream, #FFF8E7) !important;
-                border: 1px solid var(--border, #D4A373) !important;
-                border-radius: 4px !important;
-                font-family: 'Inter', sans-serif !important;
-                font-size: 14px !important;
-                font-weight: 500 !important;
-                color: var(--text-primary, #3B2F2F) !important;
-                cursor: pointer !important;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                appearance: none !important;
-                -webkit-appearance: none !important;
-                -moz-appearance: none !important;
-                background-image: url('data:image/svg+xml;utf8,<svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7 7l3-3 3 3m0 6l-3 3-3-3"/></svg>') !important;
-                background-repeat: no-repeat !important;
-                background-position: right 12px center !important;
-                background-size: 16px !important;
+            .translate-option:hover {
+                border-color: var(--accent-gold, #DAA520);
+                transform: translateY(-1px);
+                box-shadow: var(--shadow-subtle, 0 2px 8px rgba(0,0,0,0.1));
+                color: var(--text-primary, #333);
             }
 
-            .solera-trans-language-select:hover {
-                border-color: var(--accent-gold, #D4A373) !important;
-                transform: translateY(-1px) !important;
-                box-shadow: var(--shadow-subtle, 0 2px 4px rgba(0,0,0,0.05)) !important;
+            .translate-option.active {
+                background: var(--primary, #8B4513);
+                color: var(--text-white, white);
+                font-weight: 500;
+                border-color: var(--primary, #8B4513);
             }
 
-            .solera-trans-language-select:focus {
-                outline: none !important;
-                border-color: var(--accent-gold, #D4A373) !important;
-                box-shadow: 0 0 0 3px rgba(212,163,115,0.2) !important;
+            .translate-option.active::before {
+                background: var(--primary-dark, #654321);
+                left: 0;
             }
 
-            /* Exclude toolbar from accessibility effects */
-            .solera-translation-toolbar, .solera-translation-toolbar *,
-            .solera-translation-toggle-btn, .solera-translation-toggle-btn * {
-                filter: none !important;
-                -webkit-filter: none !important;
-                isolation: isolate !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                pointer-events: auto !important;
+            .translate-option.active:hover {
+                background: var(--primary-dark, #654321);
+                border-color: var(--primary-dark, #654321);
+                color: var(--text-white, white);
             }
 
-            /* Hide Google Translate's default widget */
-            #google_translate_element, .goog-te-banner-frame {
-                display: none !important;
+            .lang-flag {
+                font-size: 18px;
+                width: 24px;
+                text-align: center;
             }
 
-            /* Mobile Responsive Design */
+            .lang-name {
+                flex: 1;
+            }
+
+            .lang-code {
+                font-size: 11px;
+                color: inherit;
+                opacity: 0.7;
+                background: rgba(0,0,0,0.1);
+                padding: 2px 6px;
+                border-radius: 4px;
+            }
+
+            .translate-option.active .lang-code {
+                background: rgba(255,255,255,0.2);
+                color: inherit;
+            }
+
+            .translate-footer {
+                padding: 12px 16px;
+                border-top: 1px solid var(--border-light, #eee);
+                background: var(--light-beige, #f8f9fa);
+                text-align: center;
+            }
+
+            .translate-footer small {
+                color: var(--text-secondary, #666);
+                font-size: 11px;
+            }
+
+            .translate-loading {
+                position: fixed;
+                top: 50% !important;
+                right: -420px !important;
+                transform: translateY(-50%) !important;
+                background: var(--warm-white, white);
+                border: 1px solid var(--border, #ddd);
+                border-radius: 12px;
+                box-shadow: var(--shadow-strong, 0 8px 25px rgba(0,0,0,0.15));
+                padding: 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                min-width: 150px;
+                font-size: 14px;
+                color: var(--text-secondary, #666);
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .translate-loading.show {
+                right: 20px !important;
+            }
+
+            .loading-spinner {
+                width: 16px;
+                height: 16px;
+                border: 2px solid #f3f3f3;
+                border-top: 2px solid var(--primary, #8B4513);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            /* Translation effects */
+            .translating {
+                opacity: 0.7;
+                transition: opacity 0.3s ease;
+            }
+
+            .translated {
+                opacity: 1;
+                transition: opacity 0.3s ease;
+            }
+
+            /* Mobile responsive */
             @media (max-width: 768px) {
-                .solera-translation-toggle-btn {
-                    right: 15px !important;
-                    top: calc(50% + 55px) !important;
-                    width: 44px !important;
-                    height: 44px !important;
-                    font-size: 18px !important;
+                #universal-translator {
+                    top: calc(50% + 45px); /* Adjust for mobile spacing */
+                    right: 15px;
                 }
-
-                .solera-translation-toolbar {
+                
+                .translate-btn {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 18px;
+                }
+                
+                .translate-dropdown {
                     width: calc(100vw - 30px) !important;
                     right: -100vw !important;
                     top: 20px !important;
@@ -385,247 +406,432 @@ class SoleraTranslationToolbar {
                     max-height: calc(100vh - 40px) !important;
                 }
 
-                .solera-translation-toolbar.open {
+                .translate-dropdown.open {
                     right: 15px !important;
                 }
 
-                .solera-trans-header {
-                    padding: 20px !important;
+                .translate-loading {
+                    width: calc(100vw - 30px) !important;
+                    right: -100vw !important;
+                    top: 20px !important;
+                    transform: none !important;
                 }
 
-                .solera-trans-title {
-                    font-size: 16px !important;
-                    gap: 10px !important;
-                }
-
-                .solera-trans-icon {
-                    font-size: 20px !important;
-                }
-
-                .solera-trans-content {
-                    padding: 20px !important;
-                    max-height: calc(100vh - 136px) !important;
-                }
-
-                .solera-trans-section {
-                    margin-bottom: 24px !important;
-                }
-
-                .solera-trans-language-select {
-                    padding: 14px 16px !important;
-                    font-size: 15px !important;
+                .translate-loading.show {
+                    right: 15px !important;
                 }
             }
 
-            /* Extra small mobile screens */
-            @media (max-width: 480px) {
-                .solera-translation-toolbar {
-                    width: calc(100vw - 20px) !important;
-                }
+            /* Ensure translator is not affected by accessibility filters */
+            #universal-translator,
+            #universal-translator *,
+            .translate-btn,
+            .translate-btn * {
+                filter: none !important;
+                -webkit-filter: none !important;
+                isolation: isolate !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+            }
 
-                .solera-translation-toolbar.open {
-                    right: 10px !important;
-                }
+            /* Specific handling when accessibility toolbar is active */
+            html.solera-a11y-grayscale #universal-translator,
+            html.solera-a11y-high-contrast #universal-translator,
+            html.solera-a11y-negative-contrast #universal-translator,
+            html.solera-a11y-light-background #universal-translator {
+                filter: none !important;
+                -webkit-filter: none !important;
+            }
 
-                .solera-trans-header {
-                    padding: 16px !important;
-                }
+            /* Keep translator functional during accessibility text scaling */
+            html.solera-a11y-increased-text #universal-translator,
+            html.solera-a11y-increased-text #universal-translator *,
+            html.solera-a11y-extra-large-text #universal-translator,
+            html.solera-a11y-extra-large-text #universal-translator *,
+            html.solera-a11y-decreased-text #universal-translator,
+            html.solera-a11y-decreased-text #universal-translator *,
+            html.solera-a11y-extra-small-text #universal-translator,
+            html.solera-a11y-extra-small-text #universal-translator * {
+                font-size: revert !important;
+            }
 
-                .solera-trans-title {
-                    font-size: 15px !important;
+            /* High contrast for accessibility */
+            @media (prefers-contrast: high) {
+                .translate-btn {
+                    border: 2px solid #000;
                 }
-
-                .solera-trans-content {
-                    padding: 16px !important;
+                
+                .translate-dropdown {
+                    border: 2px solid #000;
                 }
+            }
 
-                .solera-trans-language-select {
-                    padding: 12px 14px !important;
-                    font-size: 14px !important;
+            /* Reduced motion for accessibility */
+            @media (prefers-reduced-motion: reduce) {
+                .translate-btn,
+                .translate-dropdown,
+                .translating,
+                .translated {
+                    transition: none;
+                }
+                
+                .loading-spinner {
+                    animation: none;
                 }
             }
         `;
+
+        document.head.appendChild(styles);
     }
 
-    setupPersistentEventListeners() {
-        if (this.eventListenersAttached) return;
+    attachEvents() {
+        const toggle = document.getElementById('translate-toggle');
+        const dropdown = document.getElementById('translate-dropdown');
+        const closeBtn = document.getElementById('translate-close');
 
-        const globalClickHandler = (e) => {
-            if (!e.target) return;
-
-            const toggleButton = e.target.closest('[data-solera-trans-toggle]');
-            if (toggleButton) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.toggle();
-                return;
-            }
-
-            const closeButton = e.target.closest('[data-solera-trans-close]');
-            if (closeButton) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.close();
-                return;
-            }
-        };
-
-        const globalChangeHandler = (e) => {
-            const actionSelect = e.target.closest('[data-solera-trans-action]');
-            if (actionSelect) {
-                e.preventDefault();
-                console.log('Language select changed:', actionSelect.value);
-                const action = actionSelect.getAttribute('data-solera-trans-action');
-                this.handleAction(action, actionSelect.value);
-            }
-        };
-
-        const globalKeyHandler = (e) => {
-            if (e.key === 'Escape' && this.isOpen) {
-                this.close();
-            }
-        };
-
-        document.addEventListener('click', globalClickHandler, true);
-        document.addEventListener('change', globalChangeHandler, true);
-        document.addEventListener('keydown', globalKeyHandler, true);
-
-        const observer = new MutationObserver(() => {
-            if (!document.querySelector('#soleraTranslationToggle')) {
-                this.createToggleButton();
-            }
-            if (!document.querySelector('#solera-translation-toolbar')) {
-                this.createToolbar();
-            }
-            this.ensureToolbarVisibility();
+        // Toggle dropdown
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
         });
-        observer.observe(document.body, { childList: true, subtree: true });
 
-        window.addEventListener('resize', () => this.handleResize());
+        // Close button
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.remove('open');
+        });
 
-        this.globalClickHandler = globalClickHandler;
-        this.globalChangeHandler = globalChangeHandler;
-        this.globalKeyHandler = globalKeyHandler;
-        this.mutationObserver = observer;
-        this.eventListenersAttached = true;
-    }
-
-    toggle() {
-        if (this.isOpen) {
-            this.close();
-        } else {
-            this.open();
-        }
-    }
-
-    open() {
-        const toolbar = document.getElementById('solera-translation-toolbar');
-        if (!toolbar) {
-            this.createToolbar();
-            return this.open();
-        }
-
-        this.isOpen = true;
-        toolbar.classList.add('open');
-        this.ensureToolbarVisibility();
-    }
-
-    close() {
-        const toolbar = document.getElementById('solera-translation-toolbar');
-        if (!toolbar) return;
-
-        this.isOpen = false;
-        toolbar.classList.remove('open');
-    }
-
-    handleAction(action, value) {
-        console.log('Handling action:', action, 'with value:', value);
-        if (action === 'changeLanguage') {
-            this.settings.language = value;
-            this.saveSettings();
-            const translateSelect = document.querySelector('.goog-te-combo');
-            if (translateSelect) {
-                translateSelect.value = value;
-                translateSelect.dispatchEvent(new Event('change'));
-                console.log('Dispatched change event to Google Translate with value:', value);
-            } else {
-                console.error('Google Translate select (.goog-te-combo) not found');
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#universal-translator')) {
+                dropdown.classList.remove('open');
             }
+        });
+
+        // Language selection
+        dropdown.addEventListener('click', (e) => {
+            const option = e.target.closest('.translate-option');
+            if (option) {
+                const langCode = option.dataset.lang;
+                this.translateTo(langCode);
+                dropdown.classList.remove('open');
+            }
+        });
+
+        // Keyboard navigation
+        toggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                dropdown.classList.toggle('open');
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && dropdown.classList.contains('open')) {
+                dropdown.classList.remove('open');
+            }
+        });
+    }
+
+    async translateTo(langCode) {
+        if (this.isTranslating || langCode === this.currentLanguage) return;
+
+        this.isTranslating = true;
+        this.showLoading();
+
+        try {
+            if (langCode === 'en') {
+                this.restoreOriginal();
+            } else {
+                await this.translatePage(langCode);
+            }
+
+            this.currentLanguage = langCode;
             this.updateUI();
-            this.ensureToolbarVisibility();
+            this.saveLanguage();
+            
+        } catch (error) {
+            console.error('Translation failed:', error);
+            this.showError();
+        } finally {
+            this.isTranslating = false;
+            this.hideLoading();
         }
     }
 
-    applySettings() {
-        const translateSelect = document.querySelector('.goog-te-combo');
-        if (translateSelect) {
-            translateSelect.value = this.settings.language;
-            translateSelect.dispatchEvent(new Event('change'));
-            console.log('Applied settings, set language to:', this.settings.language);
-        } else {
-            console.error('Google Translate select (.goog-te-combo) not found during applySettings');
+    async translatePage(targetLang) {
+        const textNodes = this.getAllTextNodes();
+        const batches = this.createBatches(textNodes, 100); // Process in batches
+
+        for (const batch of batches) {
+            await this.translateBatch(batch, targetLang);
+            await this.sleep(100); // Small delay between batches
         }
+    }
+
+    getAllTextNodes() {
+        const walker = document.createTreeWalker(
+            document.body,
+            NodeFilter.SHOW_TEXT,
+            {
+                acceptNode: (node) => {
+                    // Skip script, style, and other non-visible elements
+                    const parent = node.parentElement;
+                    if (!parent) return NodeFilter.FILTER_REJECT;
+                    
+                    const tagName = parent.tagName.toLowerCase();
+                    if (['script', 'style', 'noscript', 'iframe', 'object'].includes(tagName)) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    
+                    // Skip if parent has no-translate attribute
+                    if (parent.closest('[translate="no"], [data-no-translate]')) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    
+                    // Skip translator elements
+                    if (parent.closest('#universal-translator, #solera-accessibility-toolbar')) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    
+                    // Skip if text is too short or only whitespace/numbers
+                    const text = node.textContent.trim();
+                    if (text.length < 2 || /^[\s\d\W]*$/.test(text)) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            }
+        );
+
+        const textNodes = [];
+        let node;
+        while (node = walker.nextNode()) {
+            textNodes.push(node);
+        }
+        
+        return textNodes;
+    }
+
+    createBatches(items, batchSize) {
+        const batches = [];
+        for (let i = 0; i < items.length; i += batchSize) {
+            batches.push(items.slice(i, i + batchSize));
+        }
+        return batches;
+    }
+
+    async translateBatch(textNodes, targetLang) {
+        const translations = await Promise.all(
+            textNodes.map(node => this.translateText(node.textContent.trim(), targetLang))
+        );
+
+        textNodes.forEach((node, index) => {
+            const translation = translations[index];
+            if (translation && translation !== node.textContent.trim()) {
+                // Store original text
+                if (!node.originalText) {
+                    node.originalText = node.textContent;
+                }
+                node.textContent = translation;
+                this.translatedElements.add(node);
+            }
+        });
+    }
+
+    async translateText(text, targetLang) {
+        const cacheKey = `${text}:${targetLang}`;
+        if (this.translationCache.has(cacheKey)) {
+            return this.translationCache.get(cacheKey);
+        }
+
+        try {
+            // Use Google Translate API (you can replace with any translation service)
+            const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
+            
+            if (!response.ok) throw new Error('Translation request failed');
+            
+            const data = await response.json();
+            const translation = data[0]?.map(item => item[0]).join('') || text;
+            
+            // Cache the result
+            this.translationCache.set(cacheKey, translation);
+            return translation;
+            
+        } catch (error) {
+            console.warn('Translation failed for:', text, error);
+            return text; // Return original text on failure
+        }
+    }
+
+    restoreOriginal() {
+        this.translatedElements.forEach(node => {
+            if (node.originalText) {
+                node.textContent = node.originalText;
+            }
+        });
+        this.translatedElements.clear();
+    }
+
+    startObserver() {
+        // Watch for new content being added to the page
+        this.observer = new MutationObserver((mutations) => {
+            if (this.currentLanguage === 'en' || this.isTranslating) return;
+
+            let hasNewText = false;
+            mutations.forEach(mutation => {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.nodeType === Node.ELEMENT_NODE && node.textContent.trim()) {
+                            hasNewText = true;
+                        }
+                    });
+                }
+            });
+
+            if (hasNewText) {
+                // Debounce rapid changes
+                clearTimeout(this.retranslateTimeout);
+                this.retranslateTimeout = setTimeout(() => {
+                    this.translatePage(this.currentLanguage);
+                }, 500);
+            }
+        });
+
+        this.observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     }
 
     updateUI() {
-        const select = document.querySelector('.solera-trans-language-select');
-        if (select) {
-            select.value = this.settings.language;
-            console.log('Updated UI, set dropdown to:', this.settings.language);
+        const options = document.querySelectorAll('.translate-option');
+        
+        options.forEach(option => {
+            option.classList.toggle('active', option.dataset.lang === this.currentLanguage);
+        });
+    }
+
+    showLoading() {
+        const loading = document.getElementById('translate-loading');
+        const dropdown = document.getElementById('translate-dropdown');
+        
+        if (loading) {
+            loading.style.display = 'flex';
+            loading.classList.add('show');
+        }
+        if (dropdown) dropdown.classList.remove('open');
+        
+        document.body.classList.add('translating');
+    }
+
+    hideLoading() {
+        const loading = document.getElementById('translate-loading');
+        
+        if (loading) {
+            loading.classList.remove('show');
+            setTimeout(() => {
+                loading.style.display = 'none';
+            }, 400); // Wait for transition to complete
+        }
+        
+        document.body.classList.remove('translating');
+        document.body.classList.add('translated');
+        setTimeout(() => document.body.classList.remove('translated'), 300);
+    }
+
+    showError() {
+        // Simple error notification
+        const notification = document.createElement('div');
+        notification.textContent = 'Translation failed. Please try again.';
+        notification.style.cssText = `
+            position: fixed;
+            bottom: calc(50% - 100px);
+            right: 20px;
+            background: #f44336;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 1000000;
+            font-family: inherit;
+            font-size: 14px;
+        `;
+        
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+    }
+
+    saveLanguage() {
+        try {
+            localStorage.setItem('universal-translator-lang', this.currentLanguage);
+        } catch (e) {
+            // Ignore localStorage errors
         }
     }
 
-    ensureToolbarVisibility() {
-        setTimeout(() => {
-            const toolbar = document.getElementById('solera-translation-toolbar');
-            const toggleBtn = document.getElementById('soleraTranslationToggle');
-
-            if (toolbar) {
-                toolbar.style.cssText += 'filter: none !important; -webkit-filter: none !important; isolation: isolate !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;';
+    loadSavedLanguage() {
+        try {
+            const saved = localStorage.getItem('universal-translator-lang');
+            if (saved && this.languages[saved]) {
+                this.translateTo(saved);
             }
-
-            if (toggleBtn) {
-                toggleBtn.style.cssText += 'filter: none !important; -webkit-filter: none !important; isolation: isolate !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;';
-            }
-
-            const googleWidget = document.getElementById('google_translate_element');
-            if (googleWidget) {
-                googleWidget.style.display = 'none';
-            }
-        }, 50);
+        } catch (e) {
+            // Ignore localStorage errors
+        }
     }
 
-    handleResize() {
-        this.ensureToolbarVisibility();
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    // Public API
     destroy() {
-        if (this.globalClickHandler) {
-            document.removeEventListener('click', this.globalClickHandler, true);
+        if (this.observer) {
+            this.observer.disconnect();
         }
-        if (this.globalChangeHandler) {
-            document.removeEventListener('change', this.globalChangeHandler, true);
-        }
-        if (this.globalKeyHandler) {
-            document.removeEventListener('keydown', this.globalKeyHandler, true);
-        }
-        if (this.mutationObserver) {
-            this.mutationObserver.disconnect();
-        }
-
-        const toolbar = document.getElementById('solera-translation-toolbar');
-        if (toolbar) toolbar.remove();
-
-        const toggleButton = document.getElementById('soleraTranslationToggle');
-        if (toggleButton) toggleButton.remove();
-
-        const styles = document.getElementById('solera-translation-toolbar-styles');
+        
+        const widget = document.getElementById('universal-translator');
+        const styles = document.getElementById('universal-translator-styles');
+        
+        if (widget) widget.remove();
         if (styles) styles.remove();
+        
+        this.restoreOriginal();
+        
+        clearTimeout(this.retranslateTimeout);
+    }
 
-        this.eventListenersAttached = false;
-        this.isInitialized = false;
+    setLanguage(langCode) {
+        return this.translateTo(langCode);
+    }
+
+    getCurrentLanguage() {
+        return this.currentLanguage;
+    }
+
+    getSupportedLanguages() {
+        return { ...this.languages };
     }
 }
 
-// Initialize the Solera translation toolbar
-window.soleraTranslationToolbar = new SoleraTranslationToolbar();
+// Auto-initialize when script loads
+if (typeof window !== 'undefined') {
+    // Wait for DOM to be ready
+    const initTranslator = () => {
+        window.universalTranslator = new UniversalTranslator();
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTranslator);
+    } else {
+        initTranslator();
+    }
+}
+
+// Export for module systems
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = UniversalTranslator;
+}

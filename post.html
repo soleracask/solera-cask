@@ -827,6 +827,11 @@
         // Initialize post page
         document.addEventListener('DOMContentLoaded', function() {
             initializePostPage();
+            
+            // Initialize accessibility toolbar
+            if (!window.soleraAccessibilityToolbar) {
+                window.soleraAccessibilityToolbar = new SoleraAccessibilityToolbar();
+            }
         });
 
         async function initializePostPage() {
@@ -2257,9 +2262,6 @@ class SoleraAccessibilityToolbar {
         this.isInitialized = false;
     }
 }
-
-// Initialize the Solera accessibility toolbar
-window.soleraAccessibilityToolbar = new SoleraAccessibilityToolbar();
 
         // Export functions
         window.navigateToPost = navigateToPost;

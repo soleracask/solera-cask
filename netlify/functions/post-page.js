@@ -525,14 +525,13 @@ function generatePostHTML(post) {
             </div>
         </div>
     </footer>
-
+    <script src="/js/script.js"></script>   
     <script>
         // Minimal JavaScript for mobile menu only
         document.getElementById('mobileMenuToggle')?.addEventListener('click', function() {
             // Add mobile menu functionality if needed
         });
     </script>
-    <script src="/js/script.js"></script>
 </body>
 </html>`;
 }

@@ -521,6 +521,7 @@ function generatePostHTML(post) {
             // Add mobile menu functionality if needed
         });
     </script>
+    <script src="/js/script.js"></script>
 </body>
 </html>`;
 }

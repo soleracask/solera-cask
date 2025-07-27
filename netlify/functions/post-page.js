@@ -382,11 +382,11 @@ function generatePostHTML(post) {
     </style>
 </head>
 <body>
-    <header>
+   <header>
         <nav class="container">
             <a href="/" class="logo">
-                <img src="images/logos/Solera-Cask-Logo.png" alt="Solera Cask" class="logo-image logo-large">
-                <img src="images/logos/SC-Logo.png" alt="Solera Cask" class="logo-image logo-small">
+                <img src="/images/logos/Solera-Cask-Logo.png" alt="Solera Cask" class="logo-image logo-large">
+                <img src="/images/logos/SC-Logo.png" alt="Solera Cask" class="logo-image logo-small">
             </a>
             
             <ul class="nav-menu">
@@ -416,6 +416,7 @@ function generatePostHTML(post) {
             </div>
         </div>
     </header>
+
 
     <div class="post-page">
         <div class="post-container${post.contentHtml ? ' html-content' : ''}">

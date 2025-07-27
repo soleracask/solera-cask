@@ -526,6 +526,7 @@ function generatePostHTML(post) {
         </div>
     </footer>
     <script src="/js/script.js"></script>   
+    <script src="js/solera-accessibility.js"></script>
     <script>
         // Minimal JavaScript for mobile menu only
         document.getElementById('mobileMenuToggle')?.addEventListener('click', function() {

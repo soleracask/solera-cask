@@ -2817,3 +2817,106 @@ window.soleraAccessibilityToolbar = new SoleraAccessibilityToolbar();
     window.SoleraPostRenderer = SoleraPostRenderer;
     
 });
+// =================================
+// HERO IMAGE FADE-IN FUNCTIONALITY
+// =================================
+document.addEventListener('DOMContentLoaded', function() {
+    
+    class SoleraHeroImageFader {
+        constructor() {
+            this.heroImages = document.querySelectorAll('.hero-bg-image');
+            this.loadedImages = new Set();
+            this.initializeImageLoading();
+        }
+
+        initializeImageLoading() {
+            this.heroImages.forEach((img, index) => {
+                // Skip if already processed
+                if (img.hasAttribute('data-solera-fade-processed')) return;
+                
+                // Mark as processed
+                img.setAttribute('data-solera-fade-processed', 'true');
+                
+                // Add loading state to parent hero-image container
+                const heroImageContainer = img.closest('.hero-image');
+                if (heroImageContainer) {
+                    heroImageContainer.classList.add('loading');
+                }
+                
+                // If image is already loaded (cached), fade it in immediately
+                if (img.complete && img.naturalHeight !== 0) {
+                    this.onImageLoad(img, heroImageContainer);
+                } else {
+                    // Set up load event listener
+                    img.addEventListener('load', () => {
+                        this.onImageLoad(img, heroImageContainer);
+                    });
+                    
+                    // Set up error handler
+                    img.addEventListener('error', () => {
+                        this.onImageError(img, heroImageContainer);
+                    });
+                }
+            });
+        }
+
+        onImageLoad(img, container) {
+            // Small delay for smooth visual transition
+            setTimeout(() => {
+                img.classList.add('loaded');
+                if (container) {
+                    container.classList.remove('loading');
+                }
+                this.loadedImages.add(img.src);
+                console.log('Solera hero image loaded with fade-in effect:', img.alt || img.src);
+            }, 100);
+        }
+
+        onImageError(img, container) {
+            console.warn('Solera hero image failed to load:', img.src);
+            // Still remove loading state even if image fails
+            if (container) {
+                container.classList.remove('loading');
+            }
+            // Set a fallback or keep the background color
+            img.style.opacity = '0'; // Keep it hidden if it failed to load
+        }
+
+        // Method to handle dynamic image changes (for future use)
+        changeImage(imgElement, newSrc) {
+            if (!imgElement) return;
+            
+            // Fade out current image
+            imgElement.classList.remove('loaded');
+            
+            const container = imgElement.closest('.hero-image');
+            if (container) {
+                container.classList.add('loading');
+            }
+            
+            // Load new image after fade out
+            setTimeout(() => {
+                imgElement.src = newSrc;
+                // The load event listener will handle fading it back in
+            }, 400);
+        }
+
+        // Refresh method for dynamically added images
+        refresh() {
+            this.heroImages = document.querySelectorAll('.hero-bg-image');
+            this.initializeImageLoading();
+        }
+    }
+
+    // Initialize the hero image fader
+    window.soleraHeroImageFader = new SoleraHeroImageFader();
+    
+    // Optional: Refresh on window focus (in case images load while tab is inactive)
+    window.addEventListener('focus', () => {
+        if (window.soleraHeroImageFader) {
+            window.soleraHeroImageFader.refresh();
+        }
+    });
+
+    console.log('Solera hero image fade-in functionality initialized');
+});

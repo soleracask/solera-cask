@@ -355,7 +355,7 @@ header.scrolled .logo-small {
     /* Initially hidden for fade-in effect */
     opacity: 0;
     /* Smooth fade-in transition */
-    transition: opacity 1.5s ease-in-out;
+    transition: opacity 1.2s ease-in-out;
 }
 
 /* When image is loaded, fade it in */
@@ -4038,4 +4038,321 @@ html {
         rgba(255,255,255,0.3) 100%
     );
     transition: background 0.3s ease;
+}
+/* Justified Text - Straight edges on both left and right sides */
+
+/* Change all paragraph text to justified within their existing containers */
+/* BUT exclude FAQ pages, product cards, AND recommendation cards */
+p:not(.faq-content p):not(.faq-nav-intro p):not(.faq-footer p):not(.faq-category-card p):not(.faq-contact-content p):not(.sherry-card p):not(.sherry-description-text):not(.product-card p):not(.recommendation-card p):not(.recommendation-description):not(.finder-results p) {
+    text-align: justify !important;
+    /* Improve spacing for better justified text appearance */
+    hyphens: none !important; /* Disable hyphenation */
+    word-spacing: 0.1em;
+    line-height: 1.6;
+    word-break: normal; /* Let words wrap naturally */
+}
+
+/* Also apply to other text elements that might be center-aligned */
+/* BUT exclude FAQ elements AND product cards */
+.section-description:not(.faq-nav .section-description),
+.hero-description,
+.story-content p,
+.heritage-content p,
+.contact-info p,
+.shipping-note,
+.brand-motto {
+    text-align: justify !important;
+    hyphens: none !important; /* Disable hyphenation here too */
+}
+
+/* Keep product card text left-aligned (not justified) */
+.product-content p,
+.sherry-description-text,
+.sherry-card p,
+.product-card p,
+.recommendation-card p,
+.recommendation-description,
+.finder-results p {
+    text-align: left !important;
+}
+
+/* Special case: ONLY products CTA sections that should be optically centered */
+.products-cta p,
+.products-cta-content p {
+    text-align: justify !important;
+    hyphens: auto;
+    padding-left: 3% !important;
+    padding-right: 3% !important;
+}
+
+/* Keep these specific elements centered (they should stay as-is) */
+.section-intro h1,
+.section-intro h2,
+.section-title,
+.hero h1,
+.hero-subtitle,
+.section-label,
+.footer-bottom,
+.back-to-blog,
+.hero-cta-section,
+.products-cta-buttons,
+.result-cta,
+.faq-category-card,
+.contact-option {
+    text-align: center !important;
+}
+
+/* ONLY override section labels that are in left-aligned sections */
+.heritage .section-label,
+.story-content .section-label,
+.technical-section .section-label,
+.contact-grid .section-label {
+    text-align: left !important;
+}
+/* Reduce spacing between specific sections */
+
+/* Reduce padding between CTA sections and following content */
+.products-cta {
+    padding: 80px 60px 40px 60px; /* Reduced bottom padding from default */
+    margin-bottom: 0; /* Remove any bottom margin */
+}
+
+/* Reduce top padding of contact section when it follows a CTA */
+.contact {
+    padding: 60px 0 120px; /* Reduced top padding from 120px to 60px */
+}
+
+/* Alternative: If you want to target this more specifically */
+.products-cta + .contact,
+.faq-footer + .contact {
+    padding-top: 60px; /* Reduced from default 120px */
+}
+
+/* You can also reduce general section spacing if needed */
+.section {
+    padding: 80px 0; /* Reduced from 120px 0 to 80px 0 */
+}
+
+/* Fix tight spacing in FAQ navigation section */
+.faq-nav-intro h1 {
+    margin-bottom: 48px !important; /* Increased from 32px to 48px for more space after "Browse by Category" */
+}
+
+.faq-nav-intro p {
+    margin-top: 24px !important; /* Add top margin to push the subtitle down */
+    margin-bottom: 48px !important; /* Increase space after subtitle text */
+}
+
+/* Alternative approach - target the specific FAQ intro section */
+.faq-nav-intro {
+    margin-bottom: 80px !important; /* Increase overall section spacing */
+}
+
+.faq-nav-intro .section-title + p {
+    margin-top: 32px !important; /* Specific spacing between title and paragraph */
+}
+
+/* Try different possible selectors for the FAQ title and subtitle */
+.faq-nav h1 {
+    margin-bottom: 40px !important;
+}
+
+.faq-nav p {
+    margin-top: 40px !important;
+}
+
+/* Target by content if needed */
+h1:contains("Browse by Category") {
+    margin-bottom: 50px !important;
+}
+
+/* Most aggressive approach - target all h1 elements in FAQ sections */
+.faq-nav-intro > h1,
+.faq-nav > .container > h1,
+.faq-section h1 {
+    margin-bottom: 50px !important;
+    padding-bottom: 20px !important;
+}
+
+/* ===============================================
+   NEW CSS FOR UPDATED CONTACT FORM
+   Add this to the end of your styles.css file
+   =============================================== */
+
+/* Required field asterisk styling */
+.form-group label .required {
+    color: #d32f2f;
+    margin-left: 4px;
+}
+
+/* Selectable Button Styles for Sherry Preferences */
+.preference-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.preference-button {
+    background: var(--warm-white);
+    border: 2px solid var(--border);
+    color: var(--text-secondary);
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: 'Inter', sans-serif;
+}
+
+.preference-button:hover {
+    border-color: var(--primary);
+    background: var(--light-beige);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-subtle);
+}
+
+.preference-button.selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-white);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+}
+
+.preference-button.disabled {
+    background: var(--medium-beige);
+    border-color: var(--border-light);
+    color: var(--text-light);
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none;
+    box-shadow: none;
+}
+
+.preference-button.disabled:hover {
+    background: var(--medium-beige);
+    border-color: var(--border-light);
+    color: var(--text-light);
+    transform: none;
+    box-shadow: none;
+}
+
+/* Cask Size Button Group */
+.size-button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.size-button {
+    background: var(--warm-white);
+    border: 2px solid var(--border);
+    color: var(--text-secondary);
+    padding: 14px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: 'Inter', sans-serif;
+}
+
+.size-button:hover {
+    border-color: var(--primary);
+    background: var(--light-beige);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-subtle);
+}
+
+.size-button.selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-white);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Quantity Button Group */
+.quantity-button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.quantity-button {
+    background: var(--warm-white);
+    border: 2px solid var(--border);
+    color: var(--text-secondary);
+    padding: 14px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: 'Inter', sans-serif;
+    /* Removed aspect-ratio: 1; to make rectangular like other buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-button:hover {
+    border-color: var(--primary);
+    background: var(--light-beige);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-subtle);
+}
+
+.quantity-button.selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-white);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Responsive Design for New Form Elements */
+@media (max-width: 768px) {
+    .preference-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .size-button-group,
+    .quantity-button-group {
+        gap: 8px;
+    }
+
+    .preference-button,
+    .size-button,
+    .quantity-button {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .preference-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .size-button-group,
+    .quantity-button-group {
+        grid-template-columns: 1fr;
+    }
+
+    /* Removed aspect-ratio reset since quantity buttons are now rectangular */
 }

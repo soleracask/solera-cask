@@ -418,93 +418,209 @@ handleHeaderOffset();
         handleFormSubmission(tequilaForm);
     }
     
-    function handleFormSubmission(formElement) {
-        const allTypesCheckbox = formElement.querySelector('#all-types');
-        const otherCheckboxes = formElement.querySelectorAll('input[name="caskType"]:not(#all-types), input[name="sherryCaskType"]:not(#all-types)');
+   // =================================
+// UPDATED CONTACT FORM FUNCTIONALITY
+// Add this to your existing script.js file
+// =================================
 
-        // Handle "All Types" checkbox logic
-        if (allTypesCheckbox) {
-            allTypesCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    otherCheckboxes.forEach(cb => {
-                        cb.checked = false;
-                        cb.disabled = true;
-                        cb.parentElement.style.opacity = '0.5';
+// Updated form handling function - replace the existing handleFormSubmission function
+function handleFormSubmission(formElement) {
+    const form = formElement;
+    
+    // Handle Sherry Preference Buttons
+    const preferenceButtons = form.querySelectorAll('.preference-button');
+    let selectedPreferences = new Set();
+    
+    preferenceButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const preference = this.getAttribute('data-preference');
+            
+            if (preference === 'all-types') {
+                // If "All Types" is clicked
+                if (this.classList.contains('selected')) {
+                    // Deselect all types
+                    this.classList.remove('selected');
+                    selectedPreferences.clear();
+                    preferenceButtons.forEach(btn => {
+                        btn.classList.remove('disabled');
                     });
                 } else {
-                    otherCheckboxes.forEach(cb => {
-                        cb.disabled = false;
-                        cb.parentElement.style.opacity = '1';
+                    // Select all types and disable others
+                    selectedPreferences.clear();
+                    selectedPreferences.add('all-types');
+                    preferenceButtons.forEach(btn => {
+                        btn.classList.remove('selected');
+                        if (btn !== this) {
+                            btn.classList.add('disabled');
+                        }
+                    });
+                    this.classList.add('selected');
+                }
+            } else {
+                // Individual preference clicked
+                if (selectedPreferences.has('all-types')) {
+                    // Clear all-types selection first
+                    selectedPreferences.clear();
+                    preferenceButtons.forEach(btn => {
+                        btn.classList.remove('selected', 'disabled');
                     });
                 }
+                
+                if (selectedPreferences.has(preference)) {
+                    // Deselect this preference
+                    selectedPreferences.delete(preference);
+                    this.classList.remove('selected');
+                } else {
+                    // Select this preference
+                    selectedPreferences.add(preference);
+                    this.classList.add('selected');
+                }
+            }
+        });
+    });
+
+    // Handle Cask Size Buttons (multiple selection allowed)
+    const sizeButtons = form.querySelectorAll('.size-button');
+    let selectedSizes = new Set();
+    
+    sizeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const size = this.getAttribute('data-size');
+            
+            if (selectedSizes.has(size)) {
+                selectedSizes.delete(size);
+                this.classList.remove('selected');
+            } else {
+                selectedSizes.add(size);
+                this.classList.add('selected');
+            }
+        });
+    });
+
+    // Handle Quantity Buttons (single selection only)
+    const quantityButtons = form.querySelectorAll('.quantity-button');
+    let selectedQuantity = null;
+    
+    quantityButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const quantity = this.getAttribute('data-quantity');
+            
+            // Remove selection from all buttons
+            quantityButtons.forEach(btn => btn.classList.remove('selected'));
+            
+            if (selectedQuantity === quantity) {
+                // Deselect if clicking the same button
+                selectedQuantity = null;
+            } else {
+                // Select this button
+                selectedQuantity = quantity;
+                this.classList.add('selected');
+            }
+        });
+    });
+
+    // Form submission with updated validation
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        
+        // Validate required fields
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.style.borderBottomColor = '#d32f2f';
+                field.style.borderBottomWidth = '2px';
+            } else {
+                field.style.borderBottomColor = 'var(--border)';
+                field.style.borderBottomWidth = '1px';
+            }
+        });
+
+        // Validate quantity selection (required)
+        if (!selectedQuantity) {
+            isValid = false;
+            quantityButtons.forEach(btn => {
+                btn.style.borderColor = '#d32f2f';
+                btn.style.borderWidth = '3px';
+            });
+            setTimeout(() => {
+                quantityButtons.forEach(btn => {
+                    if (!btn.classList.contains('selected')) {
+                        btn.style.borderColor = 'var(--border)';
+                        btn.style.borderWidth = '2px';
+                    }
+                });
+            }, 3000);
+        } else {
+            quantityButtons.forEach(btn => {
+                btn.style.borderColor = btn.classList.contains('selected') ? 'var(--primary)' : 'var(--border)';
+                btn.style.borderWidth = '2px';
             });
         }
 
-        // Handle individual checkbox changes
-        otherCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                if (this.checked && allTypesCheckbox) {
-                    allTypesCheckbox.checked = false;
-                }
+        if (!isValid) {
+            showNotification('Please fill in all required fields and select an estimated quantity.', 'error');
+            return;
+        }
+
+        // Show loading state
+        submitBtn.textContent = 'SUBMITTING REQUEST...';
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        
+        // Collect form data
+        const formData = {
+            firstName: form.querySelector('#firstName').value,
+            lastName: form.querySelector('#lastName').value,
+            email: form.querySelector('#email').value,
+            phone: form.querySelector('#phone').value,
+            company: form.querySelector('#company').value,
+            address: form.querySelector('#address').value,
+            sherryCaskPreferences: Array.from(selectedPreferences),
+            caskSizes: Array.from(selectedSizes),
+            estimatedQuantity: selectedQuantity,
+            projectDetails: form.querySelector('#project').value
+        };
+        
+        console.log('Updated form submission data:', formData);
+        
+        // Simulate form submission
+        setTimeout(() => {
+            showNotification(
+                'Consultation Request Received',
+                'success',
+                'Thank you for your interest in our premium sherry casks. Our Spanish cooperage experts will contact you within 24 hours.'
+            );
+            
+            // Reset form
+            this.reset();
+            selectedPreferences.clear();
+            selectedSizes.clear();
+            selectedQuantity = null;
+            
+            // Reset button states
+            preferenceButtons.forEach(btn => {
+                btn.classList.remove('selected', 'disabled');
             });
-        });
-
-        // Form submission
-        formElement.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            
-            // Basic form validation
-            const requiredFields = this.querySelectorAll('[required]');
-            let isValid = true;
-            
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    isValid = false;
-                    field.style.borderBottomColor = '#ff4444';
-                    field.style.borderBottomWidth = '2px';
-                } else {
-                    field.style.borderBottomColor = 'var(--border)';
-                    field.style.borderBottomWidth = '1px';
-                }
+            sizeButtons.forEach(btn => {
+                btn.classList.remove('selected');
             });
-
-            if (!isValid) {
-                showNotification('Please fill in all required fields.', 'error');
-                return;
-            }
-
-            // Show loading state
-            submitBtn.textContent = 'SUBMITTING REQUEST...';
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
+            quantityButtons.forEach(btn => {
+                btn.classList.remove('selected');
+            });
             
-            // Simulate form submission
-            setTimeout(() => {
-                // Show success notification
-                showNotification(
-                    'Consultation Request Received',
-                    'success',
-                    'Thank you for your interest in our premium sherry casks. Our Spanish cooperage experts will contact you within 24 hours.'
-                );
-                
-                // Reset form
-                this.reset();
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                
-                // Reset checkbox states
-                otherCheckboxes.forEach(cb => {
-                    cb.disabled = false;
-                    cb.parentElement.style.opacity = '1';
-                });
-                
-            }, 2500);
-        });
-    }
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            
+        }, 2500);
+    });
+}
 
     // =================================
     // NOTIFICATION SYSTEM

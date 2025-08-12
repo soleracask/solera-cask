@@ -402,225 +402,6 @@ handleHeaderOffset();
         observer.observe(el);
     });
 
-    // =================================
-    // FORM HANDLING
-    // =================================
-    const form = document.getElementById('contactForm');
-    const tequilaForm = document.getElementById('tequilaContactForm');
-    
-    // Handle main contact form
-    if (form) {
-        handleFormSubmission(form);
-    }
-    
-    // Handle tequila contact form
-    if (tequilaForm) {
-        handleFormSubmission(tequilaForm);
-    }
-    
-   // =================================
-// UPDATED CONTACT FORM FUNCTIONALITY
-// Add this to your existing script.js file
-// =================================
-
-// Updated form handling function - replace the existing handleFormSubmission function
-function handleFormSubmission(formElement) {
-    const form = formElement;
-    
-    // Handle Sherry Preference Buttons
-    const preferenceButtons = form.querySelectorAll('.preference-button');
-    let selectedPreferences = new Set();
-    
-    preferenceButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const preference = this.getAttribute('data-preference');
-            
-            if (preference === 'all-types') {
-                // If "All Types" is clicked
-                if (this.classList.contains('selected')) {
-                    // Deselect all types
-                    this.classList.remove('selected');
-                    selectedPreferences.clear();
-                    preferenceButtons.forEach(btn => {
-                        btn.classList.remove('disabled');
-                    });
-                } else {
-                    // Select all types and disable others
-                    selectedPreferences.clear();
-                    selectedPreferences.add('all-types');
-                    preferenceButtons.forEach(btn => {
-                        btn.classList.remove('selected');
-                        if (btn !== this) {
-                            btn.classList.add('disabled');
-                        }
-                    });
-                    this.classList.add('selected');
-                }
-            } else {
-                // Individual preference clicked
-                if (selectedPreferences.has('all-types')) {
-                    // Clear all-types selection first
-                    selectedPreferences.clear();
-                    preferenceButtons.forEach(btn => {
-                        btn.classList.remove('selected', 'disabled');
-                    });
-                }
-                
-                if (selectedPreferences.has(preference)) {
-                    // Deselect this preference
-                    selectedPreferences.delete(preference);
-                    this.classList.remove('selected');
-                } else {
-                    // Select this preference
-                    selectedPreferences.add(preference);
-                    this.classList.add('selected');
-                }
-            }
-        });
-    });
-
-    // Handle Cask Size Buttons (multiple selection allowed)
-    const sizeButtons = form.querySelectorAll('.size-button');
-    let selectedSizes = new Set();
-    
-    sizeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const size = this.getAttribute('data-size');
-            
-            if (selectedSizes.has(size)) {
-                selectedSizes.delete(size);
-                this.classList.remove('selected');
-            } else {
-                selectedSizes.add(size);
-                this.classList.add('selected');
-            }
-        });
-    });
-
-    // Handle Quantity Buttons (single selection only)
-    const quantityButtons = form.querySelectorAll('.quantity-button');
-    let selectedQuantity = null;
-    
-    quantityButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const quantity = this.getAttribute('data-quantity');
-            
-            // Remove selection from all buttons
-            quantityButtons.forEach(btn => btn.classList.remove('selected'));
-            
-            if (selectedQuantity === quantity) {
-                // Deselect if clicking the same button
-                selectedQuantity = null;
-            } else {
-                // Select this button
-                selectedQuantity = quantity;
-                this.classList.add('selected');
-            }
-        });
-    });
-
-    // Form submission with updated validation
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        
-        // Validate required fields
-        const requiredFields = this.querySelectorAll('[required]');
-        let isValid = true;
-        
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                isValid = false;
-                field.style.borderBottomColor = '#d32f2f';
-                field.style.borderBottomWidth = '2px';
-            } else {
-                field.style.borderBottomColor = 'var(--border)';
-                field.style.borderBottomWidth = '1px';
-            }
-        });
-
-        // Validate quantity selection (required)
-        if (!selectedQuantity) {
-            isValid = false;
-            quantityButtons.forEach(btn => {
-                btn.style.borderColor = '#d32f2f';
-                btn.style.borderWidth = '3px';
-            });
-            setTimeout(() => {
-                quantityButtons.forEach(btn => {
-                    if (!btn.classList.contains('selected')) {
-                        btn.style.borderColor = 'var(--border)';
-                        btn.style.borderWidth = '2px';
-                    }
-                });
-            }, 3000);
-        } else {
-            quantityButtons.forEach(btn => {
-                btn.style.borderColor = btn.classList.contains('selected') ? 'var(--primary)' : 'var(--border)';
-                btn.style.borderWidth = '2px';
-            });
-        }
-
-        if (!isValid) {
-            showNotification('Please fill in all required fields and select an estimated quantity.', 'error');
-            return;
-        }
-
-        // Show loading state
-        submitBtn.textContent = 'SUBMITTING REQUEST...';
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.7';
-        
-        // Collect form data
-        const formData = {
-            firstName: form.querySelector('#firstName').value,
-            lastName: form.querySelector('#lastName').value,
-            email: form.querySelector('#email').value,
-            phone: form.querySelector('#phone').value,
-            company: form.querySelector('#company').value,
-            address: form.querySelector('#address').value,
-            sherryCaskPreferences: Array.from(selectedPreferences),
-            caskSizes: Array.from(selectedSizes),
-            estimatedQuantity: selectedQuantity,
-            projectDetails: form.querySelector('#project').value
-        };
-        
-        console.log('Updated form submission data:', formData);
-        
-        // Simulate form submission
-        setTimeout(() => {
-            showNotification(
-                'Consultation Request Received',
-                'success',
-                'Thank you for your interest in our premium sherry casks. Our Spanish cooperage experts will contact you within 24 hours.'
-            );
-            
-            // Reset form
-            this.reset();
-            selectedPreferences.clear();
-            selectedSizes.clear();
-            selectedQuantity = null;
-            
-            // Reset button states
-            preferenceButtons.forEach(btn => {
-                btn.classList.remove('selected', 'disabled');
-            });
-            sizeButtons.forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            quantityButtons.forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-            submitBtn.style.opacity = '1';
-            
-        }, 2500);
-    });
-}
 
     // =================================
     // NOTIFICATION SYSTEM
@@ -1295,53 +1076,99 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     }
 
-    // Show results with correct buttons
-    function showResults(product, data) {
-        if (!finderResults) return;
+   // Show results with correct buttons - FIXED VERSION
+function showResults(product, data) {
+    if (!finderResults) return;
+    
+    const productTitle = capitalizeWords(product);
+    const sectionIntro = document.querySelector('.product-finder .section-intro');
+    
+    // Generate the specific page link text and URL
+    const pageButtonText = `See All Sherry Barrels for ${data.category}`;
+    const pageButtonLink = data.page;
+    
+    finderResults.innerHTML = `
+        <div class="result-header">
+            <h3 class="result-title">Perfect Sherry Casks for ${productTitle}</h3>
+            <p class="result-subtitle">Here are our top recommendations:</p>
+        </div>
         
-        const productTitle = capitalizeWords(product);
-        const categoryLower = data.category.toLowerCase();
-        
-        // Generate the specific page link text and URL
-        const pageButtonText = `See All Sherry Barrels for ${data.category}`;
-        const pageButtonLink = data.page;
-        
-        finderResults.innerHTML = `
-            <div class="result-header">
-                <h3 class="result-title">Perfect Sherry Casks for ${productTitle}</h3>
-                <p class="result-subtitle">Here are our top recommendations:</p>
-            </div>
-            
-            <div class="result-recommendations">
-                ${data.recommendations.map(rec => `
-                    <div class="recommendation-card">
-                        <div class="recommendation-badge">${rec.badge}</div>
-                        <h4 class="recommendation-title">${rec.type} Sherry Casks</h4>
-                        <p class="recommendation-description">${rec.description}</p>
-                        <div class="recommendation-flavors">${rec.flavors}</div>
-                    </div>
-                `).join('')}
-            </div>
-            
-            <div class="result-cta">
-                <p>Ready to transform your ${productTitle.toLowerCase()} with sherry barrels straight from Spain?</p>
-                <div class="result-buttons">
-                    <a href="${pageButtonLink}" class="btn-primary">${pageButtonText}</a>
-                    <a href="#contact" class="btn-outline">Get Quote</a>
+        <div class="result-recommendations">
+            ${data.recommendations.map(rec => `
+                <div class="recommendation-card">
+                    <div class="recommendation-badge">${rec.badge}</div>
+                    <h4 class="recommendation-title">${rec.type} Sherry Casks</h4>
+                    <p class="recommendation-description">${rec.description}</p>
+                    <div class="recommendation-flavors">${rec.flavors}</div>
                 </div>
+            `).join('')}
+        </div>
+        
+        <div class="result-cta">
+            <p>Ready to transform your ${productTitle.toLowerCase()} with sherry barrels straight from Spain?</p>
+            <div class="result-buttons">
+                <a href="${pageButtonLink}" class="btn-primary">${pageButtonText}</a>
+                <a href="#contact" class="btn-outline">Get Quote</a>
             </div>
-        `;
-        
-        finderResults.classList.add('show');
-        
-        // Scroll to results
-        setTimeout(() => {
-            finderResults.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
-        }, 100);
+        </div>
+    `;
+    
+    // Add class to product finder to indicate results are shown
+    const productFinder = document.querySelector('.product-finder');
+    if (productFinder) {
+        productFinder.classList.add('has-results');
     }
+    
+    finderResults.classList.add('show');
+    
+    // CRITICAL FIX: Ensure section intro stays visible
+    if (sectionIntro) {
+        sectionIntro.style.display = 'block';
+        sectionIntro.style.visibility = 'visible';
+        sectionIntro.style.opacity = '1';
+        sectionIntro.style.position = 'relative';
+        sectionIntro.style.zIndex = '2';
+    }
+    
+   // Gentle scroll that maintains the section positioning
+setTimeout(() => {
+    const productFinderSection = document.getElementById('product-finder');
+    if (productFinderSection) {
+        const rect = productFinderSection.getBoundingClientRect();
+        const currentScroll = window.pageYOffset;
+        const sectionTop = rect.top + currentScroll;
+        
+        // Only scroll if we're not already viewing the section properly
+        if (rect.top < -100 || rect.top > window.innerHeight - 200) {
+            window.scrollTo({
+                top: sectionTop - 100, // Small offset for header
+                behavior: 'smooth'
+            });
+        }
+    }
+}, 100);
+}
+
+// Function to hide results (when clearing search) - FIXED VERSION
+function hideResults() {
+    const sectionIntro = document.querySelector('.product-finder .section-intro');
+    const productFinder = document.querySelector('.product-finder');
+    
+    if (finderResults) {
+        finderResults.classList.remove('show');
+    }
+    
+    if (productFinder) {
+        productFinder.classList.remove('has-results');
+    }
+    
+    // CRITICAL FIX: Always ensure section intro is visible
+    if (sectionIntro) {
+        sectionIntro.style.display = 'block';
+        sectionIntro.style.visibility = 'visible';
+        sectionIntro.style.opacity = '1';
+    }
+}
 
     // Utility function to capitalize words
     function capitalizeWords(str) {
@@ -3035,4 +2862,703 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     console.log('Solera hero image fade-in functionality initialized');
+});
+
+// =================================
+// CONTACT FORM FUNCTIONALITY
+// Add this to the END of your existing js/script.js file
+// =================================
+
+// Updated form handling function with all previous functionality
+function handleFormSubmission(formElement) {
+    const form = formElement;
+    
+    console.log('Initializing form...'); // Debug log
+    
+    // Initialize address autocomplete
+    initializeAddressAutocomplete(form);
+    
+    // Shipping address toggle functionality
+    const shippingToggle = form.querySelector('#shippingToggle');
+    const shippingSection = form.querySelector('#shippingSection');
+    
+    console.log('Shipping toggle found:', !!shippingToggle); // Debug log
+    console.log('Shipping section found:', !!shippingSection); // Debug log
+    
+    if (shippingToggle && shippingSection) {
+        shippingToggle.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent any default button behavior
+            console.log('Shipping toggle clicked'); // Debug log
+            
+            const isExpanded = this.classList.contains('active');
+            
+            if (isExpanded) {
+                // Collapse
+                this.classList.remove('active');
+                shippingSection.classList.remove('expanded');
+                this.querySelector('span').textContent = 'Add Shipping Address for Quote';
+                console.log('Collapsed shipping section'); // Debug log
+            } else {
+                // Expand
+                this.classList.add('active');
+                shippingSection.classList.add('expanded');
+                this.querySelector('span').textContent = 'Hide Shipping Address';
+                console.log('Expanded shipping section'); // Debug log
+            }
+        });
+    } else {
+        console.error('Shipping toggle or section not found!');
+    }
+    
+    // Handle Sherry Preference Buttons
+    const preferenceButtons = form.querySelectorAll('.preference-button');
+    let selectedPreferences = new Set();
+    
+    console.log('Preference buttons found:', preferenceButtons.length); // Debug log
+    
+    preferenceButtons.forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent any default button behavior
+            console.log('Preference button clicked:', this.getAttribute('data-preference')); // Debug log
+            
+            const preference = this.getAttribute('data-preference');
+            
+            if (preference === 'all-types') {
+                // If "All Types" is clicked
+                if (this.classList.contains('selected')) {
+                    // Deselect all types
+                    this.classList.remove('selected');
+                    selectedPreferences.clear();
+                    preferenceButtons.forEach(function(btn) {
+                        btn.classList.remove('disabled');
+                    });
+                } else {
+                    // Select all types and disable others
+                    selectedPreferences.clear();
+                    selectedPreferences.add('all-types');
+                    const currentButton = this;
+                    preferenceButtons.forEach(function(btn) {
+                        btn.classList.remove('selected');
+                        if (btn !== currentButton) {
+                            btn.classList.add('disabled');
+                        }
+                    });
+                    this.classList.add('selected');
+                }
+            } else {
+                // Individual preference clicked
+                if (selectedPreferences.has('all-types')) {
+                    // Clear all-types selection first
+                    selectedPreferences.clear();
+                    preferenceButtons.forEach(function(btn) {
+                        btn.classList.remove('selected', 'disabled');
+                    });
+                }
+                
+                if (selectedPreferences.has(preference)) {
+                    // Deselect this preference
+                    selectedPreferences.delete(preference);
+                    this.classList.remove('selected');
+                } else {
+                    // Select this preference
+                    selectedPreferences.add(preference);
+                    this.classList.add('selected');
+                }
+            }
+            
+            console.log('Selected preferences:', Array.from(selectedPreferences)); // Debug log
+        });
+    });
+
+    // Handle Cask Size Buttons (multiple selection allowed)
+    const sizeButtons = form.querySelectorAll('.size-button');
+    let selectedSizes = new Set();
+    
+    console.log('Size buttons found:', sizeButtons.length); // Debug log
+    
+    sizeButtons.forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent any default button behavior
+            console.log('Size button clicked:', this.getAttribute('data-size')); // Debug log
+            
+            const size = this.getAttribute('data-size');
+            
+            if (selectedSizes.has(size)) {
+                selectedSizes.delete(size);
+                this.classList.remove('selected');
+            } else {
+                selectedSizes.add(size);
+                this.classList.add('selected');
+            }
+            
+            console.log('Selected sizes:', Array.from(selectedSizes)); // Debug log
+        });
+    });
+
+    // Handle Quantity Buttons (single selection only)
+    const quantityButtons = form.querySelectorAll('.quantity-button');
+    let selectedQuantity = null;
+    
+    console.log('Quantity buttons found:', quantityButtons.length); // Debug log
+    
+    quantityButtons.forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent any default button behavior
+            console.log('Quantity button clicked:', this.getAttribute('data-quantity')); // Debug log
+            
+            const quantity = this.getAttribute('data-quantity');
+            
+            // Remove selection from all buttons
+            quantityButtons.forEach(function(btn) {
+                btn.classList.remove('selected');
+            });
+            
+            if (selectedQuantity === quantity) {
+                // Deselect if clicking the same button
+                selectedQuantity = null;
+            } else {
+                // Select this button
+                selectedQuantity = quantity;
+                this.classList.add('selected');
+            }
+            
+            console.log('Selected quantity:', selectedQuantity); // Debug log
+        });
+    });
+
+    // Form submission with updated validation
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        
+        // Validate required fields
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(function(field) {
+            const formGroup = field.closest('.form-group');
+            if (!field.value.trim()) {
+                isValid = false;
+                if (formGroup) {
+                    formGroup.classList.add('error');
+                }
+                field.style.borderBottomColor = '#d32f2f';
+                field.style.borderBottomWidth = '2px';
+            } else {
+                if (formGroup) {
+                    formGroup.classList.remove('error');
+                }
+                field.style.borderBottomColor = 'var(--border)';
+                field.style.borderBottomWidth = '1px';
+            }
+        });
+
+        // Validate quantity selection (required)
+        if (!selectedQuantity) {
+            isValid = false;
+            quantityButtons.forEach(function(btn) {
+                btn.style.borderColor = '#d32f2f';
+                btn.style.borderWidth = '3px';
+            });
+            setTimeout(function() {
+                quantityButtons.forEach(function(btn) {
+                    if (!btn.classList.contains('selected')) {
+                        btn.style.borderColor = 'var(--border)';
+                        btn.style.borderWidth = '2px';
+                    }
+                });
+            }, 3000);
+        } else {
+            quantityButtons.forEach(function(btn) {
+                const borderColor = btn.classList.contains('selected') ? 'var(--primary)' : 'var(--border)';
+                btn.style.borderColor = borderColor;
+                btn.style.borderWidth = '2px';
+            });
+        }
+
+        // Validate reCAPTCHA if available
+        let recaptchaResponse = '';
+        if (typeof grecaptcha !== 'undefined') {
+            try {
+                recaptchaResponse = grecaptcha.getResponse();
+                if (!recaptchaResponse) {
+                    isValid = false;
+                    const captchaGroup = form.querySelector('.captcha-group');
+                    if (captchaGroup) {
+                        captchaGroup.style.borderColor = '#d32f2f';
+                        captchaGroup.style.borderWidth = '2px';
+                        setTimeout(function() {
+                            captchaGroup.style.borderColor = 'var(--border-light)';
+                            captchaGroup.style.borderWidth = '1px';
+                        }, 3000);
+                    }
+                }
+            } catch (error) {
+                console.warn('reCAPTCHA validation error:', error);
+            }
+        }
+
+        if (!isValid) {
+            let errorMessage = 'Please fill in all required fields and select an estimated quantity.';
+            if (typeof grecaptcha !== 'undefined' && !recaptchaResponse) {
+                errorMessage += ' Also complete the captcha verification.';
+            }
+            showNotification(errorMessage, 'error');
+            return;
+        }
+
+        // Show loading state
+        submitBtn.textContent = 'SUBMITTING REQUEST...';
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        
+        // Collect form data including new address fields
+        const formData = {
+            firstName: form.querySelector('#firstName').value,
+            lastName: form.querySelector('#lastName').value,
+            email: form.querySelector('#email').value,
+            phone: form.querySelector('#phone').value || '',
+            company: form.querySelector('#company').value,
+            
+            // Shipping address (only if provided)
+            shippingAddress: {
+                country: form.querySelector('#country').value || '',
+                stateProvince: form.querySelector('#stateProvince').value || '',
+                streetAddress: form.querySelector('#streetAddress').value || '',
+                unitNumber: form.querySelector('#unitNumber').value || '',
+                city: form.querySelector('#city').value || '',
+                postalCode: form.querySelector('#postalCode').value || ''
+            },
+            
+            sherryCaskPreferences: Array.from(selectedPreferences),
+            caskSizes: Array.from(selectedSizes),
+            estimatedQuantity: selectedQuantity,
+            projectDetails: form.querySelector('#project').value || '',
+            recaptchaResponse: recaptchaResponse
+        };
+        
+        console.log('Updated form submission data:', formData);
+        
+        // Simulate form submission
+        setTimeout(function() {
+            showNotification(
+                'Consultation Request Received',
+                'success',
+                'Thank you for your interest in our premium sherry casks. Our Spanish cooperage experts will contact you within 24 hours.'
+            );
+            
+            // Reset form
+            form.reset();
+            selectedPreferences.clear();
+            selectedSizes.clear();
+            selectedQuantity = null;
+            
+            // Reset button states
+            preferenceButtons.forEach(function(btn) {
+                btn.classList.remove('selected', 'disabled');
+            });
+            sizeButtons.forEach(function(btn) {
+                btn.classList.remove('selected');
+            });
+            quantityButtons.forEach(function(btn) {
+                btn.classList.remove('selected');
+            });
+            
+            // Reset shipping section
+            const shippingToggle = form.querySelector('#shippingToggle');
+            const shippingSection = form.querySelector('#shippingSection');
+            if (shippingToggle && shippingSection) {
+                shippingToggle.classList.remove('active');
+                shippingSection.classList.remove('expanded');
+                shippingToggle.querySelector('span').textContent = 'Add Shipping Address for Quote';
+            }
+            
+            // Reset reCAPTCHA if available
+            if (typeof grecaptcha !== 'undefined') {
+                try {
+                    grecaptcha.reset();
+                } catch (error) {
+                    console.warn('reCAPTCHA reset error:', error);
+                }
+            }
+            
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            
+        }, 2500);
+    });
+}
+
+// MULTI-SERVICE ADDRESS AUTOCOMPLETE
+// Uses multiple free services for best accuracy
+// Replace your existing initializeAddressAutocomplete function
+
+function initializeAddressAutocomplete(form) {
+    const streetAddressInput = form.querySelector('#streetAddress');
+    const addressSuggestions = form.querySelector('#addressSuggestions');
+    const autocompleteNote = form.querySelector('#autocompleteNote');
+    
+    const countryInput = form.querySelector('#country');
+    const stateProvinceInput = form.querySelector('#stateProvince');
+    const cityInput = form.querySelector('#city');
+    const postalCodeInput = form.querySelector('#postalCode');
+    
+    if (!streetAddressInput) {
+        console.log('Street address input not found');
+        return;
+    }
+    
+    let searchTimeout;
+    let currentSearchQuery = '';
+    
+    // Configuration for different services
+    const serviceConfig = {
+        // Get free tokens from respective services
+        mapbox: {
+            token: 'pk.eyJ1IjoiaW1hbGRvbWFyIiwiYSI6ImNtZThzdWhrODBieXUyanIwYnJqZnh2dzUifQ.XpJkdv1-VTG2WNV79DWA1g', // Get from mapbox.com (100k free/month)
+            enabled: true // Set to true when you have a token
+        },
+        locationiq: {
+            token: 'pk.473ce33befb0cdee4d1acc95bf98e0b7', // Get from locationiq.com (5k free/day)
+            enabled: true // Set to true when you have a token
+        },
+        nominatim: {
+            enabled: true // Always available as fallback
+        }
+    };
+    
+    streetAddressInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        if (query.length < 3) {
+            hideSuggestions();
+            return;
+        }
+        
+        if (query === currentSearchQuery) {
+            return;
+        }
+        
+        currentSearchQuery = query;
+        clearTimeout(searchTimeout);
+        
+        searchTimeout = setTimeout(function() {
+            searchAddressesMultiService(query);
+        }, 300);
+    });
+    
+    // Handle click outside to close suggestions
+    document.addEventListener('click', function(e) {
+        const addressContainer = streetAddressInput.closest('.address-input-container');
+        if (addressContainer && !addressContainer.contains(e.target)) {
+            hideSuggestions();
+        }
+    });
+    
+    // Multi-service search with intelligent fallback
+    async function searchAddressesMultiService(query) {
+        try {
+            updateAutocompleteNote('Searching addresses...', 'loading');
+            
+            const countryHint = getCountryContext();
+            let results = [];
+            
+            // Service priority based on region and availability
+            const servicePriority = determineServicePriority(countryHint);
+            
+            // Try services in order of priority
+            for (const service of servicePriority) {
+                try {
+                    console.log(`Trying ${service} for address search...`);
+                    
+                    switch (service) {
+                        case 'mapbox':
+                            if (serviceConfig.mapbox.enabled) {
+                                results = await searchMapbox(query, countryHint);
+                            }
+                            break;
+                        case 'locationiq':
+                            if (serviceConfig.locationiq.enabled) {
+                                results = await searchLocationIQ(query, countryHint);
+                            }
+                            break;
+                        case 'nominatim':
+                            results = await searchNominatim(query, countryHint);
+                            break;
+                    }
+                    
+                    if (results && results.length > 0) {
+                        console.log(`Successfully got ${results.length} results from ${service}`);
+                        break; // Stop trying other services
+                    }
+                } catch (error) {
+                    console.warn(`${service} search failed:`, error);
+                    continue; // Try next service
+                }
+            }
+            
+            if (results && results.length > 0) {
+                showSuggestions(results);
+                updateAutocompleteNote('Select an address from the suggestions');
+            } else {
+                hideSuggestions();
+                updateAutocompleteNote('No addresses found. Try different search terms.', 'error');
+            }
+            
+        } catch (error) {
+            console.warn('All address search services failed:', error);
+            updateAutocompleteNote('Manual address entry (autocomplete unavailable)', 'manual');
+            hideSuggestions();
+        }
+    }
+    
+    // Determine service priority based on region
+    function determineServicePriority(countryHint) {
+        const country = countryHint?.toLowerCase() || '';
+        
+        // North America: Mapbox is best
+        if (country.includes('us') || country.includes('canada') || country.includes('united states')) {
+            return ['mapbox', 'locationiq', 'nominatim'];
+        }
+        
+        // Europe: LocationIQ often better than Nominatim
+        if (country.includes('germany') || country.includes('france') || country.includes('uk') || 
+            country.includes('spain') || country.includes('italy') || country.includes('netherlands')) {
+            return ['locationiq', 'mapbox', 'nominatim'];
+        }
+        
+        // Australia/Oceania: Mapbox preferred
+        if (country.includes('australia') || country.includes('new zealand')) {
+            return ['mapbox', 'locationiq', 'nominatim'];
+        }
+        
+        // Default order
+        return ['mapbox', 'locationiq', 'nominatim'];
+    }
+    
+    // Get country context from form
+    function getCountryContext() {
+        let context = '';
+        if (countryInput && countryInput.value) {
+            context = countryInput.value;
+        }
+        if (stateProvinceInput && stateProvinceInput.value) {
+            context += ' ' + stateProvinceInput.value;
+        }
+        return context.trim();
+    }
+    
+    // Mapbox Geocoding API
+    async function searchMapbox(query, countryHint) {
+        if (!serviceConfig.mapbox.token) {
+            throw new Error('Mapbox token not configured');
+        }
+        
+        const searchQuery = countryHint ? `${query}, ${countryHint}` : query;
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?access_token=${serviceConfig.mapbox.token}&types=address&limit=6`;
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Mapbox API error: ${response.status}`);
+        
+        const data = await response.json();
+        return data.features.map(feature => ({
+            display_name: feature.place_name,
+            address: parseMapboxAddress(feature),
+            source: 'Mapbox'
+        }));
+    }
+    
+    // LocationIQ API (Enhanced Nominatim)
+    async function searchLocationIQ(query, countryHint) {
+        if (!serviceConfig.locationiq.token) {
+            throw new Error('LocationIQ token not configured');
+        }
+        
+        const searchQuery = countryHint ? `${query}, ${countryHint}` : query;
+        const url = `https://eu1.locationiq.com/v1/search.php?key=${serviceConfig.locationiq.token}&q=${encodeURIComponent(searchQuery)}&format=json&addressdetails=1&limit=6`;
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`LocationIQ API error: ${response.status}`);
+        
+        const data = await response.json();
+        return data.map(item => ({
+            display_name: item.display_name,
+            address: item.address,
+            source: 'LocationIQ'
+        }));
+    }
+    
+    // Enhanced Nominatim (fallback)
+    async function searchNominatim(query, countryHint) {
+        const searchQuery = countryHint ? `${query}, ${countryHint}` : query;
+        const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6&q=${encodeURIComponent(searchQuery)}`;
+        
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'SoleraCask/1.0 (contact@soleracask.com)'
+            }
+        });
+        
+        if (!response.ok) throw new Error(`Nominatim API error: ${response.status}`);
+        
+        const data = await response.json();
+        return data.map(item => ({
+            display_name: item.display_name,
+            address: item.address,
+            source: 'OpenStreetMap'
+        }));
+    }
+    
+    // Parse Mapbox address format
+    function parseMapboxAddress(feature) {
+        const context = feature.context || [];
+        const properties = feature.properties || {};
+        
+        return {
+            house_number: properties.address || '',
+            road: feature.text || '',
+            city: context.find(c => c.id.includes('place'))?.text || '',
+            state: context.find(c => c.id.includes('region'))?.text || '',
+            country: context.find(c => c.id.includes('country'))?.text || '',
+            postcode: context.find(c => c.id.includes('postcode'))?.text || ''
+        };
+    }
+    
+    // Enhanced suggestions display with service indicators
+    function showSuggestions(addresses) {
+        if (!addressSuggestions) return;
+        
+        addressSuggestions.innerHTML = '';
+        
+        addresses.forEach(function(address, index) {
+            const suggestionDiv = document.createElement('div');
+            suggestionDiv.className = 'address-suggestion';
+            
+            const displayName = address.display_name;
+            const addressComponents = address.address || {};
+            
+            // Format main part
+            let mainPart = '';
+            if (addressComponents.house_number && addressComponents.road) {
+                mainPart = addressComponents.house_number + ' ' + addressComponents.road;
+            } else if (addressComponents.road) {
+                mainPart = addressComponents.road;
+            } else {
+                const parts = displayName.split(', ');
+                mainPart = parts[0];
+            }
+            
+            // Format secondary part
+            const cityPart = addressComponents.city || addressComponents.town || addressComponents.village || '';
+            const statePart = addressComponents.state || '';
+            const countryPart = addressComponents.country || '';
+            const secondaryPart = [cityPart, statePart, countryPart].filter(part => part).join(', ');
+            
+            // Service indicator
+            const serviceIndicator = address.source ? `<span style="color: #666; font-size: 10px; float: right;">${address.source}</span>` : '';
+            
+            suggestionDiv.innerHTML = `
+                <div style="position: relative;">
+                    ${serviceIndicator}
+                    <div class="suggestion-main">${mainPart}</div>
+                    ${secondaryPart ? `<div class="suggestion-secondary">${secondaryPart}</div>` : ''}
+                </div>
+            `;
+            
+            suggestionDiv.addEventListener('click', function() {
+                selectAddress(address);
+            });
+            
+            addressSuggestions.appendChild(suggestionDiv);
+        });
+        
+        addressSuggestions.style.display = 'block';
+    }
+    
+    // Handle address selection (unchanged)
+    function selectAddress(address) {
+        const addressComponents = address.address || {};
+        
+        const streetNumber = addressComponents.house_number || '';
+        const streetName = addressComponents.road || '';
+        const city = addressComponents.city || addressComponents.town || addressComponents.village || '';
+        const state = addressComponents.state || '';
+        const country = addressComponents.country || '';
+        const postalCode = addressComponents.postcode || '';
+        
+        streetAddressInput.value = (streetNumber + ' ' + streetName).trim();
+        
+        if (cityInput && city) cityInput.value = city;
+        if (postalCodeInput && postalCode) postalCodeInput.value = postalCode;
+        if (countryInput && country) countryInput.value = country;
+        if (stateProvinceInput && state) stateProvinceInput.value = state;
+        
+        hideSuggestions();
+        updateAutocompleteNote('Address selected successfully', 'success');
+        
+        setTimeout(function() {
+            updateAutocompleteNote('Start typing for address suggestions');
+        }, 3000);
+    }
+    
+    // Utility functions
+    function hideSuggestions() {
+        if (addressSuggestions) {
+            addressSuggestions.style.display = 'none';
+        }
+    }
+    
+    function updateAutocompleteNote(message, type) {
+        if (autocompleteNote) {
+            autocompleteNote.textContent = message;
+            autocompleteNote.className = 'autocomplete-note ' + (type || 'default');
+        }
+    }
+}
+
+// Simple notification system
+function showNotification(title, type, message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    const bgColor = type === 'success' ? '#4caf50' : (type === 'error' ? '#f44336' : '#2196f3');
+    
+    notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: ' + bgColor + '; color: white; padding: 16px 24px; border-radius: 4px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); z-index: 10000; max-width: 400px; font-family: Inter, sans-serif; font-size: 14px; line-height: 1.4; transform: translateX(100%); transition: transform 0.3s ease;';
+    
+    const titleDiv = '<div style="font-weight: 600; margin-bottom: ' + (message ? '8px' : '0') + ';">' + title + '</div>';
+    const messageDiv = message ? '<div style="font-size: 13px; opacity: 0.9;">' + message + '</div>' : '';
+    
+    notification.innerHTML = titleDiv + messageDiv;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(function() {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Auto remove after 5 seconds
+    setTimeout(function() {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(function() {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+}
+
+// Initialize contact form when DOM is loaded
+// Add this AFTER your existing DOMContentLoaded code, or modify your existing one
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, looking for contact form...'); // Debug log
+    const contactForm = document.getElementById('contactForm');
+    console.log('Contact form found:', !!contactForm); // Debug log
+    
+    if (contactForm) {
+        console.log('Initializing contact form...'); // Debug log
+        handleFormSubmission(contactForm);
+    }
 });

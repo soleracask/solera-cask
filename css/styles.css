@@ -2647,6 +2647,8 @@ mark {
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
+    position: relative; /* Add this if missing */
+    z-index: 10; /* Add this if missing */
 }
 
 .product-finder .section-title {
@@ -4175,8 +4177,8 @@ h1:contains("Browse by Category") {
 }
 
 /* ===============================================
-   NEW CSS FOR UPDATED CONTACT FORM
-   Add this to the end of your styles.css file
+   CLEAN CONTACT FORM CSS
+   Replace ALL existing contact form CSS with this single section
    =============================================== */
 
 /* Required field asterisk styling */
@@ -4185,7 +4187,215 @@ h1:contains("Browse by Category") {
     margin-left: 4px;
 }
 
-/* Selectable Button Styles for Sherry Preferences */
+/* Shipping Address Toggle Button */
+.shipping-toggle {
+    background: none;
+    border: 2px solid var(--border);
+    color: var(--text-secondary);
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    width: 100%;
+    justify-content: center;
+    border-radius: 0;
+}
+
+.shipping-toggle:hover {
+    border-color: var(--primary);
+    background: var(--light-beige);
+    color: var(--text-primary);
+}
+
+.shipping-toggle.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-white);
+}
+
+.shipping-toggle-icon {
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.shipping-toggle.active .shipping-toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Shipping Address Section */
+.shipping-address-section {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                opacity 0.3s ease,
+                padding 0.3s ease;
+    opacity: 0;
+    padding: 0;
+}
+
+.shipping-address-section.expanded {
+    max-height: 1200px;
+    opacity: 1;
+    padding: 16px 0 0 0;
+}
+
+.shipping-address-note {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    font-style: italic;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* Address Input Container */
+.address-input-container {
+    position: relative;
+    width: 100%;
+}
+
+.address-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: var(--shadow-medium);
+}
+
+.address-suggestion {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.address-suggestion:hover,
+.address-suggestion.highlighted {
+    background: var(--light-beige);
+}
+
+.address-suggestion:last-child {
+    border-bottom: none;
+}
+
+.suggestion-main {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.suggestion-secondary {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+/* Autocomplete status styling */
+.autocomplete-note {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-light);
+    font-style: italic;
+    transition: color 0.3s ease;
+}
+
+.autocomplete-note.loading {
+    color: var(--primary);
+}
+
+.autocomplete-note.error {
+    color: #d32f2f;
+}
+
+.autocomplete-note.success {
+    color: #4caf50;
+}
+
+.autocomplete-note.manual {
+    color: var(--text-secondary);
+}
+
+/* Loading indicator */
+.address-input-container.loading::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border-light);
+    border-top: 2px solid var(--primary);
+    border-radius: 50%;
+    animation: addressSpin 1s linear infinite;
+}
+
+@keyframes addressSpin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Unit/Building field styling */
+#unitNumber {
+    font-style: italic;
+}
+
+#unitNumber::placeholder {
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* Captcha Styling */
+.captcha-group {
+    text-align: center;
+    margin: 32px 0;
+    padding: 24px;
+    background: var(--light-beige);
+    border: 1px solid var(--border-light);
+}
+
+.captcha-note {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.g-recaptcha {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+/* Enhanced form validation styles */
+.form-group.error input,
+.form-group.error select {
+    border-bottom-color: #d32f2f;
+    border-bottom-width: 2px;
+}
+
+.form-group.error label {
+    color: #d32f2f;
+}
+
+/* SHERRY PREFERENCE BUTTONS */
 .preference-buttons {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -4206,6 +4416,8 @@ h1:contains("Browse by Category") {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-family: 'Inter', sans-serif;
+    border-radius: 0;
+    outline: none;
 }
 
 .preference-button:hover {
@@ -4217,32 +4429,32 @@ h1:contains("Browse by Category") {
 }
 
 .preference-button.selected {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: var(--text-white);
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--text-white) !important;
     transform: translateY(-1px);
     box-shadow: var(--shadow-medium);
 }
 
 .preference-button.disabled {
-    background: var(--medium-beige);
-    border-color: var(--border-light);
-    color: var(--text-light);
+    background: var(--medium-beige) !important;
+    border-color: var(--border-light) !important;
+    color: var(--text-light) !important;
     cursor: not-allowed;
     opacity: 0.5;
-    transform: none;
-    box-shadow: none;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .preference-button.disabled:hover {
-    background: var(--medium-beige);
-    border-color: var(--border-light);
-    color: var(--text-light);
-    transform: none;
-    box-shadow: none;
+    background: var(--medium-beige) !important;
+    border-color: var(--border-light) !important;
+    color: var(--text-light) !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
-/* Cask Size Button Group */
+/* CASK SIZE BUTTONS */
 .size-button-group {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -4263,6 +4475,8 @@ h1:contains("Browse by Category") {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-family: 'Inter', sans-serif;
+    border-radius: 0;
+    outline: none;
 }
 
 .size-button:hover {
@@ -4274,14 +4488,14 @@ h1:contains("Browse by Category") {
 }
 
 .size-button.selected {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: var(--text-white);
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--text-white) !important;
     transform: translateY(-1px);
     box-shadow: var(--shadow-medium);
 }
 
-/* Quantity Button Group */
+/* QUANTITY BUTTONS */
 .quantity-button-group {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -4302,10 +4516,11 @@ h1:contains("Browse by Category") {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-family: 'Inter', sans-serif;
-    /* Removed aspect-ratio: 1; to make rectangular like other buttons */
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 0;
+    outline: none;
 }
 
 .quantity-button:hover {
@@ -4317,14 +4532,60 @@ h1:contains("Browse by Category") {
 }
 
 .quantity-button.selected {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: var(--text-white);
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--text-white) !important;
     transform: translateY(-1px);
     box-shadow: var(--shadow-medium);
 }
 
-/* Responsive Design for New Form Elements */
+/* Enhanced styling for fallback to Google Places */
+.pac-container {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: var(--shadow-medium);
+    font-family: 'Inter', sans-serif;
+    z-index: 1051;
+}
+
+.pac-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.pac-item:hover,
+.pac-item-selected {
+    background: var(--light-beige);
+}
+
+.pac-item:last-child {
+    border-bottom: none;
+}
+
+.pac-item-query {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.pac-matched {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.pac-item .pac-icon {
+    background-image: none;
+    background: var(--primary);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 12px;
+    margin-top: 2px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .preference-buttons {
         grid-template-columns: repeat(2, 1fr);
@@ -4342,6 +4603,15 @@ h1:contains("Browse by Category") {
         padding: 10px 12px;
         font-size: 12px;
     }
+
+    .shipping-toggle {
+        font-size: 12px;
+        padding: 10px 16px;
+    }
+    
+    .shipping-address-section.expanded {
+        max-height: 1000px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -4353,6 +4623,255 @@ h1:contains("Browse by Category") {
     .quantity-button-group {
         grid-template-columns: 1fr;
     }
+    
+    .shipping-toggle {
+        font-size: 11px;
+        padding: 8px 12px;
+        gap: 6px;
+    }
+}
 
-    /* Removed aspect-ratio reset since quantity buttons are now rectangular */
+/* Fix for desktop displays */
+@media (min-width: 769px) {
+    .product-finder .section-intro {
+        position: relative;
+        z-index: 15 !important; /* Higher than background elements */
+        margin-bottom: 80px;
+    }
+    
+    .product-finder::before {
+        z-index: -2;
+    }
+    
+    .product-finder::after {
+        z-index: -1;
+    }
+    
+    /* Ensure content container is properly layered */
+    .product-finder .container {
+        position: relative;
+        z-index: 10;
+    }
+}
+
+
+/* ===============================================
+   ORIGINAL LOADING SPINNER ANIMATION
+   Back to the simple, reliable spinner
+   =============================================== */
+
+/* Loading container */
+.finder-loading {
+    display: none;
+    text-align: center;
+    padding: 60px 40px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.finder-loading.show {
+    display: block;
+}
+
+/* Simple spinning circle */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 24px;
+}
+
+/* Spin animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Loading text */
+.finder-loading p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .finder-loading {
+        padding: 40px 20px;
+    }
+    
+    .loading-spinner {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+@media (max-width: 480px) {
+    .loading-spinner {
+        width: 30px;
+        height: 30px;
+        border-width: 2px;
+    }
+    
+    .finder-loading p {
+        font-size: 15px;
+    }
+}
+
+/* Selectable Barrel Finder Enhancements */
+
+/* Selection instructions styling */
+.selection-instructions {
+    background: var(--light-beige);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 32px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Enhanced recommendation card selection states */
+.recommendation-card.selected {
+    border-color: var(--accent-gold);
+    background: var(--light-beige);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+}
+
+.recommendation-card.selected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent-gold);
+}
+
+.recommendation-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--accent-gold);
+}
+
+/* Update flavor text color to use accent gold */
+.recommendation-flavors {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Selection Summary */
+.selection-summary {
+    background: var(--light-beige);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 32px;
+    text-align: center;
+    display: none;
+    animation: fadeInMessage 0.5s ease-in-out;
+}
+
+.selection-summary.visible {
+    display: block;
+}
+
+.selection-count {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.selected-types {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.clear-selection {
+    background: none;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+}
+
+.clear-selection:hover {
+    background: var(--accent-gold);
+    color: var(--text-primary);
+}
+
+/* Enhanced Get Quote Button */
+.get-quote-btn.has-selections {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--text-primary);
+}
+
+.get-quote-btn.has-selections:hover {
+    background: var(--primary-light);
+    border-color: var(--primary-light);
+    color: var(--text-primary);
+}
+
+/* Pre-selection message for quote form */
+.pre-selection-message {
+    background: var(--light-beige);
+    border: 1px solid var(--border);
+    color: var(--accent-gold);
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+}
+
+.pre-selection-message.visible {
+    display: block;
+    animation: fadeInMessage 0.5s ease-in-out;
+}
+
+/* Enhanced sherry type button pre-selection */
+.sherry-type-btn.pre-selected {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--text-primary);
+    animation: highlightPreSelected 1s ease-in-out;
+}
+
+/* Animations */
+@keyframes highlightPreSelected {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadeInMessage {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .selection-summary {
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .selection-instructions {
+        padding: 12px;
+        font-size: 13px;
+    }
 }

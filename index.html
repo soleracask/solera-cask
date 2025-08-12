@@ -6,6 +6,11 @@
     <title>Solera Cask - Premium Sherry Barrels</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Google reCAPTCHA Script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Optional: Google Places API Script (fallback) -->
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_PLACES_API_KEY&libraries=places" async defer></script> -->
+
 </head>
 <body>
     <header>
@@ -156,7 +161,7 @@
                         <ul class="product-features">
                             <li>Historic solera system provenance</li>
                             <li>225L hogsheads & 500L butts available</li>
-                            <li>Years of seasoning</li>
+                            <li>Seasoned with DO certified sherry wine</li>
                             <li>Selected & quality inspected</li>
                             <li>Professional restoration if needed</li>
                         </ul>
@@ -400,7 +405,7 @@
                     </div>
                     
                     <div class="shipping-note">
-                        <strong>Shipping:</strong> A 20-foot container holds 55 barrels (225L each) and a 40-footer holds 150. Shipping a full container is the most cost-effective option, but we're happy to accommodate smaller orders.
+                        <strong>Shipping:</strong> A 20-foot container holds 55 barrels (225L each) and a 40-footer holds 150. Shipping a full container is the most cost-effective option, but we're happy to accommodate orders of any size.
                     </div>
                 </div>
                 
@@ -433,9 +438,54 @@
                             <input type="text" id="company" name="company" required>
                         </div>
                         
+                        <!-- Shipping Address Toggle -->
                         <div class="form-group">
-                            <label for="address">Shipping Address</label>
-                            <textarea id="address" name="address" rows="3" placeholder="For an accurate quote, please provide your shipping address."></textarea>
+                            <p class="shipping-address-note">Providing a shipping address helps us give you an accurate quote including delivery costs.</p>
+                            <button type="button" class="shipping-toggle" id="shippingToggle">
+                                <span>Add Shipping Address for Quote</span>
+                                <svg class="shipping-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M7 10l5 5 5-5z"/>
+                                </svg>
+                            </button>
+                            
+                            <div class="shipping-address-section" id="shippingSection">
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="country">Country</label>
+                                        <input type="text" id="country" name="country" placeholder="e.g., United States, Germany, Japan">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="stateProvince">State/Province/Region</label>
+                                        <input type="text" id="stateProvince" name="stateProvince" placeholder="e.g., California, Bavaria, Ontario">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="streetAddress">Street Address</label>
+                                    <div class="address-input-container">
+                                        <input type="text" id="streetAddress" name="streetAddress" placeholder="Start typing your address...">
+                                        <div class="address-suggestions" id="addressSuggestions"></div>
+                                    </div>
+                                    <small class="autocomplete-note" id="autocompleteNote">Start typing for address suggestions</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="unitNumber">Unit/Building Number</label>
+                                    <input type="text" id="unitNumber" name="unitNumber" placeholder="Apt, Suite, Unit, Building, Floor, etc.">
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="city">City</label>
+                                        <input type="text" id="city" name="city" placeholder="City">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="postalCode">Postal Code</label>
+                                        <input type="text" id="postalCode" name="postalCode" placeholder="12345 or AB1 2CD">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="form-group">
@@ -473,6 +523,12 @@
                         <div class="form-group">
                             <label for="project">Project Details</label>
                             <textarea id="project" name="project" rows="4" placeholder="Tell us about your project, timeline, and specific requirements..."></textarea>
+                        </div>
+                        
+                        <!-- Google reCAPTCHA -->
+                        <div class="form-group captcha-group">
+                            <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
+                            <small class="captcha-note">Please complete the captcha to verify you're not a robot.</small>
                         </div>
                         
                         <button type="submit" class="btn-primary">Submit Consultation Request</button>

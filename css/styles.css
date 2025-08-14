@@ -2848,8 +2848,10 @@ mark {
 }
 
 .result-subtitle {
-    font-size: 16px;
+    text-align: center;
     color: var(--text-secondary);
+    margin-bottom: 40px;
+    font-size: 16px;
     line-height: 1.6;
 }
 
@@ -2951,6 +2953,7 @@ mark {
 .result-buttons .btn-primary:hover {
     background: var(--primary-light);
     border-color: var(--primary-light);
+    color: var(--text--primary);
     transform: translateY(-2px);
     box-shadow: var(--shadow-medium);
 }
@@ -4041,76 +4044,7 @@ html {
     );
     transition: background 0.3s ease;
 }
-/* Justified Text - Straight edges on both left and right sides */
 
-/* Change all paragraph text to justified within their existing containers */
-/* BUT exclude FAQ pages, product cards, AND recommendation cards */
-p:not(.faq-content p):not(.faq-nav-intro p):not(.faq-footer p):not(.faq-category-card p):not(.faq-contact-content p):not(.sherry-card p):not(.sherry-description-text):not(.product-card p):not(.recommendation-card p):not(.recommendation-description):not(.finder-results p) {
-    text-align: justify !important;
-    /* Improve spacing for better justified text appearance */
-    hyphens: none !important; /* Disable hyphenation */
-    word-spacing: 0.1em;
-    line-height: 1.6;
-    word-break: normal; /* Let words wrap naturally */
-}
-
-/* Also apply to other text elements that might be center-aligned */
-/* BUT exclude FAQ elements AND product cards */
-.section-description:not(.faq-nav .section-description),
-.hero-description,
-.story-content p,
-.heritage-content p,
-.contact-info p,
-.shipping-note,
-.brand-motto {
-    text-align: justify !important;
-    hyphens: none !important; /* Disable hyphenation here too */
-}
-
-/* Keep product card text left-aligned (not justified) */
-.product-content p,
-.sherry-description-text,
-.sherry-card p,
-.product-card p,
-.recommendation-card p,
-.recommendation-description,
-.finder-results p {
-    text-align: left !important;
-}
-
-/* Special case: ONLY products CTA sections that should be optically centered */
-.products-cta p,
-.products-cta-content p {
-    text-align: justify !important;
-    hyphens: auto;
-    padding-left: 3% !important;
-    padding-right: 3% !important;
-}
-
-/* Keep these specific elements centered (they should stay as-is) */
-.section-intro h1,
-.section-intro h2,
-.section-title,
-.hero h1,
-.hero-subtitle,
-.section-label,
-.footer-bottom,
-.back-to-blog,
-.hero-cta-section,
-.products-cta-buttons,
-.result-cta,
-.faq-category-card,
-.contact-option {
-    text-align: center !important;
-}
-
-/* ONLY override section labels that are in left-aligned sections */
-.heritage .section-label,
-.story-content .section-label,
-.technical-section .section-label,
-.contact-grid .section-label {
-    text-align: left !important;
-}
 /* Reduce spacing between specific sections */
 
 /* Reduce padding between CTA sections and following content */
@@ -4797,9 +4731,9 @@ h1:contains("Browse by Category") {
 }
 
 .clear-selection {
-    background: none;
-    border: 1px solid var(--accent-gold);
-    color: var(--accent-gold);
+    background: transparent;
+    border: 1px solid var(--text-primary);
+    color: var(--text-primary);
     padding: 8px 16px;
     cursor: pointer;
     font-size: 12px;
@@ -4810,17 +4744,20 @@ h1:contains("Browse by Category") {
 
 .clear-selection:hover {
     background: var(--accent-gold);
+    border-color: var(--accent-gold);
     color: var(--text-primary);
 }
 
 /* Enhanced Get Quote Button */
-.get-quote-btn.has-selections {
+.get-quote-btn.has-selections,
+.result-buttons .btn-outline.has-selections {
     background: var(--accent-gold);
     border-color: var(--accent-gold);
     color: var(--text-primary);
 }
 
-.get-quote-btn.has-selections:hover {
+.get-quote-btn.has-selections:hover,
+.result-buttons .btn-outline.has-selections:hover {
     background: var(--primary-light);
     border-color: var(--primary-light);
     color: var(--text-primary);
@@ -4829,18 +4766,26 @@ h1:contains("Browse by Category") {
 /* Pre-selection message for quote form */
 .pre-selection-message {
     background: var(--light-beige);
-    border: 1px solid var(--border);
-    color: var(--accent-gold);
+    color: var(--primary);
     padding: 12px 16px;
-    margin-bottom: 20px;
+    border-radius: 6px;
     font-size: 14px;
-    text-align: center;
+    font-weight: 500;
+    margin-bottom: 16px;
+    border-left: 3px solid var(--primary);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.pre-selection-message.hidden {
     display: none;
 }
 
 .pre-selection-message.visible {
     display: block;
-    animation: fadeInMessage 0.5s ease-in-out;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Enhanced sherry type button pre-selection */
@@ -4849,6 +4794,13 @@ h1:contains("Browse by Category") {
     border-color: var(--accent-gold);
     color: var(--text-primary);
     animation: highlightPreSelected 1s ease-in-out;
+}
+
+.preference-button.active,
+.preference-button.selected {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--text-primary);
 }
 
 /* Animations */

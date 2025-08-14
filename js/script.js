@@ -506,8 +506,12 @@ handleHeaderOffset();
 });
 
 // =================================
-// PRODUCT FINDER FUNCTIONALITY - UPDATED WITH CORRECT BUTTONS
+// PRODUCT FINDER FUNCTIONALITY - WITH SELECTABLE BARRELS
 // =================================
+
+// MOVED OUTSIDE to make it globally accessible
+let processSearch; // Declare globally
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Product database with recommendations
@@ -1053,8 +1057,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return matches.sort((a, b) => b.relevance - a.relevance).slice(0, 5);
     }
 
-    // Process search and show results
-    function processSearch(query) {
+    // Process search and show results - MAKE GLOBALLY ACCESSIBLE
+    processSearch = function(query) {
         hideAllStates();
         
         if (!query.trim()) return;
@@ -1074,142 +1078,599 @@ document.addEventListener('DOMContentLoaded', function() {
             const bestMatch = matches[0];
             showResults(bestMatch.product, bestMatch.data);
         }, 1500);
-    }
+    };
 
-   // Show results with correct buttons - FIXED VERSION
-function showResults(product, data) {
-    if (!finderResults) return;
-    
-    const productTitle = capitalizeWords(product);
-    const sectionIntro = document.querySelector('.product-finder .section-intro');
-    
-    // Generate the specific page link text and URL
-    const pageButtonText = `See All Sherry Barrels for ${data.category}`;
-    const pageButtonLink = data.page;
-    
-    finderResults.innerHTML = `
+    // Show results with correct buttons - UPDATED WITH SELECTABLE FUNCTIONALITY
+    function showResults(product, data) {
+        if (!finderResults) return;
+        
+        const productTitle = capitalizeWords(product);
+        const sectionIntro = document.querySelector('.product-finder .section-intro');
+        
+        // Generate the specific page link text and URL
+        const pageButtonText = `See All Sherry Barrels for ${data.category}`;
+        const pageButtonLink = data.page;
+        
+        finderResults.innerHTML = `
         <div class="result-header">
-            <h3 class="result-title">Perfect Sherry Casks for ${productTitle}</h3>
-            <p class="result-subtitle">Here are our top recommendations:</p>
-        </div>
-        
-        <div class="result-recommendations">
-            ${data.recommendations.map(rec => `
-                <div class="recommendation-card">
-                    <div class="recommendation-badge">${rec.badge}</div>
-                    <h4 class="recommendation-title">${rec.type} Sherry Casks</h4>
-                    <p class="recommendation-description">${rec.description}</p>
-                    <div class="recommendation-flavors">${rec.flavors}</div>
-                </div>
-            `).join('')}
-        </div>
-        
-        <div class="result-cta">
-            <p>Ready to transform your ${productTitle.toLowerCase()} with sherry barrels straight from Spain?</p>
-            <div class="result-buttons">
-                <a href="${pageButtonLink}" class="btn-primary">${pageButtonText}</a>
-                <a href="#contact" class="btn-outline">Get Quote</a>
+        <h3 class="result-title">Perfect Sherry Casks for ${productTitle}</h3>
+        <p class="result-subtitle">Here are our top recommendations:</p>
+         </div>
+    
+         <div class="result-recommendations">
+        ${data.recommendations.map(rec => `
+            <div class="recommendation-card" data-sherry-type="${rec.type.toLowerCase().replace(' ', '-').replace('ñ', 'n')}">
+                <div class="recommendation-badge">${rec.badge}</div>
+                <h4 class="recommendation-title">${rec.type} Sherry Casks</h4>
+                <p class="recommendation-description">${rec.description}</p>
+                <div class="recommendation-flavors">${rec.flavors}</div>
             </div>
+        `).join('')}
         </div>
+    
+         <div class="result-cta">
+        <p>Ready to transform your ${productTitle.toLowerCase()} with sherry barrels straight from Spain?</p>
+        <div class="result-buttons">
+            <a href="#contact" class="btn-outline">Get Quote</a>
+            <a href="${pageButtonLink}" class="btn-primary">${pageButtonText}</a>
+        </div>
+    </div>
     `;
-    
-    // Add class to product finder to indicate results are shown
-    const productFinder = document.querySelector('.product-finder');
-    if (productFinder) {
-        productFinder.classList.add('has-results');
-    }
-    
-    finderResults.classList.add('show');
-    
-    // CRITICAL FIX: Ensure section intro stays visible
-    if (sectionIntro) {
-        sectionIntro.style.display = 'block';
-        sectionIntro.style.visibility = 'visible';
-        sectionIntro.style.opacity = '1';
-        sectionIntro.style.position = 'relative';
-        sectionIntro.style.zIndex = '2';
-    }
-    
-   // Gentle scroll that maintains the section positioning
-setTimeout(() => {
-    const productFinderSection = document.getElementById('product-finder');
-    if (productFinderSection) {
-        const rect = productFinderSection.getBoundingClientRect();
-        const currentScroll = window.pageYOffset;
-        const sectionTop = rect.top + currentScroll;
         
-        // Only scroll if we're not already viewing the section properly
-        if (rect.top < -100 || rect.top > window.innerHeight - 200) {
-            window.scrollTo({
-                top: sectionTop - 100, // Small offset for header
-                behavior: 'smooth'
-            });
+        // Add class to product finder to indicate results are shown
+        const productFinder = document.querySelector('.product-finder');
+        if (productFinder) {
+            productFinder.classList.add('has-results');
         }
-    }
-}, 100);
-}
+        
+        finderResults.classList.add('show');
+        
+        // CRITICAL FIX: Ensure section intro stays visible
+        if (sectionIntro) {
+            sectionIntro.style.display = 'block';
+            sectionIntro.style.visibility = 'visible';
+            sectionIntro.style.opacity = '1';
+            sectionIntro.style.position = 'relative';
+            sectionIntro.style.zIndex = '2';
+        }
+        
+        // Gentle scroll that maintains the section positioning
+        setTimeout(() => {
+            const productFinderSection = document.getElementById('product-finder');
+            if (productFinderSection) {
+                const rect = productFinderSection.getBoundingClientRect();
+                const currentScroll = window.pageYOffset;
+                const sectionTop = rect.top + currentScroll;
+                
+                // Only scroll if we're not already viewing the section properly
+                if (rect.top < -100 || rect.top > window.innerHeight - 200) {
+                    window.scrollTo({
+                        top: sectionTop - 100, // Small offset for header
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        }, 100);
 
-// Function to hide results (when clearing search) - FIXED VERSION
-function hideResults() {
-    const sectionIntro = document.querySelector('.product-finder .section-intro');
-    const productFinder = document.querySelector('.product-finder');
-    
-    if (finderResults) {
-        finderResults.classList.remove('show');
+        // IMPORTANT: Initialize selectable functionality after results are shown
+        setTimeout(() => {
+            initializeSelectableBarrelFinder();
+        }, 200);
     }
-    
-    if (productFinder) {
-        productFinder.classList.remove('has-results');
-    }
-    
-    // CRITICAL FIX: Always ensure section intro is visible
-    if (sectionIntro) {
-        sectionIntro.style.display = 'block';
-        sectionIntro.style.visibility = 'visible';
-        sectionIntro.style.opacity = '1';
-    }
-}
 
-    // Utility function to capitalize words
+    // Capitalize words helper function
     function capitalizeWords(str) {
         return str.split(' ').map(word => 
-            word.charAt(0).toUpperCase() + word.slice(1)
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
         ).join(' ');
     }
 
-    // Event listeners
-    if (productInput) {
-        productInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                processSearch(productInput.value);
+    // Event listeners for search functionality
+    if (finderSubmit) {
+        finderSubmit.addEventListener('click', function() {
+            const query = productInput.value.trim();
+            if (query) {
+                processSearch(query);
             }
         });
     }
 
-    if (finderSubmit) {
-        finderSubmit.addEventListener('click', (e) => {
-            e.preventDefault();
-            processSearch(productInput.value);
+    if (productInput) {
+        productInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = productInput.value.trim();
+                if (query) {
+                    processSearch(query);
+                }
+            }
         });
     }
 
-    // Popular tag clicks
+    // Popular tags functionality
     popularTags.forEach(tag => {
-        tag.addEventListener('click', () => {
-            const product = tag.getAttribute('data-product');
-            if (productInput) {
-                productInput.value = capitalizeWords(product);
+        tag.addEventListener('click', function() {
+            const product = this.dataset.product;
+            if (product) {
+                productInput.value = product;
                 processSearch(product);
             }
         });
     });
 
-    console.log('Product Finder initialized successfully with correct buttons');
-});
+}); // End of main DOMContentLoaded
 
 // =================================
-// HERO SEARCH FUNCTIONALITY
+// SELECTABLE BARREL FINDER FUNCTIONALITY
+// =================================
+
+// Track selected barrel types
+let selectedBarrelTypes = new Set();
+
+/**
+ * Toggle selection state of a recommendation card
+ * @param {Element} card - The recommendation card element
+ */
+function toggleSelection(card) {
+    const sherryType = card.dataset.sherryType;
+    
+    if (card.classList.contains('selected')) {
+        card.classList.remove('selected');
+        selectedBarrelTypes.delete(sherryType);
+    } else {
+        card.classList.add('selected');
+        selectedBarrelTypes.add(sherryType);
+    }
+    
+    updateSelectionSummary();
+    updateGetQuoteButton();
+}
+
+/**
+ * Update the selection summary display
+ */
+function updateSelectionSummary() {
+    const summary = document.getElementById('selectionSummary');
+    const count = document.getElementById('selectionCount');
+    const types = document.getElementById('selectedTypes');
+    
+    if (selectedBarrelTypes.size > 0) {
+        summary.classList.add('visible');
+        count.textContent = `${selectedBarrelTypes.size} barrel type${selectedBarrelTypes.size > 1 ? 's' : ''} selected`;
+        
+        const typeNames = Array.from(selectedBarrelTypes).map(type => {
+            return formatSherryTypeName(type);
+        });
+        types.textContent = `Selected: ${typeNames.join(', ')}`;
+    } else {
+        summary.classList.remove('visible');
+    }
+}
+
+/**
+ * Format sherry type names for display
+ * @param {string} type - The sherry type key
+ * @returns {string} - Formatted display name
+ */
+function formatSherryTypeName(type) {
+    const nameMap = {
+        'oloroso': 'Oloroso',
+        'pedro-ximenez': 'Pedro Ximénez',
+        'amontillado': 'Amontillado',
+        'palo-cortado': 'Palo Cortado',
+        'fino': 'Fino',
+        'manzanilla': 'Manzanilla'
+    };
+    return nameMap[type] || type.charAt(0).toUpperCase() + type.slice(1).replace('-', ' ');
+}
+
+/**
+ * Update the Get Quote button text and styling
+ */
+function updateGetQuoteButton() {
+    const btn = document.querySelector('.result-buttons .btn-outline[href*="contact"]');
+    
+    if (btn) {
+        if (selectedBarrelTypes.size > 0) {
+            btn.textContent = `Get Quote (${selectedBarrelTypes.size} selected)`;
+            btn.classList.add('has-selections');
+        } else {
+            btn.textContent = 'Get Quote';
+            btn.classList.remove('has-selections');
+        }
+    }
+}
+
+/**
+ * Clear all selections
+ */
+function clearAllSelections() {
+    selectedBarrelTypes.clear();
+    
+    // Remove selected class from all cards
+    document.querySelectorAll('.recommendation-card.selected').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    updateSelectionSummary();
+    updateGetQuoteButton();
+}
+
+/**
+ * Scroll to quote form and pre-select sherry types
+ */
+function scrollToQuoteForm() {
+    // Check if we're on the main page with the contact form
+    const currentPage = window.location.pathname;
+    const isMainPage = currentPage === '/' || currentPage === '/index.html' || currentPage.endsWith('index.html');
+    
+    // Store selected types in sessionStorage for cross-page transfer
+    if (selectedBarrelTypes.size > 0) {
+        sessionStorage.setItem('selectedBarrelTypes', JSON.stringify(Array.from(selectedBarrelTypes)));
+    }
+    
+    if (isMainPage) {
+        // We're on the main page - scroll to contact form
+        const quoteForm = document.getElementById('contact');
+        if (quoteForm) {
+            quoteForm.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Pre-select the sherry types after scrolling
+            setTimeout(() => {
+                preselectSherryTypes();
+            }, 1500);
+        }
+    } else {
+        // We're on a category page - navigate to main page with hash
+        window.location.href = '/#contact';
+    }
+}
+
+// =================================
+// FIXED PRESELECTION FUNCTIONALITY - COMPLETE VERSION
+// =================================
+
+/**
+ * Function to read URL parameters
+ */
+function getURLParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+/**
+ * Pre-select sherry type buttons - FIXED VERSION THAT WORKS WITH NEW EVENT HANDLERS
+ */
+function preselectSherryTypes() {
+    console.log('preselectSherryTypes called'); // Debug line
+    
+    // Get types to select from multiple sources
+    let typesToSelect = [];
+    
+    // 1. From product finder selections
+    if (typeof selectedBarrelTypes !== 'undefined' && selectedBarrelTypes.size > 0) {
+        typesToSelect = Array.from(selectedBarrelTypes);
+    }
+    
+    // 2. From sessionStorage (cross-page transfer)
+    if (typesToSelect.length === 0) {
+        const stored = sessionStorage.getItem('selectedBarrelTypes');
+        if (stored) {
+            try {
+                typesToSelect = JSON.parse(stored);
+            } catch (e) {
+                console.log('Error parsing stored barrel types:', e);
+            }
+        }
+    }
+    
+    // 3. From URL parameters
+    if (typesToSelect.length === 0) {
+        const urlParam = getURLParameter('preselect');
+        if (urlParam) {
+            typesToSelect = urlParam.split(',').map(type => type.trim());
+        }
+    }
+    
+    // 4. Auto-detect based on current page
+    if (typesToSelect.length === 0) {
+        const currentPage = window.location.pathname;
+        
+        if (currentPage.includes('whisky-sherry-barrels')) {
+            typesToSelect = ['oloroso', 'amontillado', 'fino'];
+        } else if (currentPage.includes('rum-sherry-barrels')) {
+            typesToSelect = ['oloroso', 'pedro-ximenez'];
+        } else if (currentPage.includes('tequila-sherry-barrels')) {
+            typesToSelect = ['oloroso', 'amontillado'];
+        } else if (currentPage.includes('vodka-sherry-barrels')) {
+            typesToSelect = ['fino', 'manzanilla'];
+        } else if (currentPage.includes('beer-sherry-barrels')) {
+            typesToSelect = ['oloroso', 'amontillado', 'pedro-ximenez'];
+        }
+    }
+    
+    console.log('Types to select:', typesToSelect); // Debug line
+    
+    if (typesToSelect.length === 0) {
+        console.log('No types to select, returning');
+        return;
+    }
+    
+    // Create and show the preselection message
+    showPreselectionMessage(typesToSelect);
+    
+    // Map display names to actual button selectors
+    const sherryTypeMapping = {
+        'oloroso': 'oloroso',
+        'amontillado': 'amontillado', 
+        'fino': 'fino',
+        'manzanilla': 'manzanilla',
+        'palo-cortado': 'palo-cortado',
+        'pedro-ximenez': 'pedro-ximenez',
+        'pedro-ximénez': 'pedro-ximenez' // Handle accent
+    };
+    
+    // Wait longer to ensure buttons are fully set up
+    setTimeout(() => {
+        // Find and select buttons for each type
+        typesToSelect.forEach(type => {
+            const normalizedType = type.toLowerCase().replace(' ', '-').replace('ñ', 'n');
+            const buttonValue = sherryTypeMapping[normalizedType] || normalizedType;
+            
+            console.log('Looking for button with value:', buttonValue); // Debug line
+            
+            // Find the button using the exact structure from your HTML
+            let button = document.querySelector(`button.preference-button[data-preference="${buttonValue}"]`);
+            
+            console.log('Found button:', button); // Debug line
+            
+            if (button) {
+                // Force the button into selected state
+                button.classList.add('selected');
+                button.setAttribute('aria-pressed', 'true');
+                
+                // Add visual feedback animation
+                button.classList.add('pre-selected');
+                
+                // Remove animation class after delay
+                setTimeout(() => {
+                    if (button.classList.contains('pre-selected')) {
+                        button.classList.remove('pre-selected');
+                    }
+                }, 2000);
+                
+                console.log('Preference button selected:', button);
+            } else {
+                console.log('No preference button found for type:', type);
+            }
+        });
+    }, 800); // Longer delay to ensure DOM is ready
+    
+    // Clear sessionStorage after use
+    setTimeout(() => {
+        sessionStorage.removeItem('selectedBarrelTypes');
+    }, 3000);
+}
+
+/**
+ * Show preselection message to user - ENHANCED VERSION
+ */
+function showPreselectionMessage(selectedTypes) {
+    // Remove any existing message
+    const existingMessage = document.getElementById('preselection-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // Find the best location to insert the message - UPDATED FOR YOUR FORM
+    let insertLocation = null;
+    
+    // Try to find the preference buttons section from your HTML
+    const possibleLocations = [
+        // Look for the specific label in your form
+        Array.from(document.querySelectorAll('label')).find(label => 
+            label.textContent.includes('Preference of Sherry Seasoning')
+        ),
+        // Look for the preference buttons container
+        document.querySelector('.preference-buttons'),
+        // Look for the form group containing preference buttons
+        document.querySelector('.form-group:has(.preference-buttons)'),
+        // Look for any preference button and get its container
+        document.querySelector('.preference-button')?.closest('.form-group'),
+        // Fallback to the contact form itself
+        document.querySelector('#contactForm'),
+        document.querySelector('.quote-form'),
+        document.querySelector('#contact')
+    ];
+    
+    // Find the first valid location
+    for (const location of possibleLocations) {
+        if (location) {
+            insertLocation = location;
+            break;
+        }
+    }
+    
+    if (!insertLocation) {
+        console.log('Could not find suitable location for preselection message');
+        return;
+    }
+    
+    console.log('Found insertion location:', insertLocation);
+    
+    // Create message element
+    const messageDiv = document.createElement('div');
+    messageDiv.id = 'preselection-message';
+    messageDiv.className = 'preselection-message';
+    
+    const typeNames = selectedTypes.map(type => formatSherryTypeName(type.replace('-', ' ')));
+    const message = `Based on your spirit/beer, you've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for your product.`;
+    
+    messageDiv.innerHTML = `
+        <div class="message-content">
+            <span class="message-icon">✔</span>
+            <span class="message-text">${message}</span>
+        </div>
+    `;
+    
+    // Insert the message in the best position
+    if (insertLocation.tagName === 'LABEL') {
+        insertLocation.insertAdjacentElement('afterend', messageDiv);
+    } else if (insertLocation.classList.contains('preference-buttons')) {
+        insertLocation.insertAdjacentElement('beforebegin', messageDiv);
+    } else {
+        // Insert after the label but before the buttons
+        const label = insertLocation.querySelector('label');
+        if (label) {
+            label.insertAdjacentElement('afterend', messageDiv);
+        } else {
+            insertLocation.insertAdjacentElement('afterbegin', messageDiv);
+        }
+    }
+    
+    // Show with animation
+    setTimeout(() => {
+        messageDiv.classList.add('visible');
+    }, 100);
+    
+    
+    
+    console.log('Preselection message shown');
+}
+
+/**
+ * Handle product card clicks (for navigation with preselection from category pages)
+ */
+function handleProductCardClick(sherryTypes) {
+    // Store the sherry types for preselection
+    sessionStorage.setItem('selectedBarrelTypes', JSON.stringify(sherryTypes));
+    
+    // Navigate to contact section
+    const contactURL = `#contact?preselect=${encodeURIComponent(sherryTypes.join(','))}`;
+    
+    // Smooth scroll to contact section
+    setTimeout(() => {
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+            // Wait for scroll, then apply preselection
+            setTimeout(() => {
+                preselectSherryTypes();
+            }, 800);
+        }
+    }, 100);
+}
+
+/**
+ * Initialize preselection on page load - ENHANCED VERSION
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // Multiple initialization triggers
+    
+    // 1. Check if we're on a page with the quote form
+    const quoteForm = document.querySelector('#contactForm, .quote-form, #contact');
+    if (quoteForm) {
+        console.log('Quote form found, setting up preselection...');
+        
+        // 2. Check for hash navigation (from cross-page links)
+        if (window.location.hash === '#contact') {
+            setTimeout(() => {
+                preselectSherryTypes();
+            }, 800);
+        }
+        
+        // 3. Check for URL parameters
+        const preselectParam = getURLParameter('preselect');
+        if (preselectParam) {
+            setTimeout(() => {
+                preselectSherryTypes();
+            }, 500);
+        }
+        
+        // 4. Check sessionStorage for cross-page transfers
+        const storedTypes = sessionStorage.getItem('selectedBarrelTypes');
+        if (storedTypes) {
+            setTimeout(() => {
+                preselectSherryTypes();
+            }, 600);
+        }
+        
+        // 5. Auto-detect based on page (for direct page visits)
+        const currentPage = window.location.pathname;
+        if (currentPage.includes('sherry-barrels') && currentPage !== '/') {
+            setTimeout(() => {
+                preselectSherryTypes();
+            }, 700);
+        }
+        
+        // 6. Listen for custom events (in case other scripts trigger preselection)
+        document.addEventListener('preselectSherryTypes', () => {
+            preselectSherryTypes();
+        });
+    }
+});
+
+/**
+ * Initialize the selectable barrel finder
+ */
+function initializeSelectableBarrelFinder() {
+    // Add click handlers to existing recommendation cards
+    document.querySelectorAll('.recommendation-card').forEach(card => {
+        if (!card.hasAttribute('data-selectable-initialized')) {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', () => toggleSelection(card));
+            card.setAttribute('data-selectable-initialized', 'true');
+        }
+    });
+    
+    // Add selection instructions if they don't exist
+    const resultsContainer = document.querySelector('.finder-results');
+    if (resultsContainer && !document.querySelector('.selection-instructions')) {
+        const instructions = document.createElement('div');
+        instructions.className = 'selection-instructions';
+        instructions.innerHTML = '💡 Click on the barrel types you\'re interested in, then click "Get Quote" to pre-fill the form below';
+        
+        const resultHeader = resultsContainer.querySelector('.result-header');
+        if (resultHeader) {
+            resultHeader.insertAdjacentElement('afterend', instructions);
+        }
+    }
+    
+    // Add selection summary if it doesn't exist
+    if (resultsContainer && !document.querySelector('.selection-summary')) {
+        const summary = document.createElement('div');
+        summary.className = 'selection-summary';
+        summary.id = 'selectionSummary';
+        summary.innerHTML = `
+            <div class="selection-count" id="selectionCount">0 barrel types selected</div>
+            <div class="selected-types" id="selectedTypes"></div>
+            <button class="clear-selection" onclick="clearAllSelections()">Clear Selection</button>
+        `;
+        
+        const recommendations = resultsContainer.querySelector('.result-recommendations');
+        if (recommendations) {
+            recommendations.insertAdjacentElement('beforebegin', summary);
+        }
+    }
+    
+    // Update Get Quote button functionality - Target the btn-outline in result-buttons
+    const getQuoteBtn = document.querySelector('.result-buttons .btn-outline[href*="contact"]');
+    if (getQuoteBtn && !getQuoteBtn.hasAttribute('data-quote-initialized')) {
+        getQuoteBtn.onclick = (e) => {
+            e.preventDefault();
+            scrollToQuoteForm();
+        };
+        getQuoteBtn.setAttribute('data-quote-initialized', 'true');
+    }
+    
+    updateSelectionSummary();
+    updateGetQuoteButton();
+}
+
+// =================================
+// HERO SEARCH FUNCTIONALITY - FIXED
 // =================================
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -1222,7 +1683,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Only run if hero search elements exist
     if (!heroSearchInput) return;
 
-    // Function to navigate to product finder with pre-populated search
+    // Function to navigate to product finder with pre-populated search - FIXED
     function navigateToProductFinder(searchTerm) {
         // Add searching animation
         if (heroSearchContainer) {
@@ -1234,7 +1695,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Small delay for visual feedback
         setTimeout(() => {
-            // Find the main product finder input (from the main product finder section)
+            // Find the main product finder input
             const mainProductInput = document.getElementById('productInput');
             
             if (mainProductInput) {
@@ -1255,14 +1716,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Focus the input for better UX
                         mainProductInput.focus();
                         
-                        // Trigger the product finder search
-                        const enterEvent = new KeyboardEvent('keydown', {
-                            key: 'Enter',
-                            code: 'Enter',
-                            keyCode: 13,
-                            bubbles: true
-                        });
-                        mainProductInput.dispatchEvent(enterEvent);
+                        // FIXED: Use the globally available processSearch function
+                        if (typeof processSearch === 'function') {
+                            processSearch(searchTerm);
+                        } else {
+                            console.log('processSearch function not available');
+                        }
                     }, 800); // Wait for scroll to complete
                 }
             } else {
@@ -1277,6 +1736,353 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 300);
     }
+
+    // Event listeners for hero search
+    if (heroSearchButton) {
+        heroSearchButton.addEventListener('click', function() {
+            const searchTerm = heroSearchInput.value.trim();
+            if (searchTerm) {
+                navigateToProductFinder(searchTerm);
+            }
+        });
+    }
+
+    if (heroSearchInput) {
+        heroSearchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = heroSearchInput.value.trim();
+                if (searchTerm) {
+                    navigateToProductFinder(searchTerm);
+                }
+            }
+        });
+    }
+
+    // Hero suggestion tags
+    heroSuggestionTags.forEach(tag => {
+        tag.addEventListener('click', function() {
+            const searchTerm = this.textContent.trim();
+            if (searchTerm) {
+                heroSearchInput.value = searchTerm;
+                navigateToProductFinder(searchTerm);
+            }
+        });
+    });
+
+});
+
+// =================================
+// COMPLETE FIXED PREFERENCE BUTTON FUNCTIONALITY
+// REPLACE EVERYTHING FROM "FIXED PREFERENCE BUTTON FUNCTIONALITY" TO THE NEXT MAJOR SECTION
+// =================================
+
+/**
+ * Initialize preference button functionality - COMPLETE FIXED VERSION
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing preference buttons...'); // Debug
+    
+    // Wait for DOM to be fully ready
+    setTimeout(() => {
+        initializeFormButtons();
+    }, 500);
+});
+
+/**
+ * Initialize all form buttons with proper event handlers
+ */
+function initializeFormButtons() {
+    console.log('Setting up form button handlers...'); // Debug
+    
+    // Clear any existing event listeners by cloning and replacing buttons
+    const preferenceButtons = document.querySelectorAll('.preference-button');
+    console.log('Found preference buttons:', preferenceButtons.length); // Debug
+    
+    preferenceButtons.forEach((button, index) => {
+        console.log(`Setting up button ${index}: ${button.dataset.preference}`); // Debug
+        
+        // Remove any existing event listeners by cloning the button
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        // Add the click handler to the new button
+        newButton.addEventListener('click', handlePreferenceButtonClick);
+    });
+    
+    // Set up size buttons
+    document.querySelectorAll('.size-button').forEach(button => {
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        newButton.addEventListener('click', handleSizeButtonClick);
+    });
+    
+    // Set up quantity buttons
+    document.querySelectorAll('.quantity-button').forEach(button => {
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        newButton.addEventListener('click', handleQuantityButtonClick);
+    });
+    
+    console.log('Form buttons initialized successfully'); // Debug
+}
+
+/**
+ * Handle preference button clicks
+ */
+function handlePreferenceButtonClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const button = e.currentTarget;
+    const preference = button.dataset.preference;
+    
+    console.log('Preference button clicked:', preference); // Debug
+    console.log('Current state:', button.classList.contains('selected')); // Debug
+    
+    if (preference === 'all-types') {
+        handleAllTypesClick(button);
+    } else {
+        handleIndividualPreferenceClick(button);
+    }
+}
+
+/**
+ * Handle "All Types" button click
+ */
+function handleAllTypesClick(allTypesButton) {
+    const isCurrentlySelected = allTypesButton.classList.contains('selected');
+    console.log('All Types button - currently selected:', isCurrentlySelected); // Debug
+    
+    if (isCurrentlySelected) {
+        // Deselect All Types and all other buttons
+        console.log('Deselecting all buttons'); // Debug
+        allTypesButton.classList.remove('selected');
+        allTypesButton.setAttribute('aria-pressed', 'false');
+        
+        // Deselect all individual preference buttons
+        document.querySelectorAll('.preference-button:not([data-preference="all-types"])').forEach(btn => {
+            btn.classList.remove('selected');
+            btn.setAttribute('aria-pressed', 'false');
+        });
+    } else {
+        // Select All Types and all other buttons
+        console.log('Selecting all buttons'); // Debug
+        allTypesButton.classList.add('selected');
+        allTypesButton.setAttribute('aria-pressed', 'true');
+        
+        // Select all individual preference buttons
+        document.querySelectorAll('.preference-button:not([data-preference="all-types"])').forEach(btn => {
+            btn.classList.add('selected');
+            btn.setAttribute('aria-pressed', 'true');
+        });
+    }
+}
+
+/**
+ * Handle individual preference button click
+ */
+function handleIndividualPreferenceClick(button) {
+    const isCurrentlySelected = button.classList.contains('selected');
+    console.log('Individual button - currently selected:', isCurrentlySelected); // Debug
+    
+    // Toggle this button's state
+    if (isCurrentlySelected) {
+        button.classList.remove('selected');
+        button.setAttribute('aria-pressed', 'false');
+        console.log('Button deselected'); // Debug
+    } else {
+        button.classList.add('selected');
+        button.setAttribute('aria-pressed', 'true');
+        console.log('Button selected'); // Debug
+    }
+    
+    // Always deselect "All Types" when any individual button is clicked
+    const allTypesButton = document.querySelector('.preference-button[data-preference="all-types"]');
+    if (allTypesButton && allTypesButton.classList.contains('selected')) {
+        console.log('Deselecting All Types because individual button was clicked'); // Debug
+        allTypesButton.classList.remove('selected');
+        allTypesButton.setAttribute('aria-pressed', 'false');
+    }
+}
+
+/**
+ * Handle size button clicks
+ */
+function handleSizeButtonClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Remove selected class from all size buttons
+    document.querySelectorAll('.size-button').forEach(btn => {
+        btn.classList.remove('selected');
+        btn.setAttribute('aria-pressed', 'false');
+    });
+    
+    // Add selected class to clicked button
+    e.currentTarget.classList.add('selected');
+    e.currentTarget.setAttribute('aria-pressed', 'true');
+}
+
+/**
+ * Handle quantity button clicks
+ */
+function handleQuantityButtonClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Remove selected class from all quantity buttons
+    document.querySelectorAll('.quantity-button').forEach(btn => {
+        btn.classList.remove('selected');
+        btn.setAttribute('aria-pressed', 'false');
+    });
+    
+    // Add selected class to clicked button
+    e.currentTarget.classList.add('selected');
+    e.currentTarget.setAttribute('aria-pressed', 'true');
+}
+
+// =================================
+// ADD EVENT LISTENERS FOR PRODUCT CARD NAVIGATION - ENHANCED
+// =================================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Setting up product card navigation...');
+    
+    // Enhanced selectors to catch all possible product card links
+    const productCardSelectors = [
+        'a[href*="whisky-sherry-barrels"]',
+        'a[href*="rum-sherry-barrels"]', 
+        'a[href*="tequila-sherry-barrels"]',
+        'a[href*="vodka-sherry-barrels"]',
+        'a[href*="beer-sherry-barrels"]',
+        '.product-card a[href*="#contact"]',
+        '.product-card-link[href*="#contact"]'
+    ];
+    
+    productCardSelectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(card => {
+            console.log('Found product card:', card);
+            
+            // Determine sherry types based on URL
+            let sherryTypes = [];
+            const href = card.href.toLowerCase();
+            
+            if (href.includes('whisky')) {
+                sherryTypes = ['oloroso', 'amontillado', 'fino'];
+            } else if (href.includes('rum')) {
+                sherryTypes = ['oloroso', 'pedro-ximenez'];
+            } else if (href.includes('tequila')) {
+                sherryTypes = ['oloroso', 'amontillado'];
+            } else if (href.includes('vodka')) {
+                sherryTypes = ['fino', 'manzanilla'];
+            } else if (href.includes('beer')) {
+                sherryTypes = ['oloroso', 'amontillado', 'pedro-ximenez'];
+            }
+            
+            // Only add event listener if it leads to contact and has sherry types
+            if (href.includes('#contact') && sherryTypes.length > 0) {
+                card.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('Product card clicked, preselecting:', sherryTypes);
+                    handleProductCardClick(sherryTypes);
+                });
+            }
+        });
+    });
+});
+
+// =================================
+// UTILITY FUNCTION FOR MANUAL TRIGGERING
+// =================================
+
+/**
+ * Manually trigger preselection (useful for testing or external triggers)
+ */
+function triggerPreselection(types = null) {
+    if (types) {
+        sessionStorage.setItem('selectedBarrelTypes', JSON.stringify(types));
+    }
+    preselectSherryTypes();
+}
+
+// Make functions globally available for debugging
+window.preselectSherryTypes = preselectSherryTypes;
+window.triggerPreselection = triggerPreselection;
+
+// =================================
+// HERO SEARCH FUNCTIONALITY
+// =================================
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Get hero search elements
+    const heroSearchInput = document.getElementById('heroSearchInput');
+    const heroSearchButton = document.getElementById('heroSearchButton');
+    const heroSuggestionTags = document.querySelectorAll('.hero-suggestion-tag');
+    const heroSearchContainer = document.querySelector('.hero-search-container');
+
+    // Only run if hero search elements exist
+    if (!heroSearchInput) return;
+
+    // Function to navigate to product finder with pre-populated search - FIXED
+function navigateToProductFinder(searchTerm) {
+    // Add searching animation
+    if (heroSearchContainer) {
+        heroSearchContainer.classList.add('searching');
+        setTimeout(() => {
+            heroSearchContainer.classList.remove('searching');
+        }, 600);
+    }
+
+    // Small delay for visual feedback
+    setTimeout(() => {
+        // Find the main product finder input
+        const mainProductInput = document.getElementById('productInput');
+        
+        if (mainProductInput) {
+            // Populate the main product finder with the search term
+            mainProductInput.value = searchTerm;
+            
+            // Scroll to the product finder section
+            const productFinderSection = document.getElementById('product-finder');
+            if (productFinderSection) {
+                // Smooth scroll to product finder
+                productFinderSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+                
+                // After scroll, trigger the search in the main product finder
+                setTimeout(() => {
+                    // Focus the input for better UX
+                    mainProductInput.focus();
+                    
+                    // FIXED: Use the correct processSearch function directly
+                    if (typeof processSearch === 'function') {
+                        processSearch(searchTerm);
+                    } else {
+                        // Fallback: trigger keypress event (the event your main finder listens to)
+                        const keypressEvent = new KeyboardEvent('keypress', {
+                            key: 'Enter',
+                            code: 'Enter',
+                            keyCode: 13,
+                            which: 13,
+                            bubbles: true
+                        });
+                        mainProductInput.dispatchEvent(keypressEvent);
+                    }
+                }, 800); // Wait for scroll to complete
+            }
+        } else {
+            // Fallback: just scroll to product finder section
+            const productFinderSection = document.getElementById('product-finder');
+            if (productFinderSection) {
+                productFinderSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }
+    }, 300);
+}
 
     // Hero search button click
     if (heroSearchButton) {
@@ -3560,5 +4366,37 @@ document.addEventListener('DOMContentLoaded', function() {
     if (contactForm) {
         console.log('Initializing contact form...'); // Debug log
         handleFormSubmission(contactForm);
+    }
+});
+
+/**
+ * INITIALIZE pre-selection on page load (for cross-page navigation)
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we arrived from another page with selections
+    if (window.location.hash === '#contact') {
+        setTimeout(() => {
+            console.log('🏠 Arrived at contact form from another page');
+            preselectSherryTypes();
+        }, 1000);
+    }
+});
+
+// Check if we're on a page with the quote form and call preselection
+document.addEventListener('DOMContentLoaded', function() {
+    // Small delay to ensure form is fully loaded
+    setTimeout(() => {
+        if (document.getElementById('contactForm') || document.querySelector('.quote-form')) {
+            preselectSherryTypes();
+        }
+    }, 500);
+});
+
+// Also check when navigating with hash (like /#contact)
+window.addEventListener('hashchange', function() {
+    if (window.location.hash === '#contact') {
+        setTimeout(() => {
+            preselectSherryTypes();
+        }, 1000);
     }
 });

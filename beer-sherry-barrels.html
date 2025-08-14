@@ -390,26 +390,26 @@
                     </div>
                     
                     <div class="shipping-note">
-                        <strong>Shipping:</strong> A 20-foot container holds 50 barrels (225L each) and a 40-footer holds 150. Shipping a full container is the most cost-effective option, but we're happy to accommodate orders of any size.
+                        <strong>Shipping:</strong> A 20-foot container holds 55 barrels (225L each) and a 40-footer holds 150. Shipping a full container is the most cost-effective option, but we're happy to accommodate smaller orders.
                     </div>
                 </div>
                 
                 <div class="quote-form fade-in">
-                    <form id="beerContactForm">
+                    <form id="contactForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="firstName">First Name</label>
+                                <label for="firstName">First Name <span class="required">*</span></label>
                                 <input type="text" id="firstName" name="firstName" required>
                             </div>
                             <div class="form-group">
-                                <label for="lastName">Last Name</label>
+                                <label for="lastName">Last Name <span class="required">*</span></label>
                                 <input type="text" id="lastName" name="lastName" required>
                             </div>
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="email">Email Address</label>
+                                <label for="email">Email Address <span class="required">*</span></label>
                                 <input type="email" id="email" name="email" required>
                             </div>
                             <div class="form-group">
@@ -419,81 +419,104 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="brewery">Brewery/Brand Name</label>
-                            <input type="text" id="brewery" name="brewery" required>
+                            <label for="company">Distillery/Brewery Name <span class="required">*</span></label>
+                            <input type="text" id="company" name="company" required>
+                        </div>
+                        
+                        <!-- Shipping Address Toggle -->
+                        <div class="form-group">
+                            <p class="shipping-address-note">Providing a shipping address helps us give you an accurate quote including delivery costs.</p>
+                            <button type="button" class="shipping-toggle" id="shippingToggle">
+                                <span>Add Shipping Address for Quote</span>
+                                <svg class="shipping-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M7 10l5 5 5-5z"/>
+                                </svg>
+                            </button>
+                            
+                            <div class="shipping-address-section" id="shippingSection">
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="country">Country</label>
+                                        <input type="text" id="country" name="country" placeholder="e.g., United States, Germany, Japan">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="stateProvince">State/Province/Region</label>
+                                        <input type="text" id="stateProvince" name="stateProvince" placeholder="e.g., California, Bavaria, Ontario">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="streetAddress">Street Address</label>
+                                    <div class="address-input-container">
+                                        <input type="text" id="streetAddress" name="streetAddress" placeholder="Start typing your address...">
+                                        <div class="address-suggestions" id="addressSuggestions"></div>
+                                    </div>
+                                    <small class="autocomplete-note" id="autocompleteNote">Start typing for address suggestions</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="unitNumber">Unit/Building Number</label>
+                                    <input type="text" id="unitNumber" name="unitNumber" placeholder="Apt, Suite, Unit, Building, Floor, etc.">
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="city">City</label>
+                                        <input type="text" id="city" name="city" placeholder="City">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="postalCode">Postal Code</label>
+                                        <input type="text" id="postalCode" name="postalCode" placeholder="12345 or AB1 2CD">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="beerStyles">Beer Styles of Interest</label>
-                            <select id="beerStyles" name="beerStyles">
-                                <option value="">Select beer styles</option>
-                                <option value="imperial-stouts">Imperial Stouts</option>
-                                <option value="barleywines">Barleywines</option>
-                                <option value="belgian-strong">Belgian Strong Ales</option>
-                                <option value="sours-wild">Sours & Wild Ales</option>
-                                <option value="saisons">Saisons & Farmhouse</option>
-                                <option value="experimental">Experimental Beers</option>
-                                <option value="mixed">Multiple Styles</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Preferred Sherry Cask Types for Beer</label>
-                            <div class="checkbox-options">
-                                <div class="checkbox-option">
-                                    <input type="checkbox" id="fino-manzanilla-beer" name="sherryCaskType" value="fino-manzanilla">
-                                    <label for="fino-manzanilla-beer">Fino & Manzanilla</label>
-                                </div>
-                                <div class="checkbox-option">
-                                    <input type="checkbox" id="amontillado-beer" name="sherryCaskType" value="amontillado">
-                                    <label for="amontillado-beer">Amontillado</label>
-                                </div>
-                                <div class="checkbox-option">
-                                    <input type="checkbox" id="oloroso-beer" name="sherryCaskType" value="oloroso">
-                                    <label for="oloroso-beer">Oloroso</label>
-                                </div>
-                                <div class="checkbox-option">
-                                    <input type="checkbox" id="palo-cortado-beer" name="sherryCaskType" value="palo-cortado">
-                                    <label for="palo-cortado-beer">Palo Cortado</label>
-                                </div>
-                                <div class="checkbox-option">
-                                    <input type="checkbox" id="pedro-ximenez-beer" name="sherryCaskType" value="pedro-ximenez">
-                                    <label for="pedro-ximenez-beer">Pedro Ximénez</label>
-                                </div>
-                                <div class="checkbox-option">
-                                    <input type="checkbox" id="custom-beer-blend" name="sherryCaskType" value="custom-blend">
-                                    <label for="custom-beer-blend">Custom Program</label>
-                                </div>
-                                <div class="checkbox-option">
-                                    <input type="checkbox" id="unsure-beer" name="sherryCaskType" value="unsure">
-                                    <label for="unsure-beer">Need Guidance</label>
-                                </div>
+                            <label>Preference of Sherry Seasoning</label>
+                            <div class="preference-buttons">
+                                <button type="button" class="preference-button" data-preference="all-types">All Types</button>
+                                <button type="button" class="preference-button" data-preference="fino">Fino</button>
+                                <button type="button" class="preference-button" data-preference="manzanilla">Manzanilla</button>
+                                <button type="button" class="preference-button" data-preference="amontillado">Amontillado</button>
+                                <button type="button" class="preference-button" data-preference="palo-cortado">Palo Cortado</button>
+                                <button type="button" class="preference-button" data-preference="oloroso">Oloroso</button>
+                                <button type="button" class="preference-button" data-preference="pedro-ximenez">Pedro Ximénez</button>
+                                <button type="button" class="preference-button" data-preference="unsure">Not Sure</button>
                             </div>
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="caskSize">Preferred Cask Size</label>
-                                <select id="caskSize" name="caskSize">
-                                    <option value="">Select size</option>
-                                    <option value="225l">225L Hogsheads</option>
-                                    <option value="500l">500L Butts</option>
-                                    <option value="custom">Custom Size</option>
-                                    <option value="mixed">Mixed Sizes</option>
-                                </select>
+                                <label>Preferred Cask Size</label>
+                                <div class="size-button-group">
+                                    <button type="button" class="size-button" data-size="225l">225L</button>
+                                    <button type="button" class="size-button" data-size="500l">500L</button>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="quantity">Estimated Quantity</label>
-                                <input type="number" id="quantity" name="quantity" min="1" placeholder="Number of casks">
+                                <label>Estimated Quantity <span class="required">*</span></label>
+                                <div class="quantity-button-group">
+                                    <button type="button" class="quantity-button" data-quantity="5-20">5-20</button>
+                                    <button type="button" class="quantity-button" data-quantity="21-50">21-50</button>
+                                    <button type="button" class="quantity-button" data-quantity="50+">50+</button>
+                                </div>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label for="project">Beer Project Details</label>
-                            <textarea id="project" name="project" rows="4" placeholder="Tell us about your barrel program goals, target beer styles, aging timeline, and production volume..."></textarea>
+                            <label for="project">Project Details</label>
+                            <textarea id="project" name="project" rows="4" placeholder="Tell us about your project, timeline, and specific requirements..."></textarea>
                         </div>
                         
-                        <button type="submit" class="btn-primary">Request Sherry Barrel Consultation</button>
+                        <!-- Google reCAPTCHA -->
+                        <div class="form-group captcha-group">
+                            <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
+                            <small class="captcha-note">Please complete the captcha to verify you're not a robot.</small>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Submit Consultation Request</button>
                     </form>
                 </div>
             </div>

@@ -509,6 +509,64 @@ handleHeaderOffset();
 // PRODUCT FINDER FUNCTIONALITY - WITH SELECTABLE BARRELS
 // =================================
 
+function getCurrentProduct() {
+    const pathname = window.location.pathname.toLowerCase();
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // 1. First check for product finder selection (highest priority)
+    const finderProduct = sessionStorage.getItem('currentProductFinderSelection');
+    if (finderProduct) {
+        console.log('Product from finder:', finderProduct);
+        return finderProduct.toLowerCase();
+    }
+    
+    // 2. Check URL pathname for product-specific pages
+    if (pathname.includes('tequila')) return 'tequila';
+    if (pathname.includes('whisky') || pathname.includes('whiskey')) return 'whisky';
+    if (pathname.includes('rum')) return 'rum';
+    if (pathname.includes('vodka')) return 'vodka';
+    if (pathname.includes('beer')) return 'beer';
+    if (pathname.includes('gin')) return 'gin';
+    if (pathname.includes('brandy')) return 'brandy';
+    
+    // 3. Check URL parameters
+    const productParam = urlParams.get('product');
+    if (productParam) return productParam.toLowerCase();
+    
+    // 4. Check sessionStorage for other selections
+    const storedProduct = sessionStorage.getItem('selectedProduct');
+    if (storedProduct) return storedProduct.toLowerCase();
+    
+    return null;
+}
+
+function detectProductFromInput(userInput) {
+    const input = userInput.toLowerCase().trim();
+    
+    // Product detection patterns
+    const productPatterns = {
+        'tequila': ['tequila', 'añejo', 'reposado', 'blanco', 'agave'],
+        'whisky': ['whisky', 'whiskey', 'scotch', 'bourbon', 'rye', 'single malt', 'blended'],
+        'rum': ['rum', 'rhum', 'cachaça', 'aged rum', 'spiced rum', 'dark rum'],
+        'vodka': ['vodka', 'potato vodka', 'grain vodka'],
+        'beer': ['beer', 'ale', 'lager', 'stout', 'porter', 'ipa', 'wheat beer', 'pilsner', 'barleywine', 'saison', 'imperial stout'],
+        'gin': ['gin', 'london dry', 'botanical gin'],
+        'brandy': ['brandy', 'cognac', 'armagnac', 'calvados']
+    };
+    
+    // Check for exact or partial matches
+    for (const [product, patterns] of Object.entries(productPatterns)) {
+        for (const pattern of patterns) {
+            if (input.includes(pattern)) {
+                console.log(`Detected product: ${product} from input: ${userInput}`);
+                return product;
+            }
+        }
+    }
+    
+    return null;
+}
+
 // MOVED OUTSIDE to make it globally accessible
 let processSearch; // Declare globally
 
@@ -1062,6 +1120,12 @@ document.addEventListener('DOMContentLoaded', function() {
         hideAllStates();
         
         if (!query.trim()) return;
+        // Detect and store the product from user input
+const detectedProduct = detectProductFromInput(query);
+if (detectedProduct) {
+    sessionStorage.setItem('currentProductFinderSelection', detectedProduct);
+    console.log('Stored product finder selection:', detectedProduct);
+}
         
         // Show loading
         if (finderLoading) finderLoading.classList.add('show');
@@ -1307,6 +1371,13 @@ function scrollToQuoteForm() {
     if (selectedBarrelTypes.size > 0) {
         sessionStorage.setItem('selectedBarrelTypes', JSON.stringify(Array.from(selectedBarrelTypes)));
     }
+
+    // Make sure the product selection is preserved
+const currentProduct = getCurrentProduct();
+if (currentProduct) {
+    sessionStorage.setItem('currentProductFinderSelection', currentProduct);
+    console.log('Preserving product selection for quote form:', currentProduct);
+}
     
     if (isMainPage) {
         // We're on the main page - scroll to contact form
@@ -1338,6 +1409,64 @@ function scrollToQuoteForm() {
 function getURLParameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
+}
+
+function getCurrentProduct() {
+    const pathname = window.location.pathname.toLowerCase();
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // 1. First check for product finder selection (highest priority)
+    const finderProduct = sessionStorage.getItem('currentProductFinderSelection');
+    if (finderProduct) {
+        console.log('Product from finder:', finderProduct);
+        return finderProduct.toLowerCase();
+    }
+    
+    // 2. Check URL pathname for product-specific pages
+    if (pathname.includes('tequila')) return 'tequila';
+    if (pathname.includes('whisky') || pathname.includes('whiskey')) return 'whisky';
+    if (pathname.includes('rum')) return 'rum';
+    if (pathname.includes('vodka')) return 'vodka';
+    if (pathname.includes('beer')) return 'beer';
+    if (pathname.includes('gin')) return 'gin';
+    if (pathname.includes('brandy')) return 'brandy';
+    
+    // 3. Check URL parameters
+    const productParam = urlParams.get('product');
+    if (productParam) return productParam.toLowerCase();
+    
+    // 4. Check sessionStorage for other selections
+    const storedProduct = sessionStorage.getItem('selectedProduct');
+    if (storedProduct) return storedProduct.toLowerCase();
+    
+    return null;
+}
+
+function detectProductFromInput(userInput) {
+    const input = userInput.toLowerCase().trim();
+    
+    // Product detection patterns
+    const productPatterns = {
+        'tequila': ['tequila', 'añejo', 'reposado', 'blanco', 'agave'],
+        'whisky': ['whisky', 'whiskey', 'scotch', 'bourbon', 'rye', 'single malt', 'blended'],
+        'rum': ['rum', 'rhum', 'cachaça', 'aged rum', 'spiced rum', 'dark rum'],
+        'vodka': ['vodka', 'potato vodka', 'grain vodka'],
+        'beer': ['beer', 'ale', 'lager', 'stout', 'porter', 'ipa', 'wheat beer', 'pilsner', 'barleywine', 'saison', 'imperial stout'],
+        'gin': ['gin', 'london dry', 'botanical gin'],
+        'brandy': ['brandy', 'cognac', 'armagnac', 'calvados']
+    };
+    
+    // Check for exact or partial matches
+    for (const [product, patterns] of Object.entries(productPatterns)) {
+        for (const pattern of patterns) {
+            if (input.includes(pattern)) {
+                console.log(`Detected product: ${product} from input: ${userInput}`);
+                return product;
+            }
+        }
+    }
+    
+    return null;
 }
 
 /**
@@ -1464,6 +1593,9 @@ function showPreselectionMessage(selectedTypes) {
         existingMessage.remove();
     }
     
+    // Get current product context
+    const currentProduct = getCurrentProduct();
+    
     // Find the best location to insert the message - UPDATED FOR YOUR FORM
     let insertLocation = null;
     
@@ -1506,7 +1638,24 @@ function showPreselectionMessage(selectedTypes) {
     messageDiv.className = 'preselection-message';
     
     const typeNames = selectedTypes.map(type => formatSherryTypeName(type.replace('-', ' ')));
-    const message = `Based on your spirit/beer, you've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for your product.`;
+    const pathname = window.location.pathname.toLowerCase();
+    
+    // Create dynamic message based on product context
+    let message;
+    if (pathname.includes('tequila-sherry-barrels') || currentProduct === 'tequila') {
+        message = `Perfect for Tequila! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for Tequila aging and finishing.`;
+    } else if (pathname.includes('whisky-sherry-barrels') || currentProduct === 'whisky') {
+        message = `Ideal for Whisky maturation! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that enhances Whisky complexity beautifully.`;
+    } else if (pathname.includes('rum-sherry-barrels') || currentProduct === 'rum') {
+        message = `Excellent for Rum! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that complements Rum aging perfectly.`;
+    } else if (pathname.includes('beer-sherry-barrels') || currentProduct === 'beer') {
+        message = `Great for Beer aging! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that adds wonderful depth to beer styles.`;
+    } else if (currentProduct) {
+        message = `We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for ${currentProduct.charAt(0).toUpperCase() + currentProduct.slice(1)} aging and finishing.`;
+    } else {
+        // Generic fallback
+        message = `Based on your spirit/beer, we've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for your product.`;
+    }
     
     messageDiv.innerHTML = `
         <div class="message-content">
@@ -1535,9 +1684,7 @@ function showPreselectionMessage(selectedTypes) {
         messageDiv.classList.add('visible');
     }, 100);
     
-    
-    
-    console.log('Preselection message shown');
+    console.log('Dynamic preselection message shown for product:', currentProduct || 'generic');
 }
 
 /**
@@ -1912,15 +2059,17 @@ function handleSizeButtonClick(e) {
     e.preventDefault();
     e.stopPropagation();
     
-    // Remove selected class from all size buttons
-    document.querySelectorAll('.size-button').forEach(btn => {
-        btn.classList.remove('selected');
-        btn.setAttribute('aria-pressed', 'false');
-    });
+    // Toggle the clicked button instead of clearing all
+    const button = e.currentTarget;
+    const isSelected = button.classList.contains('selected');
     
-    // Add selected class to clicked button
-    e.currentTarget.classList.add('selected');
-    e.currentTarget.setAttribute('aria-pressed', 'true');
+    if (isSelected) {
+        button.classList.remove('selected');
+        button.setAttribute('aria-pressed', 'false');
+    } else {
+        button.classList.add('selected');
+        button.setAttribute('aria-pressed', 'true');
+    }
 }
 
 /**
@@ -4399,4 +4548,33 @@ window.addEventListener('hashchange', function() {
             preselectSherryTypes();
         }, 1000);
     }
+});
+// Clear product finder selection when navigating to specific product pages
+document.addEventListener('DOMContentLoaded', function() {
+    const pathname = window.location.pathname.toLowerCase();
+    
+    // Check if we're on a specific product page
+    const isSpecificProductPage = [
+        'tequila-sherry-barrels',
+        'whisky-sherry-barrels', 
+        'rum-sherry-barrels',
+        'vodka-sherry-barrels',
+        'beer-sherry-barrels',
+        'gin-sherry-barrels',
+        'brandy-sherry-barrels'
+    ].some(page => pathname.includes(page));
+    
+    if (isSpecificProductPage) {
+        const finderProduct = sessionStorage.getItem('currentProductFinderSelection');
+        if (finderProduct) {
+            console.log('On specific product page, clearing finder selection to use page-specific detection');
+            sessionStorage.removeItem('currentProductFinderSelection');
+        }
+    }
+});
+
+// Add this at the bottom of js/script.js:
+document.addEventListener('DOMContentLoaded', function() {
+    // Replace with your actual DeepL API key
+    window.universalTranslator.setupForSpanish('a1573e28-05da-41ea-9be4-e6bb29daa694:fx');
 });

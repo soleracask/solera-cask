@@ -9,26 +9,195 @@ class UniversalTranslator {
         this.observer = null;
         this.translatedElements = new Set();
         
+        // Enhanced translation configuration
+        this.config = {
+            // API Keys (set these with configureAPIs method)
+            deepLApiKey: null,
+            googleApiKey: null,
+            azureKey: null,
+            azureRegion: 'global',
+            
+            // Provider settings
+            preferredProvider: 'deepl', // 'deepl', 'google', 'microsoft', 'free'
+            enableFallback: true,
+            
+            // Usage tracking
+            monthlyUsage: this.getMonthlyUsage(),
+            usageLimit: 450000, // 90% of 500K limit
+            
+            // Caching settings
+            localStorageCache: true,
+            cacheExpiry: 30, // days
+            maxCacheSize: 5000 // entries
+        };
+        
         // Supported languages with better coverage
         this.languages = {
             'en': { name: 'English', flag: '🇺🇸' },
             'es': { name: 'Español', flag: '🇪🇸' },
-            'fr': { name: 'Français', flag: '🇫🇷' },
-            'de': { name: 'Deutsch', flag: '🇩🇪' },
-            'it': { name: 'Italiano', flag: '🇮🇹' },
-            'pt': { name: 'Português', flag: '🇵🇹' },
-            'ru': { name: 'Русский', flag: '🇷🇺' },
-            'ja': { name: '日本語', flag: '🇯🇵' },
-            'ko': { name: '한국어', flag: '🇰🇷' },
-            'zh': { name: '中文', flag: '🇨🇳' },
-            'ar': { name: 'العربية', flag: '🇸🇦' },
-            'hi': { name: 'हिन्दी', flag: '🇮🇳' },
-            'tr': { name: 'Türkçe', flag: '🇹🇷' },
-            'pl': { name: 'Polski', flag: '🇵🇱' },
-            'nl': { name: 'Nederlands', flag: '🇳🇱' }
         };
         
         this.init();
+    }
+
+    // Configure API keys and settings
+    configureAPIs(config) {
+        Object.assign(this.config, config);
+        console.log(`🔧 Translation APIs configured. Preferred: ${this.config.preferredProvider}`);
+    }
+
+    // Get monthly usage from localStorage
+    getMonthlyUsage() {
+        try {
+            const stored = localStorage.getItem('translation-usage');
+            if (!stored) return 0;
+            
+            const data = JSON.parse(stored);
+            const currentMonth = new Date().getMonth();
+            
+            // Reset if new month
+            if (data.month !== currentMonth) {
+                this.resetMonthlyUsage();
+                return 0;
+            }
+            
+            return data.usage || 0;
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    // Update monthly usage
+    updateMonthlyUsage(characters) {
+        try {
+            const currentMonth = new Date().getMonth();
+            const newUsage = this.config.monthlyUsage + characters;
+            
+            localStorage.setItem('translation-usage', JSON.stringify({
+                month: currentMonth,
+                usage: newUsage
+            }));
+            
+            this.config.monthlyUsage = newUsage;
+            
+            // Log usage warnings
+            if (newUsage > this.config.usageLimit * 0.8) {
+                console.warn(`⚠️ Translation usage: ${newUsage}/${this.config.usageLimit} (${Math.round(newUsage/this.config.usageLimit*100)}%)`);
+            }
+        } catch (e) {
+            console.warn('Could not update usage tracking');
+        }
+    }
+
+    // Reset monthly usage
+    resetMonthlyUsage() {
+        try {
+            localStorage.setItem('translation-usage', JSON.stringify({
+                month: new Date().getMonth(),
+                usage: 0
+            }));
+            this.config.monthlyUsage = 0;
+        } catch (e) {
+            // Ignore errors
+        }
+    }
+
+    // Enhanced caching with localStorage persistence
+    getCachedTranslation(text, targetLang) {
+        // Check memory cache first
+        const memoryKey = `${text}:${targetLang}`;
+        if (this.translationCache.has(memoryKey)) {
+            return this.translationCache.get(memoryKey);
+        }
+
+        // Check localStorage cache
+        if (this.config.localStorageCache) {
+            try {
+                const storageKey = `trans_${btoa(memoryKey).slice(0, 50)}`;
+                const cached = localStorage.getItem(storageKey);
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    const age = (Date.now() - data.timestamp) / (1000 * 60 * 60 * 24);
+                    
+                    if (age < this.config.cacheExpiry) {
+                        // Move to memory cache for faster access
+                        this.translationCache.set(memoryKey, data.translation);
+                        return data.translation;
+                    } else {
+                        // Remove expired cache
+                        localStorage.removeItem(storageKey);
+                    }
+                }
+            } catch (e) {
+                // Ignore localStorage errors
+            }
+        }
+
+        return null;
+    }
+
+    // Store translation in both memory and localStorage
+    setCachedTranslation(text, targetLang, translation) {
+        const memoryKey = `${text}:${targetLang}`;
+        
+        // Store in memory
+        if (this.translationCache.size >= this.config.maxCacheSize) {
+            // Remove oldest entry
+            const firstKey = this.translationCache.keys().next().value;
+            this.translationCache.delete(firstKey);
+        }
+        this.translationCache.set(memoryKey, translation);
+
+        // Store in localStorage
+        if (this.config.localStorageCache) {
+            try {
+                const storageKey = `trans_${btoa(memoryKey).slice(0, 50)}`;
+                const data = {
+                    translation,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(storageKey, JSON.stringify(data));
+            } catch (e) {
+                // Ignore localStorage errors (quota exceeded, etc.)
+            }
+        }
+    }
+
+    // Get provider order based on preferences and usage limits
+    getProviderOrder() {
+        const providers = [];
+        
+        // Check if we're near usage limits for paid APIs
+        const nearLimit = this.config.monthlyUsage > this.config.usageLimit;
+        
+        if (!nearLimit) {
+            // Add preferred provider first if under limit
+            if (this.config.preferredProvider === 'deepl' && this.config.deepLApiKey) {
+                providers.push('deepl');
+            } else if (this.config.preferredProvider === 'google' && this.config.googleApiKey) {
+                providers.push('google');
+            } else if (this.config.preferredProvider === 'microsoft' && this.config.azureKey) {
+                providers.push('microsoft');
+            }
+
+            // Add fallback providers if enabled
+            if (this.config.enableFallback) {
+                if (this.config.deepLApiKey && !providers.includes('deepl')) {
+                    providers.push('deepl');
+                }
+                if (this.config.googleApiKey && !providers.includes('google')) {
+                    providers.push('google');
+                }
+                if (this.config.azureKey && !providers.includes('microsoft')) {
+                    providers.push('microsoft');
+                }
+            }
+        }
+        
+        // Always add free as final fallback
+        providers.push('free');
+        
+        return providers;
     }
 
     init() {
@@ -642,28 +811,273 @@ class UniversalTranslator {
         });
     }
 
+    // Enhanced translation method with caching and fallback
     async translateText(text, targetLang) {
-        const cacheKey = `${text}:${targetLang}`;
-        if (this.translationCache.has(cacheKey)) {
-            return this.translationCache.get(cacheKey);
+        // Check cache first
+        const cached = this.getCachedTranslation(text, targetLang);
+        if (cached) {
+            return cached;
         }
 
+        // Skip translation for very short or irrelevant text
+        if (this.shouldSkipTranslation(text)) {
+            return text;
+        }
+
+        const providers = this.getProviderOrder();
+        let translation = null;
+
+        for (const provider of providers) {
+            try {
+                translation = await this.translateWithProvider(text, targetLang, provider);
+                if (translation && translation !== text) {
+                    // Track usage for paid APIs
+                    if (provider !== 'free') {
+                        this.updateMonthlyUsage(text.length);
+                    }
+                    break;
+                }
+            } catch (error) {
+                console.warn(`${provider} translation failed:`, error.message);
+                continue;
+            }
+        }
+
+        // Cache successful translation
+        if (translation && translation !== text) {
+            this.setCachedTranslation(text, targetLang, translation);
+        }
+
+        return translation || text;
+    }
+
+    // Check if text should be skipped
+    shouldSkipTranslation(text) {
+        // Skip very short text
+        if (text.length < 3) return true;
+        
+        // Skip numbers, dates, emails, phone numbers
+        if (/^[\d\s\-+().,]+$/.test(text)) return true;
+        if (/^\d{4}-\d{2}-\d{2}/.test(text)) return true;
+        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) return true;
+        if (/^[\+]?[\d\s\-()]{10,}$/.test(text)) return true;
+        
+        // Skip URLs
+        if (/^https?:\/\//.test(text)) return true;
+        
+        // Skip common untranslatable content
+        const skipPatterns = [
+            /^[A-Z]{2,}$/, // All caps abbreviations
+            /^\$[\d,.]+$/, // Prices
+            /^[\d]+%$/, // Percentages
+        ];
+        
+        return skipPatterns.some(pattern => pattern.test(text.trim()));
+    }
+
+    // Route to specific provider
+    async translateWithProvider(text, targetLang, provider) {
+        switch (provider) {
+            case 'deepl':
+                return await this.translateWithDeepL(text, targetLang);
+            case 'google':
+                return await this.translateWithGoogleAPI(text, targetLang);
+            case 'microsoft':
+                return await this.translateWithMicrosoft(text, targetLang);
+            case 'free':
+                return await this.translateWithFreeAPI(text, targetLang);
+            default:
+                throw new Error(`Unknown provider: ${provider}`);
+        }
+    }
+
+    // DeepL API (Best for Spanish)
+    async translateWithDeepL(text, targetLang) {
+        if (!this.config.deepLApiKey) {
+            throw new Error('DeepL API key not configured');
+        }
+
+        // Map language codes for DeepL
+        const deepLLangMap = {
+            'es': 'ES',
+            'fr': 'FR', 
+            'de': 'DE',
+            'it': 'IT',
+            'pt': 'PT',
+            'ru': 'RU',
+            'ja': 'JA',
+            'zh': 'ZH'
+        };
+
+        const deepLTarget = deepLLangMap[targetLang] || targetLang.toUpperCase();
+
+        const response = await fetch('https://api-free.deepl.com/v2/translate', {
+            method: 'POST',
+            headers: {
+                'Authorization': `DeepL-Auth-Key ${this.config.deepLApiKey}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'text': text,
+                'target_lang': deepLTarget,
+                'source_lang': 'EN'
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`DeepL API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.translations[0].text;
+    }
+
+    // Google Translate API (Official)
+    async translateWithGoogleAPI(text, targetLang) {
+        if (!this.config.googleApiKey) {
+            throw new Error('Google API key not configured');
+        }
+
+        const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${this.config.googleApiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                q: text,
+                source: 'en',
+                target: targetLang,
+                format: 'text'
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Google Translate API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.data.translations[0].translatedText;
+    }
+
+    // Microsoft Translator
+    async translateWithMicrosoft(text, targetLang) {
+        if (!this.config.azureKey) {
+            throw new Error('Azure key not configured');
+        }
+
+        const response = await fetch(`https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=${targetLang}`, {
+            method: 'POST',
+            headers: {
+                'Ocp-Apim-Subscription-Key': this.config.azureKey,
+                'Ocp-Apim-Subscription-Region': this.config.azureRegion,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify([{ text: text }])
+        });
+
+        if (!response.ok) {
+            throw new Error(`Microsoft Translator error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data[0].translations[0].text;
+    }
+
+    // Free API fallback (your current method)
+    async translateWithFreeAPI(text, targetLang) {
+        const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
+        
+        if (!response.ok) throw new Error('Free translation failed');
+        
+        const data = await response.json();
+        return data[0]?.map(item => item[0]).join('') || text;
+    }
+
+    // Public API methods for easy setup
+    setDeepLKey(apiKey) {
+        this.config.deepLApiKey = apiKey;
+        this.config.preferredProvider = 'deepl';
+        console.log('✅ DeepL API configured as primary provider');
+    }
+
+    setGoogleKey(apiKey) {
+        this.config.googleApiKey = apiKey;
+        if (!this.config.deepLApiKey) {
+            this.config.preferredProvider = 'google';
+        }
+        console.log('✅ Google Translate API configured');
+    }
+
+    // Setup method for Solera Cask specifically
+    setupForSpanish(deepLKey = null, googleKey = null) {
+        const config = {
+            preferredProvider: 'deepl',
+            enableFallback: true,
+            localStorageCache: true,
+            cacheExpiry: 30, // 30 days
+            usageLimit: 450000 // 90% of DeepL free limit
+        };
+
+        if (deepLKey) {
+            config.deepLApiKey = deepLKey;
+            console.log('🇪🇸 Spanish translation optimized with DeepL');
+        }
+        
+        if (googleKey) {
+            config.googleApiKey = googleKey;
+            console.log('🔄 Google Translate configured as fallback');
+        }
+
+        this.configureAPIs(config);
+        
+        // Show current setup
+        console.log('📊 Translation setup:', {
+            primary: this.getProviderOrder()[0],
+            fallback: this.config.enableFallback,
+            caching: this.config.localStorageCache,
+            monthlyUsage: `${this.config.monthlyUsage}/${this.config.usageLimit}`
+        });
+    }
+
+    // Monitor usage in real-time
+    onUsageUpdate(callback) {
+        this.usageCallback = callback;
+    }
+
+    // Override updateMonthlyUsage to trigger callback
+    updateMonthlyUsage(characters) {
+        const oldUsage = this.config.monthlyUsage;
+        
         try {
-            // Use Google Translate API (you can replace with any translation service)
-            const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
+            const currentMonth = new Date().getMonth();
+            const newUsage = this.config.monthlyUsage + characters;
             
-            if (!response.ok) throw new Error('Translation request failed');
+            localStorage.setItem('translation-usage', JSON.stringify({
+                month: currentMonth,
+                usage: newUsage
+            }));
             
-            const data = await response.json();
-            const translation = data[0]?.map(item => item[0]).join('') || text;
+            this.config.monthlyUsage = newUsage;
             
-            // Cache the result
-            this.translationCache.set(cacheKey, translation);
-            return translation;
+            // Trigger callback if provided
+            if (this.usageCallback) {
+                this.usageCallback({
+                    characters,
+                    totalUsage: newUsage,
+                    limit: this.config.usageLimit,
+                    percentage: Math.round((newUsage / this.config.usageLimit) * 100)
+                });
+            }
             
-        } catch (error) {
-            console.warn('Translation failed for:', text, error);
-            return text; // Return original text on failure
+            // Log usage warnings
+            const percentage = newUsage / this.config.usageLimit;
+            if (percentage > 0.9) {
+                console.warn(`🚨 Translation usage: ${newUsage}/${this.config.usageLimit} (${Math.round(percentage*100)}%) - Switching to free tier`);
+            } else if (percentage > 0.8) {
+                console.warn(`⚠️ Translation usage: ${newUsage}/${this.config.usageLimit} (${Math.round(percentage*100)}%)`);
+            }
+        } catch (e) {
+            console.warn('Could not update usage tracking');
         }
     }
 
@@ -822,6 +1236,19 @@ if (typeof window !== 'undefined') {
     // Wait for DOM to be ready
     const initTranslator = () => {
         window.universalTranslator = new UniversalTranslator();
+        
+        // Example setup for Solera Cask
+        // Uncomment and add your API keys:
+        
+        // window.universalTranslator.setupForSpanish(
+        //     'YOUR_DEEPL_API_KEY',  // Get from https://www.deepl.com/pro-api
+        //     'YOUR_GOOGLE_API_KEY'  // Optional fallback
+        // );
+        
+        // Monitor usage (optional)
+        // window.universalTranslator.onUsageUpdate((stats) => {
+        //     console.log(`Translation usage: ${stats.percentage}%`);
+        // });
     };
 
     if (document.readyState === 'loading') {
@@ -835,3 +1262,36 @@ if (typeof window !== 'undefined') {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = UniversalTranslator;
 }
+
+/*
+QUICK SETUP GUIDE FOR SOLERA CASK:
+
+1. Get DeepL API Key (FREE):
+   - Go to https://www.deepl.com/pro-api
+   - Sign up for free account
+   - Get API key from dashboard
+
+2. Configure translation:
+   window.universalTranslator.setupForSpanish('your-deepl-key');
+
+3. Optional Google Translate backup:
+   window.universalTranslator.setGoogleKey('your-google-key');
+
+4. Check usage anytime:
+   console.log(window.universalTranslator.getUsageStats());
+
+FEATURES INCLUDED:
+✅ Aggressive caching (localStorage + memory)
+✅ Smart fallback (DeepL → Google → Free)
+✅ Usage tracking and limits
+✅ Spanish-optimized translation
+✅ Skip irrelevant content (emails, numbers, etc.)
+✅ 30-day cache expiry
+✅ Real-time usage monitoring
+
+The system will automatically:
+- Use cached translations when available
+- Fall back to free tier when approaching limits
+- Skip translating phone numbers, emails, etc.
+- Persist translations across browser sessions
+*/

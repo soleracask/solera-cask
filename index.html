@@ -25,10 +25,22 @@
                 <li><a href="#heritage">Heritage</a></li>
                 <li><a href="#products">Casks</a></li>
                 <li><a href="#product-finder">Sherry Barrel Butler</a></li>
-                <li><a href="#story">Stories</a></li>
+                <li><a href="#story">Journal</a></li>
                 <li><a href="#faq">FAQ</a></li>
-                <li><a href="#contact" class="nav-cta">Get Quote</a></li>
             </ul>
+    
+            <!-- Right Side Navigation Items -->
+            <div class="nav-right">
+                <!-- Get Quote Button -->
+                <a href="#contact" class="nav-cta">Get Quote</a>
+                
+                <!-- Language Switcher -->
+                <div class="language-switcher">
+                    <a href="#" class="language-option active" data-lang="en" onclick="switchLanguage('en')">English</a>
+                    <span class="language-separator">|</span>
+                    <a href="#" class="language-option" data-lang="es" onclick="switchLanguage('es')">Español</a>
+                </div>
+            </div>
     
             <!-- Mobile Hamburger Menu -->
             <div class="mobile-menu-toggle" id="mobileMenuToggle">
@@ -39,16 +51,22 @@
         </nav>
     
         <!-- Mobile Menu Overlay -->
-<div class="mobile-menu-overlay" id="mobileMenuOverlay">
-    <div class="mobile-menu-content">
-        <a href="#heritage" class="mobile-menu-item">Heritage</a>
-        <a href="#products" class="mobile-menu-item">Casks</a>
-        <a href="#product-finder" class="mobile-menu-item">Sherry Barrel Butler</a>
-        <a href="#story" class="mobile-menu-item">Stories</a>
-        <a href="#faq" class="mobile-menu-item">FAQ</a>
-        <a href="#contact" class="mobile-menu-item mobile-cta">Get Quote</a>
-    </div>
-</div>
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+            <div class="mobile-menu-content">
+                <a href="#heritage" class="mobile-menu-item">Heritage</a>
+                <a href="#products" class="mobile-menu-item">Casks</a>
+                <a href="#product-finder" class="mobile-menu-item">Sherry Barrel Butler</a>
+                <a href="#story" class="mobile-menu-item">Journal</a>
+                <a href="#faq" class="mobile-menu-item">FAQ</a>
+                <a href="#contact" class="mobile-menu-item mobile-cta">Get Quote</a>
+                
+                <!-- Mobile Language Switcher -->
+                <div class="mobile-language-switcher">
+                    <a href="#" class="mobile-language-option active" data-lang="en" onclick="switchLanguage('en')">English</a>
+                    <a href="#" class="mobile-language-option" data-lang="es" onclick="switchLanguage('es')">Español</a>
+                </div>
+            </div>
+        </div>
     </header>
 
     <section class="hero" id="home">
@@ -102,13 +120,13 @@
                 <div class="heritage-content fade-in">
                     <div class="section-label">Our Heritage</div>
                     <h2>Dedication to Craft</h2>
-                    <p>Based in Jerez de la Frontera and backed by years of experience in the wine industry, we specialize in supplying distillers with mature casks from various solera systems within the sherry triangle. We work directly with local bodegas and cooperages to source exceptional barrels — from Oloroso and Palo Cortado to Pedro Ximénez, Amontillado, Fino, and Manzanilla — so you can finish your spirit or beer to the highest standard.</p>
-                    <p>Our direct partnerships with local bodegas and cooperages ensure you receive the highest quality barrels to create exceptional aged spirits and beers.</p>
+                    <p>Based in Jerez de la Frontera and backed by years of experience in the wine industry, we specialize in providing distillers with mature casks from solera systems across the sherry triangle. Working hand in hand with trusted bodegas and cooperages, we source outstanding barrels — from Oloroso and Palo Cortado to Pedro Ximénez, Amontillado, Fino, and Manzanilla — giving you the tools to finish your spirit or beer to the highest standard.</p>
+                    
                     
                     <ul class="heritage-features">
                         <li>Direct sourcing in the sherry triangle</li>
                         <li>Mature casks from historic solera systems</li>
-                        <li>Partnership with traditional cooperages</li>
+                        <li>Expertly selected, inspected, and seasoned</li>
                         <li>Global shipping</li>
                     </ul>
                     
@@ -129,7 +147,7 @@
             <div class="section-intro fade-in">
                 <div class="section-label">Solera Cask</div>
                 <h2 class="section-title">Sherry Barrels</h2>
-                <p class="section-description">New Barrels, ex-sherry casks from historic soleras, and customization options. Each cask is seasoned with your choice of one of six sherry types, imparting unique characteristics to your spirits and beers.</p>
+                <p class="section-description">New Barrels, ex-sherry casks from historic soleras, and custom options. Each cask is seasoned with your choice of sherry type, imparting unique characteristics to your spirits and beers.</p>
             </div>
             
             <div class="products-grid">
@@ -191,8 +209,8 @@
             <!-- Products CTA Section -->
             <div class="products-cta fade-in">
                 <div class="products-cta-content">
-                    <h3>Want to know more about our barrel sourcing process?</h3>
-                    <p>We carefully source exceptional sherry barrels from historic solera systems across the Sherry Triangle. Each cask is hand-selected and rigorously inspected to ensure it meets the highest standards for aging or finishing spirits and beer. Discover how our commitment to quality sets us apart.</p>
+                    <h3>Want to know more about our cooperage?</h3>
+                    <p>We carefully source exceptional sherry barrels from historic solera systems across the Sherry Triangle. Each cask is hand-selected, rigorously inspected, and, when necessary, expertly repaired by our skilled coopers to ensure it meets the highest standards for aging or finishing spirits and beer. Discover how our commitment to craftsmanship and quality sets us apart.</p>
                     <div class="products-cta-buttons">
                         <a href="/sherry-barrels.html" class="btn-primary">Learn More</a>
     
@@ -299,22 +317,13 @@
             <div class="faq-container fade-in">
                 <div class="faq-item">
                     <button class="faq-question" aria-expanded="false">
-                        <span>What's the difference between DO certified casks and historic solera casks?</span>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-content">
-                            <p>DO certified casks are brand new barrels that have been seasoned for 12 months with sherry and certified by the Xeres-Jerez-Sherry regulatory body. Historic solera casks are ex-sherry barrels from centuries-old solera systems, offering deeper character from years of sherry aging. Both provide Spanish provenance and are seasoned with DO certified sherry, but historic casks offer more complex, mature flavors while certified casks provide traceability and consistent seasoning.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question" aria-expanded="false">
                         <span>How do I choose the right sherry cask type for my spirit or beer?</span>
                     </button>
                     <div class="faq-answer">
                         <div class="faq-content">
-                            <p>The choice depends on your desired flavor profile and base spirit. Fino and Manzanilla casks work well with lighter spirits and beers, adding mineral and saline notes. Amontillado provides balanced complexity, while Oloroso offers rich, robust flavors perfect for whisky and dark beers. Pedro Ximénez creates sweet, dessert-like profiles. Our consultation service includes personalized recommendations based on your specific goals and production style.</p>
+                            <p>The choice depends on your desired flavor profile and base spirit. Fino and Manzanilla casks work well with lighter spirits and beers, adding mineral and saline notes. Amontillado provides balanced complexity, while Oloroso offers rich, robust flavors perfect for whisky and dark beers. Pedro Ximénez creates sweet, dessert-like profiles. Our consultation service includes personalized recommendations based on your specific goals and production style.</p> 
+                            <p>You can also try our Sherry barrel butler to get an idea of what sherry seasoning works best with your product.</p>
+                            <a href="#product-finder" class="btn-outline">Sherry Barrel Butler</a>
                         </div>
                     </div>
                 </div>
@@ -336,7 +345,7 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-content">
-                            <p>Yes, we offer extensive customization options. Barrels can be prepared for upright or horizontal storage, with custom toast levels, and different bung types (wood, cork, or silicone). We also provide custom paint finishes and specialized sizing beyond our standard 225L and 500L options. Our cooperage partners can accommodate most technical specifications to match your facility's requirements and aging protocols.</p>
+                            <p>Yes, barrels can be prepared for upright or horizontal storage, with custom toast levels, and different bung types (wood, cork, or silicone). We also provide various paint finish options. For other requests please let us know in our contact form.</p>
                         </div>
                     </div>
                 </div>
@@ -561,7 +570,7 @@
                         <li><a href="/#heritage">About Solera Cask</a></li>
                         <li><a href="/blog.html">Stories</a></li>
                         <li><a href="/sherry-barrels-faq.html">FAQ</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
     
@@ -597,7 +606,6 @@
 
     <script src="js/script.js"></script>
     <script src="js/homepage-featured-integration.js"></script>
-    <script src="js/solera-translation.js"></script>
 
 </body>
 </html>

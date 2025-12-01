@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // =================================
 function handleHeaderOffset() {
     // Fixed height for scrolled header (logo height 50px + padding 12px*2 = ~74px)
-    const scrolledHeaderHeight = 10; // Adjust this value based on your CSS
+    const scrolledHeaderHeight = 90; // Adjust this value based on your CSS
     const extraOffset = 40;
     
     // Handle all anchor links

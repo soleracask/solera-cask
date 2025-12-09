@@ -110,7 +110,7 @@ nav {
 }
 
 header.scrolled nav {
-    padding: 20px 80px; 
+    padding: 20px 30px; 
 }
 
 .logo {
@@ -382,7 +382,7 @@ header.scrolled .logo-small {
     display: none; /* Hidden by default */
     flex-direction: column;
     cursor: pointer;
-    padding: 2px;
+    padding: 3px;
     background: none;
     border: none;
     position: relative;
@@ -420,7 +420,7 @@ header.scrolled .logo-small {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 50%;
     height: 100vh;
     background: var(--warm-white);
     z-index: 999;

@@ -390,11 +390,7 @@ function generatePostHTML(post) {
             </a>
             
             <ul class="nav-menu">
-                <li><a href="/#heritage">Heritage</a></li>
-                <li><a href="/#products">Casks</a></li>
-                <li><a href="/#product-finder">Sherry Barrel Butler</a></li>
-                <li><a href="/blog" class="active">Stories</a></li>
-                <li><a href="/#faq">FAQ</a></li>
+                <li><a href="/blog">All Stories</a></li>
                 <li><a href="/#contact" class="nav-cta">Get Quote</a></li>
             </ul>
 
@@ -407,10 +403,7 @@ function generatePostHTML(post) {
 
         <div class="mobile-menu-overlay" id="mobileMenuOverlay">
             <div class="mobile-menu-content">
-                <a href="/#heritage" class="mobile-menu-item">Heritage</a>
-                <a href="/#products" class="mobile-menu-item">Casks</a>
-                <a href="/#product-finder" class="mobile-menu-item">Sherry Barrel Butler</a>
-                <a href="/blog" class="mobile-menu-item">Stories</a>
+                <a href="/blog" class="mobile-menu-item">All Stories</a>
                 <a href="/#contact" class="mobile-menu-item mobile-cta">Get Quote</a>
             </div>
         </div>
@@ -525,8 +518,7 @@ function generatePostHTML(post) {
             </div>
         </div>
     </footer>
-    <script src="/js/script.js"></script>   
-    <script src="/js/solera-accessibility.js"></script>
+    <script src="/js/script.js"></script>
     <script>
         // Minimal JavaScript for mobile menu only
         document.getElementById('mobileMenuToggle')?.addEventListener('click', function() {

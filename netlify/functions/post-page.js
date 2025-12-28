@@ -203,7 +203,7 @@ function generatePostHTML(post) {
     <style>
         /* Post page specific styles */
         .post-page {
-            padding-top: 120px;
+            padding-top: 180px;
             min-height: 100vh;
             background: var(--warm-white);
         }

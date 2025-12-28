@@ -329,7 +329,7 @@ header.scrolled .logo-small {
 
 .dropdown-menu a {
     display: block;
-    padding: 0.5rem 0;
+    padding: 0, 0;
     color: var(--text-primary);
     text-decoration: none;
     font-family: 'Inter', sans-serif;

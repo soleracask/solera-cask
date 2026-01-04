@@ -1391,9 +1391,15 @@ footer {
 
 .footer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 60px;
+    grid-template-columns: 320px repeat(3, 1fr);
+    gap: 50px;
     margin-bottom: 60px;
+}
+/* Wrapper for Brand and Contact sections stacked vertically */
+.footer-brand-contact-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 }
 
 .footer-section h3 {
@@ -1436,8 +1442,8 @@ footer {
     background: none;
     border-radius: 0;
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    align-items: left;
+    justify-content: left;
     color: rgba(255, 255, 255, 0.8); /* Same as footer link color */
     flex-shrink: 0;
     transition: all 0.3s ease;
@@ -1502,6 +1508,16 @@ footer {
     
     .category-card {
         height: 300px;
+    }
+    
+    /* Footer responsive - 2 columns on tablet */
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+    
+    .footer-brand-contact-wrapper {
+        grid-column: 1 / -1;
     }
 }
 
@@ -3998,7 +4014,7 @@ html {
 /* Additional CSS for the footer updates */
 /* Additional CSS for the footer updates */
 .footer-brand {
-    max-width: 250px;
+    max-width: none;
 }
 
 .footer-brand h3 {
@@ -4030,8 +4046,8 @@ html {
 }
 
 .footer-contact h3::after {
-    left: auto;
-    right: 0;
+    left: 0;
+    right: auto;
 }
 
 .brand-motto {
@@ -4073,7 +4089,7 @@ html {
 }
 
 .footer-contact {
-    text-align: right;
+    text-align: left;
 }
 
 .footer-contact ul {
@@ -4109,27 +4125,35 @@ html {
     transform: scale(1.1);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .footer-grid {
         grid-template-columns: 1fr;
         gap: 40px;
-        text-align: center;
+        text-align: left; /* Changed from center to left */
+        padding: 0 40px; /* Add horizontal padding */
     }
     
-    .footer-contact h3::after {
-        left: 50%;
+    .footer-section h3::after {
+        left: 0; /* Changed from centered to left-aligned */
         right: auto;
-        transform: translateX(-50%);
+        transform: none; /* Remove centering transform */
     }
     
     .footer-brand {
         max-width: none;
-        text-align: center;
+        text-align: left; /* Changed from center to left */
+    }
+    
+    .footer-brand-contact-wrapper {
+        text-align: left; /* Changed from center to left */
+    }
+    
+    .footer-contact {
+        text-align: left; /* Changed from center to left */
     }
     
     .social-links {
-        justify-content: center;
+        justify-content: flex-start; /* Changed from center to left */
     }
 }
 
@@ -5647,3 +5671,284 @@ h1:contains("Browse by Category") {
         font-size: 12px;
     }
 }
+
+/* ================================
+   Cookie Consent Styles
+   ================================ */
+
+   .cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 2px solid #2C2C2C;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    padding: 1.5rem;
+  }
+  
+  .cookie-banner.visible {
+    transform: translateY(0);
+  }
+  
+  .cookie-banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  
+  .cookie-banner-text h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    color: #1c1c1c;
+  }
+  
+  .cookie-banner-text p {
+    margin: 0;
+    color: #5a4a42;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  
+  .cookie-banner-actions {
+    display: flex;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .cookie-banner-actions button {
+    white-space: nowrap;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--btn-secondary-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-text);
+  }
+  
+  .cookie-banner-actions button:hover {
+    background: var(--btn-secondary-bg-hover);
+    color: var(--btn-secondary-text-hover);
+    border-color: var(--btn-secondary-border-hover);
+  }
+  
+  /* Cookie Modal */
+  .cookie-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .cookie-modal.visible {
+    opacity: 1;
+  }
+  
+  .cookie-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+  }
+  
+  .cookie-modal-content {
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .cookie-modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .cookie-modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1c1c1c;
+  }
+  
+  .cookie-modal-close {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  
+  .cookie-modal-close:hover {
+    color: #1c1c1c;
+  }
+  
+  .cookie-modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+  
+  .cookie-category {
+    margin-bottom: 2rem;
+  }
+  
+  .cookie-category:last-child {
+    margin-bottom: 0;
+  }
+  
+  .cookie-category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .cookie-category-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #1c1c1c;
+  }
+  
+  .cookie-category p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .cookie-status {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .cookie-status.always-on {
+    color: #1c1c1c;
+  }
+  
+  /* Toggle Switch */
+  .cookie-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+  }
+  
+  .cookie-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 26px;
+  }
+  
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+  
+  .cookie-toggle input:checked + .toggle-slider {
+    background-color: #1c1c1c;
+  }
+  
+  .cookie-toggle input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+  }
+  
+  .cookie-modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #e5e5e5;
+    text-align: right;
+  }
+  
+  .cookie-modal-footer button {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border: 1px solid var(--btn-primary-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+  }
+  
+  .cookie-modal-footer button:hover {
+    background: var(--btn-primary-bg-hover);
+    color: var(--btn-primary-text-hover);
+    border-color: var(--btn-primary-border-hover);
+  }
+  
+  /* Cookie Consent - Responsive Design */
+  @media (max-width: 768px) {
+    .cookie-banner-content {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1.5rem;
+    }
+  
+    .cookie-banner-actions {
+      flex-direction: column;
+    }
+  
+    .cookie-banner-actions button {
+      width: 100%;
+    }
+  
+    .cookie-modal-content {
+      width: 95%;
+      max-height: 90vh;
+    }
+  }

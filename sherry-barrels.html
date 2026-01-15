@@ -607,10 +607,14 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 Solera Cask. Premium Sherry Barrels from Jerez de la Frontera, Spain. All rights reserved.</p>
+                <p>&copy; <span id="copyright-year"></span> Solera Cask. Premium Sherry Barrels from Jerez de la Frontera, Spain. All rights reserved.</p>
             </div>
         </div>
     </footer>
+   
+   <script>
+        document.getElementById('copyright-year').textContent = new Date().getFullYear();
+    </script>
 
     <script src="js/script.js"></script>
     <script src="/js/cookie-consent.js"></script>

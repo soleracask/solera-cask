@@ -85,10 +85,10 @@ class CookieConsent {
       <div class="cookie-banner-content">
         <div class="cookie-banner-text">
           <h3>Cookie Preferences</h3>
-          <p>We use essential cookies for website functionality and form security (including reCAPTCHA). Optional analytics cookies can be customized below.</p>
+          <p>We use essential cookies for website functionality and form security. You can configure your cookie preferences by clicking the customize button. You can read more about our cookie policy below. <li><a href="/cookie-policy.html">Cookie Policy</a></li> </p>
         </div>
         <div class="cookie-banner-actions">
-          <button class="btn-secondary" id="cookie-reject">Reject All</button>
+          <button class="btn-secondary" id="cookie-reject">Necessary Cookies Only</button>
           <button class="btn-secondary" id="cookie-customize">Customize</button>
           <button class="btn-secondary" id="cookie-accept">Accept All</button>
         </div>

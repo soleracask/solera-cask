@@ -379,7 +379,7 @@
                                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                             </svg>
                         </div>
-                        <span>+34 656 778 590</span>
+                        <span>+34 xxx xxx xxx</span>
                     </div>
                     
                     <div class="contact-item">
@@ -406,7 +406,7 @@
                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                             </svg>
                         </div>
-                        <span>Jerez de la Frontera, Spain</span>
+                        <span>Calle Arcos 51, Jerez de la Frontera, Cádiz, Spain</span>
                     </div>
                     
                     <div class="shipping-note">
@@ -415,7 +415,18 @@
                 </div>
                 
                 <div class="quote-form fade-in">
-                    <form id="contactForm">
+                    <form name="quote" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="contactForm">
+                        
+                        <!-- Hidden honeypot field for spam protection -->
+                        <p style="display: none;">
+                            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+                        </p>
+                        
+                        <!-- Hidden fields to capture button selections -->
+                        <input type="hidden" name="sherry-preference" id="hiddenSherryPreference">
+                        <input type="hidden" name="cask-size" id="hiddenCaskSize">
+                        <input type="hidden" name="quantity" id="hiddenQuantity">
+                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="firstName">First Name <span class="required">*</span></label>
@@ -468,11 +479,7 @@
                                 
                                 <div class="form-group">
                                     <label for="streetAddress">Street Address</label>
-                                    <div class="address-input-container">
-                                        <input type="text" id="streetAddress" name="streetAddress" placeholder="Start typing your address...">
-                                        <div class="address-suggestions" id="addressSuggestions"></div>
-                                    </div>
-                                    <small class="autocomplete-note" id="autocompleteNote">Start typing for address suggestions</small>
+                                    <input type="text" id="streetAddress" name="streetAddress" placeholder="Street address">
                                 </div>
                                 
                                 <div class="form-group">
@@ -497,8 +504,8 @@
                             <label>Preference of Sherry Seasoning</label>
                             <div class="preference-buttons">
                                 <button type="button" class="preference-button" data-preference="all-types">All Types</button>
-                                <button type="button" class="preference-button" data-preference="fino">Fino</button>
                                 <button type="button" class="preference-button" data-preference="manzanilla">Manzanilla</button>
+                                <button type="button" class="preference-button" data-preference="fino">Fino</button>
                                 <button type="button" class="preference-button" data-preference="amontillado">Amontillado</button>
                                 <button type="button" class="preference-button" data-preference="palo-cortado">Palo Cortado</button>
                                 <button type="button" class="preference-button" data-preference="oloroso">Oloroso</button>
@@ -528,12 +535,6 @@
                         <div class="form-group">
                             <label for="project">Project Details</label>
                             <textarea id="project" name="project" rows="4" placeholder="Tell us about your project, timeline, and specific requirements..."></textarea>
-                        </div>
-                        
-                        <!-- Google reCAPTCHA -->
-                        <div class="form-group captcha-group">
-                            <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
-                            <small class="captcha-note">Please complete the captcha to verify you're not a robot.</small>
                         </div>
                         
                         <button type="submit" class="btn-primary">Submit Consultation Request</button>

@@ -5182,7 +5182,7 @@ h1:contains("Browse by Category") {
 }
 
 .spec-details {
-    space-y: 20px;
+    margin-bottom: 20px;
 }
 
 .spec-item {

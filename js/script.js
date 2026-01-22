@@ -2763,26 +2763,31 @@ function setupFormButtonSelections() {
     });
     
     // Quantity buttons (single selection)
-    const quantityButtons = document.querySelectorAll('.quantity-button');
-    const hiddenQuantityField = document.getElementById('hiddenQuantity');
-    
-    quantityButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const quantity = this.dataset.quantity;
-            
-            // Remove selection from all buttons
-            quantityButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Select this button
-            this.classList.add('active');
-            if (hiddenQuantityField) {
-                hiddenQuantityField.value = quantity;
-            }
-            
-            console.log('Selected quantity:', quantity);
-        });
+const quantityButtons = document.querySelectorAll('.quantity-button');
+const hiddenQuantityField = document.getElementById('hiddenQuantity');
+
+quantityButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const quantity = this.dataset.quantity;
+        
+        // Remove selection from all buttons
+        quantityButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Select this button
+        this.classList.add('active');
+        
+        // CRITICAL: Update the hidden field
+        if (hiddenQuantityField) {
+            hiddenQuantityField.value = quantity;
+            console.log('Hidden field updated with quantity:', hiddenQuantityField.value);
+        } else {
+            console.error('Hidden quantity field not found!');
+        }
+        
+        console.log('Selected quantity:', quantity);
     });
+});
 }
 
 // Setup shipping address toggle
@@ -2839,12 +2844,16 @@ async function handleNetlifyFormSubmission(e) {
     });
     
     // Validate quantity selection
-    const quantitySelected = document.getElementById('hiddenQuantity') ? document.getElementById('hiddenQuantity').value : '';
-    if (!quantitySelected) {
-        isValid = false;
-        showFormNotification('Please select an estimated quantity', 'error');
-        return;
-    }
+const hiddenQuantityField = document.getElementById('hiddenQuantity');
+const quantitySelected = hiddenQuantityField ? hiddenQuantityField.value : '';
+
+console.log('Validating quantity. Field exists:', !!hiddenQuantityField, 'Value:', quantitySelected);
+
+if (!quantitySelected || quantitySelected.trim() === '') {
+    isValid = false;
+    showFormNotification('Please select an estimated quantity', 'error');
+    return;
+}
     
     if (!isValid) {
         showFormNotification('Please fill in all required fields', 'error');

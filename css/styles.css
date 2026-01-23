@@ -4595,7 +4595,8 @@ h1:contains("Browse by Category") {
     box-shadow: var(--shadow-subtle);
 }
 
-.preference-button.selected {
+.preference-button.selected,
+.preference-button.active {
     background: var(--primary) !important;
     border-color: var(--primary) !important;
     color: var(--text-white) !important;
@@ -4654,7 +4655,8 @@ h1:contains("Browse by Category") {
     box-shadow: var(--shadow-subtle);
 }
 
-.size-button.selected {
+.size-button.selected,
+.size-button.active {
     background: var(--primary) !important;
     border-color: var(--primary) !important;
     color: var(--text-white) !important;
@@ -4698,7 +4700,8 @@ h1:contains("Browse by Category") {
     box-shadow: var(--shadow-subtle);
 }
 
-.quantity-button.selected {
+.quantity-button.selected,
+.quantity-button.active {
     background: var(--primary) !important;
     border-color: var(--primary) !important;
     color: var(--text-white) !important;

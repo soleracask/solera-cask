@@ -10,9 +10,9 @@
     transition: opacity 0.4s ease-in;
 }
 
-/* Fade in components once loaded */
-#footer-placeholder:not(:empty),
-#quote-form-placeholder:not(:empty) {
+/* Fade in components once loaded - using 'loaded' class for reliability */
+#footer-placeholder.loaded,
+#quote-form-placeholder.loaded {
     opacity: 1;
 }
 

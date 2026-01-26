@@ -21,6 +21,10 @@ async function loadComponent(componentName, targetId) {
         
         if (target) {
             target.innerHTML = html;
+            // Add 'loaded' class to trigger fade-in
+            setTimeout(() => {
+                target.classList.add('loaded');
+            }, 50);
             console.log(`✓ Loaded ${componentName} component`);
             return true;
         } else {

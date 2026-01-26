@@ -393,7 +393,7 @@
                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                             </svg>
                         </div>
-                        <span>Calle Arcos 51, Jerez de la Frontera, Cádiz, Spain</span>
+                        <span>Calle Arcos 51, 11401 Jerez de la Frontera, Cádiz, Spain</span>
                     </div>
                     
                     <div class="shipping-note">
@@ -428,11 +428,12 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="email">Email Address <span class="required">*</span></label>
-                                <input type="email" id="email" name="email" required>
+                                <input type="email" id="email" name="email" required pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+                                title="Please enter a valid email address (e.g., name@company.com)">
                             </div>
                             <div class="form-group">
-                                <label for="phone">Phone Number</label>
-                                <input type="tel" id="phone" name="phone">
+                                <label for="phone">Phone Number <span class="required">*</span></label>
+                                <input type="tel" id="phone" name="phone" required placeholder="We'll call if we can't reach you by email.">
                             </div>
                         </div>
                         
@@ -613,6 +614,8 @@
                         <li><a href="/cookie-policy.html">Cookie Policy</a></li>
                         <li><a href="/legal-notice.html">Legal Notice</a></li>
                         <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="/terms-of-use.html">Terms of Use</a></li>
+                        <li><a href="/terms-of-sale.html">Terms of Sale</a></li>
                     </ul>
                 </div>
             </div>

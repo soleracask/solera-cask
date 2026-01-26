@@ -39,9 +39,6 @@ class CookieConsent {
   applyConsent(consent) {
     const prefs = consent.preferences;
     
-    // Always load reCAPTCHA (strictly necessary)
-    this.loadRecaptcha();
-    
     // Load optional scripts based on consent
     if (prefs.analytics) {
       this.loadAnalytics();
@@ -56,17 +53,6 @@ class CookieConsent {
   loadAnalytics() {
     // Placeholder for when you add analytics
     console.log('Analytics loaded');
-  }
-
-  loadRecaptcha() {
-    // Load reCAPTCHA script dynamically
-    if (!document.querySelector('script[src*="recaptcha"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://www.google.com/recaptcha/api.js';
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-    }
   }
 
   showBanner() {
@@ -85,10 +71,10 @@ class CookieConsent {
       <div class="cookie-banner-content">
         <div class="cookie-banner-text">
           <h3>Cookie Preferences</h3>
-          <p>We use essential cookies for website functionality and form security. You can configure your cookie preferences by clicking the customize button. You can read more about our cookie policy below. <li><a href="/cookie-policy.html">Cookie Policy</a></li> </p>
+          <p>We use essential cookies for website functionality. Optional analytics cookies can be customized below.</p>
         </div>
         <div class="cookie-banner-actions">
-          <button class="btn-secondary" id="cookie-reject">Necessary Cookies Only</button>
+          <button class="btn-secondary" id="cookie-reject">Reject All</button>
           <button class="btn-secondary" id="cookie-customize">Customize</button>
           <button class="btn-secondary" id="cookie-accept">Accept All</button>
         </div>
@@ -122,7 +108,6 @@ class CookieConsent {
   acceptAll() {
     this.saveConsent({
       necessary: true,
-      recaptcha: true,
       analytics: true
     });
   }
@@ -130,7 +115,6 @@ class CookieConsent {
   rejectAll() {
     this.saveConsent({
       necessary: true,
-      recaptcha: true,
       analytics: false
     });
   }
@@ -144,7 +128,6 @@ class CookieConsent {
   createPreferencesModal() {
     const currentPrefs = this.getConsent()?.preferences || {
       necessary: true,
-      recaptcha: true,
       analytics: false
     };
 
@@ -165,14 +148,6 @@ class CookieConsent {
               <span class="cookie-status always-on">Always On</span>
             </div>
             <p>These cookies are essential for the website to function properly. They enable core functionality such as form submissions and security features.</p>
-          </div>
-
-          <div class="cookie-category">
-            <div class="cookie-category-header">
-              <h3>reCAPTCHA Protection</h3>
-              <span class="cookie-status always-on">Always On</span>
-            </div>
-            <p>Google reCAPTCHA helps protect our forms from spam and abuse. This service sets cookies to verify you're human and is essential for form security.</p>
           </div>
 
           <div class="cookie-category">
@@ -206,7 +181,6 @@ class CookieConsent {
       
       this.saveConsent({
         necessary: true,
-        recaptcha: true,
         analytics: analytics
       });
       

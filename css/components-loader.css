@@ -1,0 +1,130 @@
+/* ==========================================
+   REUSABLE COMPONENTS - LOADING STYLES
+   ========================================== */
+
+/* Prevent layout shift and flash of unstyled content while components load */
+#footer-placeholder,
+#quote-form-placeholder {
+    min-height: 100px;
+    opacity: 0;
+    transition: opacity 0.4s ease-in;
+}
+
+/* Fade in components once loaded */
+#footer-placeholder:not(:empty),
+#quote-form-placeholder:not(:empty) {
+    opacity: 1;
+}
+
+/* Optional: Loading indicator for slower connections */
+#footer-placeholder:empty::before,
+#quote-form-placeholder:empty::before {
+    content: 'Loading...';
+    display: block;
+    text-align: center;
+    padding: 40px;
+    color: var(--text-light, #999);
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* Remove loading text once content arrives */
+#footer-placeholder:not(:empty)::before,
+#quote-form-placeholder:not(:empty)::before {
+    display: none;
+}
+
+/* Ensure sherry preference buttons support the selected state */
+.preference-button {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.preference-button.selected,
+.preference-button.active {
+    background: var(--accent-gold, #D4AF37);
+    border-color: var(--accent-gold, #D4AF37);
+    color: var(--text-primary, #2C1810);
+}
+
+/* Pre-selected state for smooth UX */
+.preference-button.pre-selected {
+    animation: highlightPreSelected 1s ease-in-out;
+}
+
+@keyframes highlightPreSelected {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3); }
+    100% { transform: scale(1); }
+}
+
+/* Size and quantity button states */
+.size-button.selected,
+.quantity-button.selected {
+    background: var(--accent-gold, #D4AF37);
+    border-color: var(--accent-gold, #D4AF37);
+    color: var(--text-primary, #2C1810);
+}
+
+/* ==========================================
+   SHIPPING ADDRESS TOGGLE STYLES
+   ========================================== */
+
+/* Shipping address note */
+.shipping-address-note {
+    font-size: 14px;
+    color: var(--text-secondary, #666);
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+/* Toggle button */
+.shipping-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--light-beige, #F5F1E8);
+    border: 1px solid var(--border, #E5DCC9);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary, #2C1810);
+    transition: all 0.3s ease;
+}
+
+.shipping-toggle:hover {
+    background: var(--cream, #FAF7F0);
+    border-color: var(--primary, #A0522D);
+}
+
+.shipping-toggle.active {
+    background: var(--cream, #FAF7F0);
+    border-color: var(--primary, #A0522D);
+}
+
+/* Toggle icon */
+.shipping-toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.shipping-toggle.active .shipping-toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Shipping address section - hidden by default */
+.shipping-address-section {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+}
+
+.shipping-address-section.expanded {
+    max-height: 800px; /* Enough to show all fields */
+    opacity: 1;
+    margin-top: 20px;
+}

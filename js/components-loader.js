@@ -145,12 +145,53 @@ function initializeButtonGroups() {
     // Initialize sherry preference buttons
     const preferenceButtons = document.querySelectorAll('.preference-button');
     const sherryTypesInput = document.getElementById('hiddenSherryPreference');
+    const allTypesButton = document.querySelector('.preference-button[data-preference="all-types"]');
     
     preferenceButtons.forEach(button => {
         button.addEventListener('click', function() {
-            // Toggle selected state
-            this.classList.toggle('selected');
-            this.setAttribute('aria-pressed', this.classList.contains('selected'));
+            const isAllTypesButton = this.dataset.preference === 'all-types';
+            
+            if (isAllTypesButton) {
+                // "All Types" button clicked
+                const isSelected = this.classList.contains('selected');
+                
+                if (!isSelected) {
+                    // Select all types
+                    preferenceButtons.forEach(btn => {
+                        btn.classList.add('selected');
+                        btn.setAttribute('aria-pressed', 'true');
+                    });
+                } else {
+                    // Deselect all types
+                    preferenceButtons.forEach(btn => {
+                        btn.classList.remove('selected');
+                        btn.setAttribute('aria-pressed', 'false');
+                    });
+                }
+            } else {
+                // Individual type button clicked
+                this.classList.toggle('selected');
+                this.setAttribute('aria-pressed', this.classList.contains('selected'));
+                
+                // Check if all individual types are selected
+                const individualButtons = Array.from(preferenceButtons).filter(
+                    btn => btn.dataset.preference !== 'all-types'
+                );
+                const allIndividualSelected = individualButtons.every(btn => 
+                    btn.classList.contains('selected')
+                );
+                
+                // Update "All Types" button state
+                if (allTypesButton) {
+                    if (allIndividualSelected) {
+                        allTypesButton.classList.add('selected');
+                        allTypesButton.setAttribute('aria-pressed', 'true');
+                    } else {
+                        allTypesButton.classList.remove('selected');
+                        allTypesButton.setAttribute('aria-pressed', 'false');
+                    }
+                }
+            }
             
             // Update hidden input with all selected sherry types
             if (sherryTypesInput) {

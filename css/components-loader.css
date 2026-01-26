@@ -34,18 +34,24 @@
     display: none;
 }
 
-/* Ensure sherry preference buttons support the selected state */
+/* Ensure sherry preference buttons support the active/selected state */
 .preference-button {
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
 }
 
-.preference-button.selected,
-.preference-button.active {
+.preference-button.active,
+.preference-button.selected {
     background: var(--text-primary, #2C1810);
     border-color: var(--text-primary, #2C1810);
     color: var(--warm-white, #FAF7F0);
+}
+
+/* Disabled state for "all types" mode */
+.preference-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Pre-selected state for smooth UX */
@@ -60,7 +66,9 @@
 }
 
 /* Size and quantity button states - keep these gold */
+.size-button.active,
 .size-button.selected,
+.quantity-button.active,
 .quantity-button.selected {
     background: var(--accent-gold, #D4AF37);
     border-color: var(--accent-gold, #D4AF37);
@@ -120,16 +128,16 @@
     transform: rotate(180deg);
 }
 
-/* Shipping address section - hidden by default */
+/* Shipping address section - controlled by JavaScript inline styles */
 .shipping-address-section {
     max-height: 0;
     overflow: hidden;
     opacity: 0;
+    margin-top: 0;
     transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
 }
 
+/* When expanded via JavaScript */
 .shipping-address-section.expanded {
-    max-height: 800px; /* Enough to show all fields */
-    opacity: 1;
-    margin-top: 20px;
+    /* JavaScript will set max-height, opacity, and margin-top inline */
 }

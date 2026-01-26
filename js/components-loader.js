@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // Give DOM a moment to fully render before initializing
         setTimeout(() => {
-            initializeFormHandlers();
+            initializeLoadedForm();
         }, 150);
     }
     
@@ -61,10 +61,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 /**
- * Re-initialize all form event handlers after dynamic loading
- * This ensures all form functionality works with dynamically loaded content
+ * Initialize the dynamically loaded form
+ * Calls the existing setup functions from script.js
  */
-function initializeFormHandlers() {
+function initializeLoadedForm() {
     const contactForm = document.getElementById('contactForm');
     
     if (!contactForm) {
@@ -72,154 +72,39 @@ function initializeFormHandlers() {
         return;
     }
     
-    console.log('🎯 Initializing form handlers...');
+    console.log('🎯 Initializing form with existing handlers...');
     
-    // 1. Initialize button groups (size, quantity, sherry preference buttons)
-    initializeButtonGroups();
-    
-    // 2. Initialize Netlify form submission handling
-    // (This function should exist in your main script.js)
-    if (typeof handleFormSubmission === 'function') {
-        handleFormSubmission(contactForm);
-        console.log('✓ Form submission handler initialized');
+    // Call existing form setup functions from script.js
+    if (typeof setupFormButtonSelections === 'function') {
+        setupFormButtonSelections();
+        console.log('✓ Button selections initialized (from script.js)');
     } else {
-        console.warn('⚠ handleFormSubmission function not found');
+        console.warn('⚠ setupFormButtonSelections function not found in script.js');
     }
     
-    // 3. Run product-specific preselection logic
-    // This detects the current page and pre-selects appropriate options
+    if (typeof setupShippingToggle === 'function') {
+        setupShippingToggle();
+        console.log('✓ Shipping toggle initialized (from script.js)');
+    } else {
+        console.warn('⚠ setupShippingToggle function not found in script.js');
+    }
+    
+    // Add form submission handler
+    if (typeof handleNetlifyFormSubmission === 'function') {
+        contactForm.removeEventListener('submit', handleNetlifyFormSubmission);
+        contactForm.addEventListener('submit', handleNetlifyFormSubmission);
+        console.log('✓ Form submission handler attached (from script.js)');
+    } else {
+        console.warn('⚠ handleNetlifyFormSubmission function not found in script.js');
+    }
+    
+    // Run product-specific preselection logic
     if (typeof preselectSherryTypes === 'function') {
-        // Add a small delay to ensure all DOM elements are ready
         setTimeout(() => {
             preselectSherryTypes();
-            console.log('✓ Preselection logic executed');
+            console.log('✓ Preselection logic executed (from script.js)');
         }, 200);
-    } else {
-        console.warn('⚠ preselectSherryTypes function not found');
     }
     
     console.log('✓ All form handlers initialized successfully');
-}
-
-/**
- * Initialize interactive button groups in the form
- * Handles size buttons, quantity buttons, and sherry preference buttons
- */
-function initializeButtonGroups() {
-    // Initialize size buttons (225L, 500L) - allow multiple selections
-    const sizeButtons = document.querySelectorAll('.size-button');
-    const caskSizeInput = document.getElementById('hiddenCaskSize');
-    
-    sizeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Toggle selected state (allow multiple selections)
-            this.classList.toggle('selected');
-            
-            // Update hidden input with all selected sizes
-            if (caskSizeInput) {
-                const selectedSizes = Array.from(document.querySelectorAll('.size-button.selected'))
-                    .map(btn => btn.dataset.size);
-                caskSizeInput.value = selectedSizes.join(', ');
-                console.log('Cask sizes selected:', selectedSizes);
-            }
-        });
-    });
-    
-    // Initialize quantity buttons (5-20, 21-50, 50+)
-    const quantityButtons = document.querySelectorAll('.quantity-button');
-    const quantityInput = document.getElementById('hiddenQuantity');
-    
-    quantityButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove selected class from all quantity buttons
-            quantityButtons.forEach(btn => btn.classList.remove('selected'));
-            // Add selected class to clicked button
-            this.classList.add('selected');
-            // Update hidden input value
-            if (quantityInput) {
-                quantityInput.value = this.dataset.quantity;
-            }
-            console.log('Quantity selected:', this.dataset.quantity);
-        });
-    });
-    
-    // Initialize sherry preference buttons
-    const preferenceButtons = document.querySelectorAll('.preference-button');
-    const sherryTypesInput = document.getElementById('hiddenSherryPreference');
-    const allTypesButton = document.querySelector('.preference-button[data-preference="all-types"]');
-    
-    preferenceButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const isAllTypesButton = this.dataset.preference === 'all-types';
-            
-            if (isAllTypesButton) {
-                // "All Types" button clicked
-                const isSelected = this.classList.contains('selected');
-                
-                if (!isSelected) {
-                    // Select all types
-                    preferenceButtons.forEach(btn => {
-                        btn.classList.add('selected');
-                        btn.setAttribute('aria-pressed', 'true');
-                    });
-                } else {
-                    // Deselect all types
-                    preferenceButtons.forEach(btn => {
-                        btn.classList.remove('selected');
-                        btn.setAttribute('aria-pressed', 'false');
-                    });
-                }
-            } else {
-                // Individual type button clicked
-                this.classList.toggle('selected');
-                this.setAttribute('aria-pressed', this.classList.contains('selected'));
-                
-                // Check if all individual types are selected
-                const individualButtons = Array.from(preferenceButtons).filter(
-                    btn => btn.dataset.preference !== 'all-types'
-                );
-                const allIndividualSelected = individualButtons.every(btn => 
-                    btn.classList.contains('selected')
-                );
-                
-                // Update "All Types" button state
-                if (allTypesButton) {
-                    if (allIndividualSelected) {
-                        allTypesButton.classList.add('selected');
-                        allTypesButton.setAttribute('aria-pressed', 'true');
-                    } else {
-                        allTypesButton.classList.remove('selected');
-                        allTypesButton.setAttribute('aria-pressed', 'false');
-                    }
-                }
-            }
-            
-            // Update hidden input with all selected sherry types
-            if (sherryTypesInput) {
-                const selectedTypes = Array.from(document.querySelectorAll('.preference-button.selected'))
-                    .map(btn => btn.dataset.preference);
-                sherryTypesInput.value = selectedTypes.join(', ');
-                console.log('Sherry types selected:', selectedTypes);
-            }
-        });
-    });
-    
-    // Initialize shipping address toggle
-    const shippingToggle = document.getElementById('shippingToggle');
-    const shippingSection = document.getElementById('shippingSection');
-    
-    if (shippingToggle && shippingSection) {
-        shippingToggle.addEventListener('click', function() {
-            shippingSection.classList.toggle('expanded');
-            this.classList.toggle('active');
-            console.log('Shipping address section toggled');
-        });
-    }
-    
-    console.log('✓ Button groups initialized:', {
-        sizeButtons: sizeButtons.length,
-        quantityButtons: quantityButtons.length,
-        preferenceButtons: preferenceButtons.length,
-        shippingToggle: shippingToggle ? 'initialized' : 'not found'
-    });
 }

@@ -106,21 +106,22 @@ function initializeFormHandlers() {
  * Handles size buttons, quantity buttons, and sherry preference buttons
  */
 function initializeButtonGroups() {
-    // Initialize size buttons (225L, 500L)
+    // Initialize size buttons (225L, 500L) - allow multiple selections
     const sizeButtons = document.querySelectorAll('.size-button');
     const caskSizeInput = document.getElementById('hiddenCaskSize');
     
     sizeButtons.forEach(button => {
         button.addEventListener('click', function() {
-            // Remove selected class from all size buttons
-            sizeButtons.forEach(btn => btn.classList.remove('selected'));
-            // Add selected class to clicked button
-            this.classList.add('selected');
-            // Update hidden input value
+            // Toggle selected state (allow multiple selections)
+            this.classList.toggle('selected');
+            
+            // Update hidden input with all selected sizes
             if (caskSizeInput) {
-                caskSizeInput.value = this.dataset.size;
+                const selectedSizes = Array.from(document.querySelectorAll('.size-button.selected'))
+                    .map(btn => btn.dataset.size);
+                caskSizeInput.value = selectedSizes.join(', ');
+                console.log('Cask sizes selected:', selectedSizes);
             }
-            console.log('Cask size selected:', this.dataset.size);
         });
     });
     

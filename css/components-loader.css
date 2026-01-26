@@ -43,9 +43,9 @@
 
 .preference-button.selected,
 .preference-button.active {
-    background: var(--accent-gold, #D4AF37);
-    border-color: var(--accent-gold, #D4AF37);
-    color: var(--text-primary, #2C1810);
+    background: var(--text-primary, #2C1810);
+    border-color: var(--text-primary, #2C1810);
+    color: var(--warm-white, #FAF7F0);
 }
 
 /* Pre-selected state for smooth UX */
@@ -55,11 +55,11 @@
 
 @keyframes highlightPreSelected {
     0% { transform: scale(1); }
-    50% { transform: scale(1.05); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3); }
+    50% { transform: scale(1.05); box-shadow: 0 0 0 3px rgba(44, 24, 16, 0.3); }
     100% { transform: scale(1); }
 }
 
-/* Size and quantity button states */
+/* Size and quantity button states - keep these gold */
 .size-button.selected,
 .quantity-button.selected {
     background: var(--accent-gold, #D4AF37);
@@ -104,6 +104,11 @@
 .shipping-toggle.active {
     background: var(--cream, #FAF7F0);
     border-color: var(--primary, #A0522D);
+    color: var(--text-primary, #2C1810); /* Keep text black */
+}
+
+.shipping-toggle.active span {
+    color: var(--text-primary, #2C1810); /* Ensure span text stays black too */
 }
 
 /* Toggle icon */

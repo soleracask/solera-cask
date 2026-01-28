@@ -45,6 +45,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Load components in sequence
     const footerLoaded = await loadComponent('footer', 'footer-placeholder');
+    
+    // Update copyright year in footer if loaded successfully
+    if (footerLoaded) {
+        const copyrightYear = document.getElementById('copyright-year');
+        if (copyrightYear) {
+            copyrightYear.textContent = new Date().getFullYear();
+            console.log('✓ Copyright year updated');
+        }
+    }
+    
     const formLoaded = await loadComponent('quote-form', 'quote-form-placeholder');
     
     // Initialize form handlers only if form was successfully loaded

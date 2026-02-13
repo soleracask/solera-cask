@@ -1143,14 +1143,14 @@ header.scrolled .logo-small {
 
 .story-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 4fr 1fr;
     gap: 100px;
     align-items: center;
 }
 
 /* Story Image - Enhanced to support actual images */
 .story-image {
-    height: 500px;
+    height: 1000px;
     background: var(--rich-brown);
     display: flex;
     align-items: center;

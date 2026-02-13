@@ -71,10 +71,10 @@ class CookieConsent {
       <div class="cookie-banner-content">
         <div class="cookie-banner-text">
           <h3>Cookie Preferences</h3>
-          <p>We use essential cookies for website functionality. Optional analytics cookies can be customized below.</p>
+          <p>We use essential cookies for website functionality. You can change your cookie preferences by clicking customize.</p>
         </div>
         <div class="cookie-banner-actions">
-          <button class="btn-secondary" id="cookie-reject">Reject All</button>
+          <button class="btn-secondary" id="cookie-reject">Only Necessary Cookies</button>
           <button class="btn-secondary" id="cookie-customize">Customize</button>
           <button class="btn-secondary" id="cookie-accept">Accept All</button>
         </div>

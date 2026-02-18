@@ -1,0 +1,127 @@
+<div class="quote-form">
+    <form name="quote-es" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="contactForm">
+        
+        <!-- Hidden honeypot field for spam protection -->
+        <p style="display: none;">
+            <label>No llenes esto si eres humano: <input name="bot-field" /></label>
+        </p>
+        
+        <!-- Hidden fields to capture button selections -->
+        <input type="hidden" name="sherry-preference" id="hiddenSherryPreference">
+        <input type="hidden" name="cask-size" id="hiddenCaskSize">
+        <input type="hidden" name="quantity" id="hiddenQuantity">
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="firstName">Nombre <span class="required">*</span></label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Apellido <span class="required">*</span></label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Correo Electrónico <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+                title="Por favor ingrese una dirección de correo electrónico válida (ej., nombre@empresa.com)">
+            </div>
+            <div class="form-group">
+                <label for="phone">Número de Teléfono <span class="required">*</span></label>
+                <input type="tel" id="phone" name="phone" required placeholder="Le llamaremos si no podemos contactarle por correo.">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="company">Nombre de Destilería/Cervecería <span class="required">*</span></label>
+            <input type="text" id="company" name="company" required>
+        </div>
+        
+        <!-- Shipping Address Toggle -->
+        <div class="form-group">
+            <p class="shipping-address-note">Proporcionar una dirección de envío nos ayuda a darle un presupuesto preciso incluyendo los costos de entrega.</p>
+            <button type="button" class="shipping-toggle" id="shippingToggle">
+                <span>Agregar Dirección de Envío para Presupuesto</span>
+                <svg class="shipping-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 10l5 5 5-5z"/>
+                </svg>
+            </button>
+            
+            <div class="shipping-address-section" id="shippingSection">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="country">País</label>
+                        <input type="text" id="country" name="country" placeholder="ej., España, Estados Unidos, Alemania">
+                    </div>
+                    <div class="form-group">
+                        <label for="stateProvince">Estado/Provincia/Región</label>
+                        <input type="text" id="stateProvince" name="stateProvince" placeholder="ej., Cádiz, California, Bavaria">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="streetAddress">Dirección</label>
+                    <input type="text" id="streetAddress" name="streetAddress" placeholder="Dirección de la calle">
+                </div>
+                
+                <div class="form-group">
+                    <label for="unitNumber">Número de Unidad/Edificio</label>
+                    <input type="text" id="unitNumber" name="unitNumber" placeholder="Apto, Suite, Unidad, Edificio, Piso, etc.">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">Ciudad</label>
+                        <input type="text" id="city" name="city" placeholder="Ciudad">
+                    </div>
+                    <div class="form-group">
+                        <label for="postalCode">Código Postal</label>
+                        <input type="text" id="postalCode" name="postalCode" placeholder="11401 o 28001">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Preferencia de Crianza de Jerez</label>
+            <div class="preference-buttons">
+                <button type="button" class="preference-button" data-preference="all-types">Todos los Tipos</button>
+                <button type="button" class="preference-button" data-preference="manzanilla">Manzanilla</button>
+                <button type="button" class="preference-button" data-preference="fino">Fino</button>
+                <button type="button" class="preference-button" data-preference="amontillado">Amontillado</button>
+                <button type="button" class="preference-button" data-preference="palo-cortado">Palo Cortado</button>
+                <button type="button" class="preference-button" data-preference="oloroso">Oloroso</button>
+                <button type="button" class="preference-button" data-preference="pedro-ximenez">Pedro Ximénez</button>
+                <button type="button" class="preference-button" data-preference="unsure">No Estoy Seguro</button>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Tamaño de Barrica Preferido</label>
+                <div class="size-button-group">
+                    <button type="button" class="size-button" data-size="225l">225L</button>
+                    <button type="button" class="size-button" data-size="500l">500L</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Cantidad Estimada <span class="required">*</span></label>
+                <div class="quantity-button-group">
+                    <button type="button" class="quantity-button" data-quantity="5-20">5-20</button>
+                    <button type="button" class="quantity-button" data-quantity="21-50">21-50</button>
+                    <button type="button" class="quantity-button" data-quantity="50+">50+</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="project">Detalles del Proyecto</label>
+            <textarea id="project" name="project" rows="4" placeholder="Cuéntenos sobre su proyecto, cronograma y requisitos específicos..."></textarea>
+        </div>
+        
+        <button type="submit" class="btn-primary">Enviar Solicitud de Consulta</button>
+    </form>
+</div>

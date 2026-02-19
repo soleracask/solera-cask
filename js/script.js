@@ -1641,21 +1641,35 @@ function showPreselectionMessage(selectedTypes) {
     const pathname = window.location.pathname.toLowerCase();
     
     // Create dynamic message based on product context
-    let message;
-    if (pathname.includes('tequila-sherry-barrels') || currentProduct === 'tequila') {
-        message = `Perfect for Tequila! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for Tequila aging and finishing.`;
-    } else if (pathname.includes('whisky-sherry-barrels') || currentProduct === 'whisky') {
-        message = `Ideal for Whisky maturation! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that enhances Whisky complexity beautifully.`;
-    } else if (pathname.includes('rum-sherry-barrels') || currentProduct === 'rum') {
-        message = `Excellent for Rum! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that complements Rum aging perfectly.`;
-    } else if (pathname.includes('beer-sherry-barrels') || currentProduct === 'beer') {
-        message = `Great for Beer aging! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that adds wonderful depth to beer styles.`;
-    } else if (currentProduct) {
-        message = `We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for ${currentProduct.charAt(0).toUpperCase() + currentProduct.slice(1)} aging and finishing.`;
-    } else {
-        // Generic fallback
-        message = `Based on your spirit/beer, we've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for your product.`;
-    }
+      // Resolve product from pathname first — sessionStorage is fallback only
+      let productContext;
+      if (pathname.includes('tequila')) productContext = 'tequila';
+      else if (pathname.includes('whisky') || pathname.includes('whiskey')) productContext = 'whisky';
+      else if (pathname.includes('rum')) productContext = 'rum';
+      else if (pathname.includes('vodka')) productContext = 'vodka';
+      else if (pathname.includes('beer')) productContext = 'beer';
+      else if (pathname.includes('gin')) productContext = 'gin';
+      else if (pathname.includes('brandy')) productContext = 'brandy';
+      else productContext = getCurrentProduct(); // fallback for pages without product in URL
+  
+      let message;
+      if (productContext === 'tequila') {
+          message = `Perfect for Tequila! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for Tequila aging and finishing.`;
+      } else if (productContext === 'whisky') {
+          message = `Ideal for Whisky maturation! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that enhances Whisky complexity beautifully.`;
+      } else if (productContext === 'rum') {
+          message = `Excellent for Rum! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that complements Rum aging perfectly.`;
+      } else if (productContext === 'beer') {
+          message = `Great for Beer aging! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that adds wonderful depth to beer styles.`;
+      } else if (productContext === 'vodka') {
+          message = `Perfect for Vodka finishing! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that adds refinement to your Vodka expressions.`;
+      } else if (productContext === 'gin') {
+          message = `Ideal for aged Gin expressions! We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that enhances botanical complexity beautifully.`;
+      } else if (productContext) {
+          message = `We've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for ${productContext.charAt(0).toUpperCase() + productContext.slice(1)} aging and finishing.`;
+      } else {
+          message = `Based on your spirit/beer, we've pre-selected ${typeNames.join(', ')} sherry cask seasoning that works excellently for your product.`;
+      }
     
     messageDiv.innerHTML = `
         <div class="message-content">

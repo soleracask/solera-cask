@@ -2651,7 +2651,7 @@ function setupShippingToggle() {
                 shippingSection.style.opacity = '0';
                 shippingSection.style.marginTop = '0';
                 const span = this.querySelector('span');
-                if (span) span.textContent = 'Add Shipping Address for Quote';
+                if (span) span.textContent = this.dataset.textShow || 'Add Shipping Address for Quote';
             } else {
                 // Expand
                 this.classList.add('active');
@@ -2659,7 +2659,7 @@ function setupShippingToggle() {
                 shippingSection.style.opacity = '1';
                 shippingSection.style.marginTop = '24px';
                 const span = this.querySelector('span');
-                if (span) span.textContent = 'Hide Shipping Address';
+                if (span) span.textContent = this.dataset.textHide || 'Hide Shipping Address';
             }
         });
     }
@@ -2748,7 +2748,7 @@ if (!quantitySelected || quantitySelected.trim() === '') {
             if (shippingToggle) {
                 shippingToggle.classList.remove('active');
                 const span = shippingToggle.querySelector('span');
-                if (span) span.textContent = 'Add Shipping Address for Quote';
+                if (span) span.textContent = shippingToggle.dataset.textShow || 'Add Shipping Address for Quote';
             }
             
         } else {

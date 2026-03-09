@@ -175,11 +175,11 @@ header.scrolled .logo-small {
 .nav-menu a {
     color: var(--text-primary);
     text-decoration: none;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
     transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.02em;
     position: relative;
 }
 

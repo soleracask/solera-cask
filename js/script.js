@@ -506,6 +506,73 @@ handleHeaderOffset();
 });
 
 // =================================
+// LANGUAGE & TRANSLATIONS
+// =================================
+function isSpanish() {
+    return window.location.pathname.startsWith('/es/');
+}
+
+const translations = {
+    en: {
+        resultTitle: (product) => `Perfect Sherry Casks for ${product}`,
+        resultSubtitle: 'Here are our top recommendations:',
+        caskLabel: 'Sherry Casks',
+        instruction: '💡 Click on the barrel types you\'re interested in, then click "Get Quote" to pre-fill the form below',
+        cta: (product) => `Ready to transform your ${product} with sherry barrels straight from Spain?`,
+        getQuote: 'Get Quote',
+        seeAll: (category) => `See All Sherry Barrels for ${category}`,
+        badges: {
+            'Top Choice': 'Top Choice', 'Balanced': 'Balanced', 'Premium': 'Premium',
+            'Versatile': 'Versatile', 'Rich': 'Rich', 'Elegant': 'Elegant',
+            'Classic': 'Classic', 'Luxurious': 'Luxurious', 'Gentle': 'Gentle',
+            'Subtle': 'Subtle', 'Bold': 'Bold', 'Rare': 'Rare', 'Botanical': 'Botanical',
+            'Complex': 'Complex', 'Delicate': 'Delicate', 'Rustic': 'Rustic',
+            'Harmonious': 'Harmonious', 'Deep': 'Deep', 'Sweet': 'Sweet',
+            'Spicy': 'Spicy', 'Traditional': 'Traditional', 'Coastal': 'Coastal',
+            'Extended Aging': 'Extended Aging', 'Ultra-Premium': 'Ultra-Premium',
+            'Finishing': 'Finishing', 'Transitional': 'Transitional',
+            'Complementary': 'Complementary', 'Indulgent': 'Indulgent',
+            'Sophisticated': 'Sophisticated', 'Perfect Match': 'Perfect Match',
+            'Dessert Style': 'Dessert Style', 'Light Touch': 'Light Touch', 'Light': 'Light',
+        }
+    },
+    es: {
+        resultTitle: (product) => `Botas de Jerez Ideales para ${product}`,
+        resultSubtitle: 'Nuestras mejores recomendaciones:',
+        caskLabel: 'Botas de Jerez',
+        instruction: '💡 Haz clic en los tipos de barrica que te interesan y luego en "Solicitar Cotización" para rellenar el formulario',
+        cta: (product) => `¿Listo para transformar tu ${product} con barricas de Jerez directamente desde España?`,
+        getQuote: 'Solicitar Cotización',
+        seeAll: (category) => `Ver Todas las Barricas para ${category}`,
+        badges: {
+            'Top Choice': 'Mejor Opción', 'Balanced': 'Equilibrado', 'Premium': 'Premium',
+            'Versatile': 'Versátil', 'Rich': 'Intenso', 'Elegant': 'Elegante',
+            'Classic': 'Clásico', 'Luxurious': 'Lujoso', 'Gentle': 'Suave',
+            'Subtle': 'Sutil', 'Bold': 'Robusto', 'Rare': 'Exclusivo', 'Botanical': 'Botánico',
+            'Complex': 'Complejo', 'Delicate': 'Delicado', 'Rustic': 'Rústico',
+            'Harmonious': 'Armonioso', 'Deep': 'Profundo', 'Sweet': 'Dulce',
+            'Spicy': 'Especiado', 'Traditional': 'Tradicional', 'Coastal': 'Costero',
+            'Extended Aging': 'Crianza Prolongada', 'Ultra-Premium': 'Ultra-Premium',
+            'Finishing': 'Acabado', 'Transitional': 'De Transición',
+            'Complementary': 'Complementario', 'Indulgent': 'Indulgente',
+            'Sophisticated': 'Sofisticado', 'Perfect Match': 'Maridaje Perfecto',
+            'Dessert Style': 'Estilo Postre', 'Light Touch': 'Toque Ligero', 'Light': 'Ligero',
+        }
+    }
+};
+
+function t(key, ...args) {
+    const lang = isSpanish() ? translations.es : translations.en;
+    const val = lang[key];
+    return typeof val === 'function' ? val(...args) : val;
+}
+
+function translateBadge(badge) {
+    const lang = isSpanish() ? translations.es : translations.en;
+    return lang.badges[badge] || badge;
+}
+
+// =================================
 // PRODUCT FINDER FUNCTIONALITY - WITH SELECTABLE BARRELS
 // =================================
 
@@ -572,478 +639,646 @@ let processSearch; // Declare globally
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Product database with recommendations
     const productDatabase = {
-        // Whisky
+ 
+        // =========
+        // WHISKY
+        // =========
         'single malt whisky': {
             category: 'Whisky',
             page: '/whisky-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-whisky.html',
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Top Choice',
                     description: 'Rich walnut, chocolate, and dried fruit complexity perfect for single malt maturation.',
-                    flavors: 'Walnut • Dark Chocolate • Dried Figs'
+                    descriptionEs: 'Compleja riqueza de nuez, chocolate y fruta seca, ideal para la crianza de whisky de malta.',
+                    flavors: 'Walnut • Dark Chocolate • Dried Figs',
+                    flavorsEs: 'Nuez • Chocolate Negro • Higos Secos'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Balanced',
                     description: 'Nutty elegance with toasted almond notes that complement malt character beautifully.',
-                    flavors: 'Hazelnut • Toasted Almond • Caramel'
+                    descriptionEs: 'Elegancia con notas de almendra tostada que complementan perfectamente el carácter de la malta.',
+                    flavors: 'Hazelnut • Toasted Almond • Caramel',
+                    flavorsEs: 'Avellana • Almendra Tostada • Caramelo'
                 },
                 {
                     type: 'Pedro Ximénez',
                     badge: 'Premium',
                     description: 'Luxurious sweetness creating dessert-like expressions for special releases.',
-                    flavors: 'Raisin • Dark Honey • Molasses'
+                    descriptionEs: 'Dulzura lujosa que crea expresiones de postre para ediciones especiales.',
+                    flavors: 'Raisin • Dark Honey • Molasses',
+                    flavorsEs: 'Pasas • Miel Oscura • Melaza'
+                },
+                {
+                    type: 'Palo Cortado',
+                    badge: 'Premium',
+                    description: 'Elegant balance between Amontillado and Oloroso.',
+                    descriptionEs: 'Equilibrio elegante entre el Amontillado y el Oloroso.',
+                    flavors: 'Chestnut • Bitter Orange • Buttery Caramel',
+                    flavorsEs: 'Castaña • Naranja Amarga • Caramelo Mantecoso'
                 }
             ]
         },
+     
         'blended whisky': {
             category: 'Whisky',
             page: '/whisky-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-whisky.html',
             recommendations: [
                 {
                     type: 'Amontillado',
                     badge: 'Versatile',
                     description: 'Balanced complexity that enhances without overpowering blended whisky character.',
-                    flavors: 'Hazelnut • Light Caramel • Herbs'
+                    descriptionEs: 'Complejidad equilibrada que realza sin dominar el carácter del whisky de mezcla.',
+                    flavors: 'Hazelnut • Light Caramel • Herbs',
+                    flavorsEs: 'Avellana • Caramelo Suave • Hierbas'
                 },
                 {
                     type: 'Oloroso',
                     badge: 'Rich',
                     description: 'Adds depth and richness to create premium blended expressions.',
-                    flavors: 'Walnut • Chocolate • Leather'
+                    descriptionEs: 'Aporta profundidad y riqueza para crear expresiones de mezcla de alta gama.',
+                    flavors: 'Walnut • Chocolate • Leather',
+                    flavorsEs: 'Nuez • Chocolate • Cuero'
                 }
             ]
         },
+     
         'bourbon': {
             category: 'Whisky',
             page: '/whisky-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-whisky.html',
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Finishing',
                     description: 'Perfect for finishing bourbon, adding Spanish complexity to American character.',
-                    flavors: 'Dark Chocolate • Dried Fruit • Spice'
+                    descriptionEs: 'Perfecto para el acabado del bourbon, añadiendo complejidad española al carácter americano.',
+                    flavors: 'Dark Chocolate • Dried Fruit • Spice',
+                    flavorsEs: 'Chocolate Negro • Fruta Seca • Especias'
                 },
                 {
                     type: 'Pedro Ximénez',
                     badge: 'Sweet',
                     description: 'Creates indulgent bourbon expressions with rich sweetness.',
-                    flavors: 'Dark Honey • Raisin • Toffee'
+                    descriptionEs: 'Crea expresiones de bourbon indulgentes con una rica dulzura.',
+                    flavors: 'Dark Honey • Raisin • Toffee',
+                    flavorsEs: 'Miel Oscura • Pasas • Toffee'
                 }
             ]
         },
-        'rye whiskey': {
+     
+        'rye whisky': {
             category: 'Whisky',
             page: '/whisky-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-whisky.html',
             recommendations: [
                 {
                     type: 'Amontillado',
                     badge: 'Spicy',
                     description: 'Complements rye spice with nutty complexity and balanced sweetness.',
-                    flavors: 'Toasted Nuts • Spice • Caramel'
+                    descriptionEs: 'Complementa las especias del centeno con complejidad de frutos secos y dulzura equilibrada.',
+                    flavors: 'Toasted Nuts • Spice • Caramel',
+                    flavorsEs: 'Frutos Secos Tostados • Especias • Caramelo'
                 },
                 {
                     type: 'Oloroso',
                     badge: 'Bold',
                     description: 'Robust aging that matches rye\'s intensity with deep, rich flavors.',
-                    flavors: 'Walnut • Leather • Dark Fruit'
+                    descriptionEs: 'Crianza robusta que iguala la intensidad del centeno con sabores profundos y ricos.',
+                    flavors: 'Walnut • Leather • Dark Fruit',
+                    flavorsEs: 'Nuez • Cuero • Fruta Oscura'
                 }
             ]
         },
-
-        // Rum
+     
+        // =========
+        // RUM
+        // =========
         'aged rum': {
             category: 'Rum',
             page: '/rum-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-ron.html',
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Classic',
                     description: 'Traditional choice for aged rum, enhancing natural molasses richness.',
-                    flavors: 'Dark Chocolate • Dried Fig • Leather'
+                    descriptionEs: 'Elección tradicional para el ron añejo, que realza la riqueza natural de la melaza.',
+                    flavors: 'Dark Chocolate • Dried Fig • Leather',
+                    flavorsEs: 'Chocolate Negro • Higo Seco • Cuero'
                 },
                 {
                     type: 'Pedro Ximénez',
                     badge: 'Luxurious',
                     description: 'Creates ultra-premium rum expressions with intense sweetness and complexity.',
-                    flavors: 'Raisin • Dark Honey • Molasses'
+                    descriptionEs: 'Crea expresiones de ron ultra-premium con intensa dulzura y complejidad.',
+                    flavors: 'Raisin • Dark Honey • Molasses',
+                    flavorsEs: 'Pasas • Miel Oscura • Melaza'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Elegant',
                     description: 'Balanced aging that adds sophistication without overwhelming rum character.',
-                    flavors: 'Hazelnut • Light Caramel • Herbs'
+                    descriptionEs: 'Crianza equilibrada que añade sofisticación sin dominar el carácter del ron.',
+                    flavors: 'Hazelnut • Light Caramel • Herbs',
+                    flavorsEs: 'Avellana • Caramelo Suave • Hierbas'
                 }
             ]
         },
+     
         'white rum': {
             category: 'Rum',
             page: '/rum-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-ron.html',
             recommendations: [
                 {
                     type: 'Fino',
                     badge: 'Subtle',
                     description: 'Gentle finishing that adds complexity while preserving clean rum character.',
-                    flavors: 'Mineral • Green Almond • Saline'
+                    descriptionEs: 'Acabado suave que añade complejidad preservando el carácter limpio del ron.',
+                    flavors: 'Mineral • Green Almond • Saline',
+                    flavorsEs: 'Mineral • Almendra Verde • Salino'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Transitional',
                     description: 'Perfect for creating aged expressions from white rum base.',
-                    flavors: 'Toasted Almond • Light Caramel • Herbs'
+                    descriptionEs: 'Perfecto para crear expresiones añejas a partir de una base de ron blanco.',
+                    flavors: 'Toasted Almond • Light Caramel • Herbs',
+                    flavorsEs: 'Almendra Tostada • Caramelo Suave • Hierbas'
                 }
             ]
         },
+     
         'spiced rum': {
             category: 'Rum',
             page: '/rum-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-ron.html',
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Complementary',
                     description: 'Rich flavors that enhance spice complexity without competition.',
-                    flavors: 'Walnut • Dark Chocolate • Warm Spice'
+                    descriptionEs: 'Sabores ricos que realzan la complejidad de las especias sin competir con ellas.',
+                    flavors: 'Walnut • Dark Chocolate • Warm Spice',
+                    flavorsEs: 'Nuez • Chocolate Negro • Especias Cálidas'
                 },
                 {
                     type: 'Pedro Ximénez',
                     badge: 'Indulgent',
                     description: 'Creates dessert-like spiced rum with incredible depth and sweetness.',
-                    flavors: 'Dark Honey • Raisin • Molasses'
+                    descriptionEs: 'Crea un ron especiado de estilo postre con increíble profundidad y dulzura.',
+                    flavors: 'Dark Honey • Raisin • Molasses',
+                    flavorsEs: 'Miel Oscura • Pasas • Melaza'
                 }
             ]
         },
-
-        // Tequila
+     
+        // =========
+        // TEQUILA
+        // =========
         'añejo tequila': {
             category: 'Tequila',
             page: '/tequila-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-tequila.html',
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Premium',
                     description: 'Perfect for añejo expressions, adding Spanish complexity to agave character.',
-                    flavors: 'Walnut • Dark Chocolate • Leather'
+                    descriptionEs: 'Perfecto para expresiones añejo, añadiendo complejidad española al carácter del agave.',
+                    flavors: 'Walnut • Dark Chocolate • Leather',
+                    flavorsEs: 'Nuez • Chocolate Negro • Cuero'
                 },
                 {
                     type: 'Pedro Ximénez',
                     badge: 'Ultra-Premium',
                     description: 'Creates luxury tequila expressions with rich, dessert-like profiles.',
-                    flavors: 'Raisin • Dark Honey • Molasses'
+                    descriptionEs: 'Crea expresiones de tequila de lujo con perfiles ricos y de estilo postre.',
+                    flavors: 'Raisin • Dark Honey • Molasses',
+                    flavorsEs: 'Pasas • Miel Oscura • Melaza'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Balanced',
                     description: 'Sophisticated aging that enhances agave while adding nutty complexity.',
-                    flavors: 'Hazelnut • Caramel • Herbs'
+                    descriptionEs: 'Crianza sofisticada que realza el agave añadiendo complejidad de frutos secos.',
+                    flavors: 'Hazelnut • Caramel • Herbs',
+                    flavorsEs: 'Avellana • Caramelo • Hierbas'
                 }
             ]
         },
+     
         'extra añejo tequila': {
             category: 'Tequila',
             page: '/tequila-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-tequila.html',
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Extended Aging',
                     description: 'Ideal for long-term aging, developing incredible depth over years.',
-                    flavors: 'Walnut • Dried Fig • Leather'
+                    descriptionEs: 'Ideal para crianzas prolongadas, desarrollando una profundidad increíble con los años.',
+                    flavors: 'Walnut • Dried Fig • Leather',
+                    flavorsEs: 'Nuez • Higo Seco • Cuero'
                 },
                 {
                     type: 'Palo Cortado',
                     badge: 'Rare',
                     description: 'Creates unique, complex tequila expressions with unmatched sophistication.',
-                    flavors: 'Citrus Peel • Balsamic • Toffee'
+                    descriptionEs: 'Crea expresiones de tequila únicas y complejas con una sofisticación inigualable.',
+                    flavors: 'Citrus Peel • Balsamic • Toffee',
+                    flavorsEs: 'Piel de Cítrico • Balsámico • Toffee'
                 }
             ]
         },
+     
         'reposado tequila': {
             category: 'Tequila',
             page: '/tequila-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-tequila.html',
             recommendations: [
                 {
                     type: 'Amontillado',
                     badge: 'Gentle',
                     description: 'Perfect for reposado aging, adding complexity without overpowering agave.',
-                    flavors: 'Light Caramel • Toasted Almond • Herbs'
+                    descriptionEs: 'Perfecto para la crianza reposado, añadiendo complejidad sin dominar el agave.',
+                    flavors: 'Light Caramel • Toasted Almond • Herbs',
+                    flavorsEs: 'Caramelo Suave • Almendra Tostada • Hierbas'
                 },
                 {
                     type: 'Fino',
                     badge: 'Delicate',
                     description: 'Subtle influence that preserves agave character while adding refinement.',
-                    flavors: 'Mineral • Green Almond • Saline'
+                    descriptionEs: 'Influencia sutil que preserva el carácter del agave añadiendo refinamiento.',
+                    flavors: 'Mineral • Green Almond • Saline',
+                    flavorsEs: 'Mineral • Almendra Verde • Salino'
                 }
             ]
         },
-
-        // Vodka
+     
+        // =========
+        // VODKA
+        // =========
         'vodka': {
             category: 'Vodka',
             page: '/vodka-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-vodka.html',
             recommendations: [
                 {
                     type: 'Fino',
                     badge: 'Gentle',
                     description: 'Minimal intervention aging that preserves vodka character while adding refinement.',
-                    flavors: 'Mineral • Clean • Subtle'
+                    descriptionEs: 'Crianza de mínima intervención que preserva el carácter del vodka añadiendo refinamiento.',
+                    flavors: 'Mineral • Clean • Subtle',
+                    flavorsEs: 'Mineral • Limpio • Sutil'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Premium',
                     description: 'Short-term aging creates sophisticated premium vodka expressions.',
-                    flavors: 'Light Caramel • Smooth • Elegant'
+                    descriptionEs: 'La crianza a corto plazo crea expresiones de vodka premium sofisticadas.',
+                    flavors: 'Light Caramel • Smooth • Elegant',
+                    flavorsEs: 'Caramelo Suave • Suavidad • Elegancia'
                 }
             ]
         },
+     
         'premium vodka': {
             category: 'Vodka',
             page: '/vodka-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-vodka.html',
             recommendations: [
                 {
                     type: 'Fino',
                     badge: 'Subtle',
                     description: 'Ultra-gentle finishing that adds sophistication without compromising purity.',
-                    flavors: 'Mineral • Delicate Almond • Clean'
+                    descriptionEs: 'Acabado ultra-suave que añade sofisticación sin comprometer la pureza.',
+                    flavors: 'Mineral • Delicate Almond • Clean',
+                    flavorsEs: 'Mineral • Almendra Delicada • Limpio'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Complex',
                     description: 'Creates unique aged vodka expressions with remarkable smoothness.',
-                    flavors: 'Light Caramel • Soft Nuts • Silk'
+                    descriptionEs: 'Crea expresiones únicas de vodka añejo con una suavidad extraordinaria.',
+                    flavors: 'Light Caramel • Soft Nuts • Silk',
+                    flavorsEs: 'Caramelo Suave • Frutos Secos Suaves • Seda'
                 }
             ]
         },
-
-        // Gin
+     
+        // =========
+        // GIN (no Spanish page)
+        // =========
         'aged gin': {
             category: 'Gin',
             page: '/gin-sherry-barrels.html',
+            pageEs: null,
             recommendations: [
                 {
                     type: 'Fino',
                     badge: 'Botanical',
                     description: 'Preserves delicate botanical balance while adding Spanish sophistication.',
-                    flavors: 'Mineral • Herbal • Clean'
+                    descriptionEs: 'Preserva el delicado equilibrio botánico añadiendo sofisticación española.',
+                    flavors: 'Mineral • Herbal • Clean',
+                    flavorsEs: 'Mineral • Herbáceo • Limpio'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Complex',
                     description: 'Creates sophisticated aged gin with beautiful botanical integration.',
-                    flavors: 'Toasted Almond • Herbs • Caramel'
+                    descriptionEs: 'Crea un gin añejo sofisticado con una bella integración botánica.',
+                    flavors: 'Toasted Almond • Herbs • Caramel',
+                    flavorsEs: 'Almendra Tostada • Hierbas • Caramelo'
                 }
             ]
         },
+     
         'navy strength gin': {
             category: 'Gin',
             page: '/gin-sherry-barrels.html',
+            pageEs: null,
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Bold',
                     description: 'Robust aging that matches navy strength intensity with rich complexity.',
-                    flavors: 'Walnut • Spice • Dark Fruit'
+                    descriptionEs: 'Crianza robusta que iguala la intensidad del navy strength con rica complejidad.',
+                    flavors: 'Walnut • Spice • Dark Fruit',
+                    flavorsEs: 'Nuez • Especias • Fruta Oscura'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Balanced',
                     description: 'Adds sophistication to high-proof gin without overwhelming botanicals.',
-                    flavors: 'Nuts • Caramel • Herbs'
+                    descriptionEs: 'Añade sofisticación al gin de alta graduación sin dominar los botánicos.',
+                    flavors: 'Nuts • Caramel • Herbs',
+                    flavorsEs: 'Frutos Secos • Caramelo • Hierbas'
                 }
             ]
         },
-
-        // Beer Styles
+     
+        // =========
+        // BEER
+        // =========
         'beer': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Versatile',
                     description: 'Excellent for dark beer styles like stouts and porters, adding rich complexity.',
-                    flavors: 'Dark Chocolate • Leather • Dried Fig'
+                    descriptionEs: 'Excelente para estilos de cerveza oscura como stouts y porters, añadiendo rica complejidad.',
+                    flavors: 'Dark Chocolate • Leather • Dried Fig',
+                    flavorsEs: 'Chocolate Negro • Cuero • Higo Seco'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Balanced',
                     description: 'Perfect for brown ales and Belgian styles, providing balanced nutty complexity.',
-                    flavors: 'Hazelnut • Caramel • Spice'
+                    descriptionEs: 'Perfecto para brown ales y estilos belgas, aportando complejidad de frutos secos equilibrada.',
+                    flavors: 'Hazelnut • Caramel • Spice',
+                    flavorsEs: 'Avellana • Caramelo • Especias'
                 },
                 {
                     type: 'Fino',
                     badge: 'Light',
                     description: 'Ideal for lighter beer styles, adding mineral notes while preserving character.',
-                    flavors: 'Mineral • Herbal • Saline'
+                    descriptionEs: 'Ideal para estilos de cerveza más ligeros, añadiendo notas minerales preservando el carácter.',
+                    flavors: 'Mineral • Herbal • Saline',
+                    flavorsEs: 'Mineral • Herbáceo • Salino'
                 }
             ]
         },
+     
         'imperial stout': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Perfect Match',
                     description: 'Classic pairing - rich, robust flavors that complement stout intensity perfectly.',
-                    flavors: 'Dark Chocolate • Leather • Dried Fig'
+                    descriptionEs: 'Maridaje clásico: sabores ricos y robustos que complementan perfectamente la intensidad del stout.',
+                    flavors: 'Dark Chocolate • Leather • Dried Fig',
+                    flavorsEs: 'Chocolate Negro • Cuero • Higo Seco'
                 },
                 {
                     type: 'Pedro Ximénez',
                     badge: 'Dessert Style',
                     description: 'Creates indulgent pastry stout expressions with incredible sweetness.',
-                    flavors: 'Raisin • Dark Honey • Molasses'
+                    descriptionEs: 'Crea expresiones de pastry stout indulgentes con una dulzura increíble.',
+                    flavors: 'Raisin • Dark Honey • Molasses',
+                    flavorsEs: 'Pasas • Miel Oscura • Melaza'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Elegant',
                     description: 'Adds complexity while maintaining drinkability in imperial stouts.',
-                    flavors: 'Hazelnut • Caramel • Warmth'
+                    descriptionEs: 'Añade complejidad manteniendo la bebibilidad en los imperial stouts.',
+                    flavors: 'Hazelnut • Caramel • Warmth',
+                    flavorsEs: 'Avellana • Caramelo • Calidez'
                 }
             ]
         },
+     
         'barleywine': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Oloroso',
                     badge: 'Traditional',
                     description: 'Classic choice for barleywine aging, enhancing malt complexity beautifully.',
-                    flavors: 'Walnut • Dark Fruit • Warmth'
+                    descriptionEs: 'Elección clásica para la crianza de barleywine, realzando la complejidad de la malta.',
+                    flavors: 'Walnut • Dark Fruit • Warmth',
+                    flavorsEs: 'Nuez • Fruta Oscura • Calidez'
                 },
                 {
                     type: 'Pedro Ximénez',
                     badge: 'Sweet',
                     description: 'Creates dessert-like barleywine with incredible richness and depth.',
-                    flavors: 'Dark Honey • Raisin • Toffee'
+                    descriptionEs: 'Crea un barleywine de estilo postre con increíble riqueza y profundidad.',
+                    flavors: 'Dark Honey • Raisin • Toffee',
+                    flavorsEs: 'Miel Oscura • Pasas • Toffee'
                 }
             ]
         },
+     
         'saison': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Fino',
                     badge: 'Delicate',
                     description: 'Preserves saison character while adding Spanish minerality and complexity.',
-                    flavors: 'Mineral • Herbal • Saline'
+                    descriptionEs: 'Preserva el carácter del saison añadiendo mineralidad y complejidad española.',
+                    flavors: 'Mineral • Herbal • Saline',
+                    flavorsEs: 'Mineral • Herbáceo • Salino'
                 },
                 {
                     type: 'Manzanilla',
                     badge: 'Coastal',
                     description: 'Adds delicate brine and almond notes that enhance farmhouse character.',
-                    flavors: 'Sea Salt • Green Almond • Herbs'
+                    descriptionEs: 'Añade delicadas notas de salmuera y almendra que realzan el carácter artesanal.',
+                    flavors: 'Sea Salt • Green Almond • Herbs',
+                    flavorsEs: 'Sal Marina • Almendra Verde • Hierbas'
                 }
             ]
         },
+     
         'farmhouse ale': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Fino',
                     badge: 'Rustic',
                     description: 'Enhances farmhouse character with delicate minerality and herbal complexity.',
-                    flavors: 'Mineral • Chamomile • Herbs'
+                    descriptionEs: 'Realza el carácter rústico con delicada mineralidad y complejidad herbácea.',
+                    flavors: 'Mineral • Chamomile • Herbs',
+                    flavorsEs: 'Mineral • Manzanilla • Hierbas'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Complex',
                     description: 'Adds sophisticated depth while preserving rustic farmhouse appeal.',
-                    flavors: 'Toasted Almond • Light Caramel • Herbs'
+                    descriptionEs: 'Añade profundidad sofisticada preservando el atractivo rústico artesanal.',
+                    flavors: 'Toasted Almond • Light Caramel • Herbs',
+                    flavorsEs: 'Almendra Tostada • Caramelo Suave • Hierbas'
                 }
             ]
         },
+     
         'belgian strong ale': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Amontillado',
                     badge: 'Balanced',
                     description: 'Perfect match for Belgian strong ales, adding nutty complexity and depth.',
-                    flavors: 'Hazelnut • Caramel • Spice'
+                    descriptionEs: 'Maridaje perfecto para las belgian strong ales, añadiendo complejidad de frutos secos y profundidad.',
+                    flavors: 'Hazelnut • Caramel • Spice',
+                    flavorsEs: 'Avellana • Caramelo • Especias'
                 },
                 {
                     type: 'Oloroso',
                     badge: 'Rich',
                     description: 'Creates premium aged Belgian expressions with incredible complexity.',
-                    flavors: 'Walnut • Dark Fruit • Leather'
+                    descriptionEs: 'Crea expresiones belgas añejas de alta gama con increíble complejidad.',
+                    flavors: 'Walnut • Dark Fruit • Leather',
+                    flavorsEs: 'Nuez • Fruta Oscura • Cuero'
                 }
             ]
         },
+     
         'brown ale': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Amontillado',
                     badge: 'Harmonious',
                     description: 'Complements brown ale maltiness with perfect nutty and caramel integration.',
-                    flavors: 'Hazelnut • Caramel • Warmth'
+                    descriptionEs: 'Complementa la maltosidad de la brown ale con perfecta integración de frutos secos y caramelo.',
+                    flavors: 'Hazelnut • Caramel • Warmth',
+                    flavorsEs: 'Avellana • Caramelo • Calidez'
                 },
                 {
                     type: 'Oloroso',
                     badge: 'Deep',
                     description: 'Adds rich complexity to create premium aged brown ale expressions.',
-                    flavors: 'Walnut • Chocolate • Dried Fruit'
+                    descriptionEs: 'Añade rica complejidad para crear expresiones de brown ale añeja de alta gama.',
+                    flavors: 'Walnut • Chocolate • Dried Fruit',
+                    flavorsEs: 'Nuez • Chocolate • Fruta Seca'
                 }
             ]
         },
+     
         'berliner weisse': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Fino',
                     badge: 'Light Touch',
                     description: 'Preserves tart character while adding Spanish minerality and elegance.',
-                    flavors: 'Mineral • Green Almond • Clean'
+                    descriptionEs: 'Preserva el carácter ácido añadiendo mineralidad y elegancia española.',
+                    flavors: 'Mineral • Green Almond • Clean',
+                    flavorsEs: 'Mineral • Almendra Verde • Limpio'
                 },
                 {
                     type: 'Manzanilla',
                     badge: 'Coastal',
                     description: 'Enhances acidity with delicate saline notes and herbal complexity.',
-                    flavors: 'Sea Salt • Herbs • Bright'
+                    descriptionEs: 'Realza la acidez con delicadas notas salinas y complejidad herbácea.',
+                    flavors: 'Sea Salt • Herbs • Bright',
+                    flavorsEs: 'Sal Marina • Hierbas • Fresco'
                 }
             ]
         },
+     
         'wild ale': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Palo Cortado',
                     badge: 'Rare',
                     description: 'Creates unique wild ale expressions with unmatched complexity and elegance.',
-                    flavors: 'Citrus Peel • Balsamic • Toffee'
+                    descriptionEs: 'Crea expresiones de wild ale únicas con una complejidad y elegancia inigualables.',
+                    flavors: 'Citrus Peel • Balsamic • Toffee',
+                    flavorsEs: 'Piel de Cítrico • Balsámico • Toffee'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Complex',
                     description: 'Adds sophisticated depth to wild fermentation flavors.',
-                    flavors: 'Nuts • Herbs • Oxidative'
+                    descriptionEs: 'Añade profundidad sofisticada a los sabores de la fermentación espontánea.',
+                    flavors: 'Nuts • Herbs • Oxidative',
+                    flavorsEs: 'Frutos Secos • Hierbas • Oxidativo'
                 }
             ]
         },
+     
         'sour beer': {
             category: 'Beer',
             page: '/beer-sherry-barrels.html',
+            pageEs: '/es/barricas-jerez-cerveza.html',
             recommendations: [
                 {
                     type: 'Palo Cortado',
                     badge: 'Sophisticated',
                     description: 'Exceptional complexity that complements sour beer character beautifully.',
-                    flavors: 'Balsamic • Citrus • Complex'
+                    descriptionEs: 'Complejidad excepcional que complementa a la perfección el carácter de la cerveza ácida.',
+                    flavors: 'Balsamic • Citrus • Complex',
+                    flavorsEs: 'Balsámico • Cítrico • Complejo'
                 },
                 {
                     type: 'Amontillado',
                     badge: 'Balanced',
                     description: 'Adds depth while respecting delicate sour beer balance.',
-                    flavors: 'Toasted Nuts • Herbs • Bright'
+                    descriptionEs: 'Añade profundidad respetando el delicado equilibrio de la cerveza ácida.',
+                    flavors: 'Toasted Nuts • Herbs • Bright',
+                    flavorsEs: 'Frutos Secos Tostados • Hierbas • Fresco'
                 }
             ]
         }
@@ -1144,52 +1379,48 @@ if (detectedProduct) {
         }, 1500);
     };
 
-    // Show results with correct buttons - UPDATED WITH SELECTABLE FUNCTIONALITY
     function showResults(product, data) {
         if (!finderResults) return;
         
         const productTitle = capitalizeWords(product);
         const sectionIntro = document.querySelector('.product-finder .section-intro');
-        
-        // Generate the specific page link text and URL
-        const pageButtonText = `See All Sherry Barrels for ${data.category}`;
-        const pageButtonLink = data.page;
+        const spanish = isSpanish();
+    
+        // Pick the correct category page URL
+        const pageButtonLink = spanish && data.pageEs ? data.pageEs : data.page;
         
         finderResults.innerHTML = `
         <div class="result-header">
-        <h3 class="result-title">Perfect Sherry Casks for ${productTitle}</h3>
-        <p class="result-subtitle">Here are our top recommendations:</p>
-         </div>
+            <h3 class="result-title">${t('resultTitle', productTitle)}</h3>
+            <p class="result-subtitle">${t('resultSubtitle')}</p>
+        </div>
     
-         <div class="result-recommendations">
-        ${data.recommendations.map(rec => `
-            <div class="recommendation-card" data-sherry-type="${rec.type.toLowerCase().replace(' ', '-').replace('ñ', 'n')}">
-                <div class="recommendation-badge">${rec.badge}</div>
-                <h4 class="recommendation-title">${rec.type} Sherry Casks</h4>
-                <p class="recommendation-description">${rec.description}</p>
-                <div class="recommendation-flavors">${rec.flavors}</div>
+        <div class="result-recommendations">
+            ${data.recommendations.map(rec => `
+                <div class="recommendation-card" data-sherry-type="${rec.type.toLowerCase().replace(' ', '-').replace('ñ', 'n')}">
+                    <div class="recommendation-badge">${translateBadge(rec.badge)}</div>
+                    <h4 class="recommendation-title">${rec.type} ${t('caskLabel')}</h4>
+                    <p class="recommendation-description">${spanish && rec.descriptionEs ? rec.descriptionEs : rec.description}</p>
+                    <div class="recommendation-flavors">${spanish && rec.flavorsEs ? rec.flavorsEs : rec.flavors}</div>
+                </div>
+            `).join('')}
+        </div>
+    
+        <div class="result-cta">
+            <p>${t('cta', productTitle.toLowerCase())}</p>
+            <div class="result-buttons">
+                <a href="#contact" class="btn-outline">${t('getQuote')}</a>
+                <a href="${pageButtonLink}" class="btn-primary">${t('seeAll', data.category)}</a>
             </div>
-        `).join('')}
         </div>
+        `;
     
-         <div class="result-cta">
-        <p>Ready to transform your ${productTitle.toLowerCase()} with sherry barrels straight from Spain?</p>
-        <div class="result-buttons">
-            <a href="#contact" class="btn-outline">Get Quote</a>
-            <a href="${pageButtonLink}" class="btn-primary">${pageButtonText}</a>
-        </div>
-    </div>
-    `;
-        
-        // Add class to product finder to indicate results are shown
+        // Everything below stays exactly as it was
         const productFinder = document.querySelector('.product-finder');
-        if (productFinder) {
-            productFinder.classList.add('has-results');
-        }
+        if (productFinder) productFinder.classList.add('has-results');
         
         finderResults.classList.add('show');
         
-        // CRITICAL FIX: Ensure section intro stays visible
         if (sectionIntro) {
             sectionIntro.style.display = 'block';
             sectionIntro.style.visibility = 'visible';
@@ -1197,26 +1428,19 @@ if (detectedProduct) {
             sectionIntro.style.position = 'relative';
             sectionIntro.style.zIndex = '2';
         }
-        
-        // Gentle scroll that maintains the section positioning
+    
         setTimeout(() => {
             const productFinderSection = document.getElementById('product-finder');
             if (productFinderSection) {
                 const rect = productFinderSection.getBoundingClientRect();
                 const currentScroll = window.pageYOffset;
                 const sectionTop = rect.top + currentScroll;
-                
-                // Only scroll if we're not already viewing the section properly
                 if (rect.top < -100 || rect.top > window.innerHeight - 200) {
-                    window.scrollTo({
-                        top: sectionTop - 100, // Small offset for header
-                        behavior: 'smooth'
-                    });
+                    window.scrollTo({ top: sectionTop - 100, behavior: 'smooth' });
                 }
             }
         }, 100);
-
-        // IMPORTANT: Initialize selectable functionality after results are shown
+    
         setTimeout(() => {
             initializeSelectableBarrelFinder();
         }, 200);
@@ -1791,7 +2015,7 @@ function initializeSelectableBarrelFinder() {
     if (resultsContainer && !document.querySelector('.selection-instructions')) {
         const instructions = document.createElement('div');
         instructions.className = 'selection-instructions';
-        instructions.innerHTML = '💡 Click on the barrel types you\'re interested in, then click "Get Quote" to pre-fill the form below';
+        instructions.innerHTML = t('instruction');
         
         const resultHeader = resultsContainer.querySelector('.result-header');
         if (resultHeader) {

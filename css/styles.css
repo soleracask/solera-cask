@@ -88,7 +88,7 @@ header {
     z-index: 1000;
     border-bottom: 1px solid var(--border);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: 30px 0;
+    padding: 20px 0;
 }
 
 header.scrolled {
@@ -118,7 +118,7 @@ header.scrolled nav {
     align-items: center;
     text-decoration: none;
     position: relative;
-    height: 90px;
+    height: 80px;
     transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     margin-left: 0;
     margin-right: 0; /* No margin on the right */
@@ -126,7 +126,7 @@ header.scrolled nav {
 }
 
 header.scrolled .logo {
-    height: 70px;
+    height: 60px;
 }
 
 /* Logo Image Transitions */
@@ -434,14 +434,14 @@ header.scrolled .logo-small {
     border: none;
     position: relative;
     width: 40px;
-    height: 24px;
+    height: 30px;
     justify-content: space-between;
     margin-right: 0; /* Changed from 16px */
     margin-left: auto; /* Push to the right when visible */
 }
 
 .mobile-menu-toggle span {
-    width: 25px;
+    width: 30px;
     height: 3px;
     background: var(--text-primary);
     border-radius: 2px;
@@ -451,7 +451,7 @@ header.scrolled .logo-small {
 
 /* Perfect X Animation */
 .mobile-menu-toggle.active span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+    transform: rotate(45deg) translate(7px, 7px);
 }
 
 .mobile-menu-toggle.active span:nth-child(2) {
@@ -460,7 +460,7 @@ header.scrolled .logo-small {
 }
 
 .mobile-menu-toggle.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
+    transform: rotate(-45deg) translate(7px, -7px);
 }
 
 .mobile-menu-overlay {

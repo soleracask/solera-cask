@@ -1732,7 +1732,7 @@ function preselectSherryTypes() {
         const currentPage = window.location.pathname;
         
         if (currentPage.includes('whisky-sherry-barrels')) {
-            typesToSelect = ['oloroso', 'amontillado', 'fino'];
+            typesToSelect = ['oloroso', 'amontillado', 'palo-cortado', 'pedro-ximenez'];
         } else if (currentPage.includes('rum-sherry-barrels')) {
             typesToSelect = ['oloroso', 'pedro-ximenez'];
         } else if (currentPage.includes('tequila-sherry-barrels')) {
@@ -2183,7 +2183,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const href = card.href.toLowerCase();
             
             if (href.includes('whisky')) {
-                sherryTypes = ['oloroso', 'amontillado', 'fino'];
+                sherryTypes = ['oloroso', 'amontillado', 'palo-cortado', 'pedro-ximenez'];
             } else if (href.includes('rum')) {
                 sherryTypes = ['oloroso', 'pedro-ximenez'];
             } else if (href.includes('tequila')) {

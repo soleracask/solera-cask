@@ -1155,8 +1155,8 @@ header.scrolled .logo-small {
 
 /* Story Image - Enhanced to support actual images */
 .story-image {
-    height: 850px;
-    background: var(--rich-brown);
+    height: 1000px;
+    background: var(--cream);
     display: flex;
     align-items: center;
     justify-content: center;

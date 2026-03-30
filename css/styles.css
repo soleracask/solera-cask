@@ -1155,32 +1155,18 @@ header.scrolled .logo-small {
 
 /* Story Image - Enhanced to support actual images */
 .story-image {
-    height: 1000px;
     background: var(--cream);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    color: var(--text-white);
-    text-align: center;
     box-shadow: var(--shadow-medium);
-    /* NEW: Add these properties for image support */
-    position: relative;
     overflow: hidden;
+    line-height: 0; /* prevents gap below the img element */
 }
 
 /* NEW: Actual image styling */
 .story-bg-image {
-    position: absolute;
-    top: 0;
-    left: 0;
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
+    height: auto;
     transition: transform 0.3s ease;
-    z-index: 1;
 }
 
 .story-image:hover .story-bg-image {

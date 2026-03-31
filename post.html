@@ -109,7 +109,7 @@
             --cream: #F8F6F0;
             --light-beige: #F5F3ED;
             --medium-beige: #E8E4DC;
-            --rich-brown: #654321;
+            --rich-brown: #e8cd9b;
             --text-primary: #2C2C2C;
             --text-secondary: #5C5C5C;
             --text-light: #8C8C8C;
@@ -403,15 +403,14 @@
 
         /* Featured image styling */
         .featured-image {
-            width: 100%;
-            max-width: 1200px;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin: 0 auto 40px;
-            display: block;
-            box-shadow: var(--shadow-medium);
-        }
+        width: 100%;
+        max-width: 1200px;
+        height: auto;
+        border-radius: 8px;
+        margin: 0 auto 40px;
+        display: block;
+        box-shadow: var(--shadow-medium);
+}
 
         .post-author {
             font-size: 14px;
@@ -442,10 +441,6 @@
             .related-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
-            }
-
-            .featured-image {
-                height: 250px;
             }
         }
     </style>

@@ -270,14 +270,13 @@ function generatePostHTML(post) {
         }
 
         .featured-image {
-            width: 100%;
-            max-width: 1200px;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin: 0 auto 40px;
-            display: block;
-            box-shadow: var(--shadow-medium);
+        width: 100%;
+        max-width: 1200px;
+        height: auto;
+        border-radius: 8px;
+        margin: 0 auto 40px;
+        display: block;
+        box-shadow: var(--shadow-medium);
         }
 
         .post-content {
@@ -374,9 +373,6 @@ function generatePostHTML(post) {
             .post-meta {
                 flex-direction: column;
                 gap: 12px;
-            }
-            .featured-image {
-                height: 250px;
             }
         }
     </style>

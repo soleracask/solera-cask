@@ -553,6 +553,23 @@ header.scrolled .logo-small {
     }
 }
 
+@media (max-width: 1400px) {
+    header {
+        padding: 16px 0;
+    }
+
+    header.scrolled {
+        padding: 8px 0;
+    }
+
+    .logo {
+        height: 60px; /* Down from 90px — adjust to taste */
+    }
+
+    header.scrolled .logo {
+        height: 48px; /* Down from 70px */
+    }
+}
 
 /* Hero Section - UPDATED WITH MOBILE FIXES */
 .hero {

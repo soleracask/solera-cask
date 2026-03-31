@@ -163,8 +163,8 @@ function generatePostHTML(post) {
     <link rel="canonical" href="${post.canonicalUrl || currentUrl}">
     
     <!-- Additional SEO Tags -->
-    <meta name="theme-color" content="#8B4513">
-    <meta name="msapplication-TileColor" content="#8B4513">
+    <meta name="theme-color" content="#eadabd">
+    <meta name="msapplication-TileColor" content="#eadabd">
     <meta name="application-name" content="Solera Cask">
     
     <!-- JSON-LD Structured Data -->

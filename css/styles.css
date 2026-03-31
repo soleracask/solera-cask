@@ -473,7 +473,7 @@ header.scrolled .logo-small {
     z-index: 999;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
-    padding-top: 80px;
+    padding-top: 60px;
     overflow-y: auto;
 }
 
@@ -526,6 +526,32 @@ header.scrolled .logo-small {
     border: 1px solid var(--text-primary);
 }
 
+/* Compact mobile menu for small phones */
+@media (max-height: 700px) {
+    .mobile-menu-overlay {
+        padding-top: 60px;
+    }
+
+    .mobile-menu-content {
+        padding: 16px 40px 24px;
+        gap: 10px;
+    }
+
+    .mobile-menu-item {
+        font-size: 16px;
+        padding: 4px 24px;
+    }
+
+    .mobile-cta {
+        padding: 10px 32px;
+        font-size: 16px;
+        margin-top: 4px;
+    }
+
+    .mobile-language-switcher {
+        margin-top: 12px;
+    }
+}
 
 
 /* Hero Section - UPDATED WITH MOBILE FIXES */

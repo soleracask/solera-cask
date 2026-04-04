@@ -37,93 +37,94 @@ class SoleraHomepageIntegration {
     // Update the featured story section
     async updateFeaturedStorySection() {
         console.log('Starting featured post update...');
-        
-        const featuredPost = await this.getFeaturedPost();
-        
-        if (!featuredPost) {
-            console.log('No featured post found, keeping default content');
-            return;
-        }
-
-        console.log('Featured post found:', featuredPost.title);
-
-        // Find the featured story section
+    
+        // Grab the image reference early — before the async fetch
         const storySection = document.querySelector('#story');
         if (!storySection) {
             console.error('Featured story section (#story) not found');
             return;
         }
-
+        const storyImage = storySection.querySelector('.story-image img');
+    
+        // Helper: reveal the image once it's ready (handles cached & uncached)
+        const revealImage = (img) => {
+            if (!img) return;
+            const show = () => { img.style.opacity = '1'; };
+            if (img.complete) {
+                show();
+            } else {
+                img.addEventListener('load', show, { once: true });
+                img.addEventListener('error', show, { once: true }); // show even on broken image
+            }
+        };
+    
+        const featuredPost = await this.getFeaturedPost();
+    
+        if (!featuredPost) {
+            console.log('No featured post found, keeping default content');
+            revealImage(storyImage); // reveal the hardcoded default
+            return;
+        }
+    
+        console.log('Featured post found:', featuredPost.title);
+    
         // Create post URL
         const postSlug = this.createPostSlug(featuredPost);
         const postUrl = `/post/${postSlug}`;
-        
+    
         console.log('Generated post URL:', postUrl, 'for post:', featuredPost.title);
-
+    
         // Get existing elements
-        const storyImage = storySection.querySelector('.story-image img');
         const sectionLabel = storySection.querySelector('.section-label');
         const title = storySection.querySelector('h2');
         const subtitle = storySection.querySelector('.story-subtitle');
         const paragraphs = storySection.querySelectorAll('p:not(.story-subtitle)');
         const ctaButton = storySection.querySelector('.btn-outline');
-
+    
         // Update image
         if (storyImage && featuredPost.featuredImage) {
             storyImage.src = featuredPost.featuredImage;
             storyImage.alt = `${featuredPost.title} - Featured Story`;
             console.log('Updated featured image');
         }
-
+        revealImage(storyImage); // reveal after src is set (or if no featuredImage, reveal default)
+    
         // Update section label
         if (sectionLabel) {
             sectionLabel.textContent = `Featured ${featuredPost.type}`;
-            console.log('Updated section label');
         }
-
+    
         // Update title
         if (title) {
             title.textContent = featuredPost.title;
-            console.log('Updated title');
         }
-
+    
         // Update subtitle
         if (subtitle) {
             subtitle.textContent = this.extractSubtitle(featuredPost);
-            console.log('Updated subtitle');
         }
-
+    
         // Update content paragraphs
         if (paragraphs.length >= 2) {
             const contentPreview = this.formatContentPreview(featuredPost);
             paragraphs[0].textContent = contentPreview.first;
             paragraphs[1].textContent = contentPreview.second;
-            console.log('Updated content paragraphs');
         }
-
+    
         // Update CTA button
         if (ctaButton) {
             ctaButton.href = postUrl;
             ctaButton.textContent = 'Read Full Story';
-            
-            // Remove any existing event listeners that might interfere
             ctaButton.removeAttribute('onclick');
-            
-            // Clone the button to remove all existing event listeners
             const newButton = ctaButton.cloneNode(true);
             ctaButton.parentNode.replaceChild(newButton, ctaButton);
-            
-            // Add fresh click handler
             newButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Button clicked, navigating to:', postUrl);
                 window.location.href = postUrl;
             });
-            
-            console.log('Updated CTA button with URL:', postUrl);
         }
-
+    
         console.log('Featured story section updated successfully!');
     }
 

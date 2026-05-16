@@ -1191,7 +1191,7 @@ header.scrolled .logo-small {
 
 .story-grid {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 2fr 2fr;
     gap: 100px;
     align-items: center;
 }

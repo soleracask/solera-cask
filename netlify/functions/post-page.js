@@ -203,7 +203,7 @@ function generatePostHTML(post) {
     <style>
         /* Post page specific styles */
         .post-page {
-            padding-top: 180px;
+            padding-top: 120px;
             min-height: 100vh;
             background: var(--warm-white);
         }
@@ -380,6 +380,7 @@ function generatePostHTML(post) {
     border-bottom: 1px solid var(--border-light);
     padding: 12px 0;
     margin: 0 -40px 40px -40px;
+    width: calc(100% + 80px);
 }
 
 .breadcrumb-inner {
@@ -390,7 +391,9 @@ function generatePostHTML(post) {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-weight: 500;
-    padding: 0 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 60px;
 }
 
 .breadcrumb a {

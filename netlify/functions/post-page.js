@@ -379,8 +379,7 @@ function generatePostHTML(post) {
     background: transparent;
     border-bottom: 1px solid var(--border-light);
     padding: 12px 0;
-    margin: 0 -40px 40px -40px;
-    width: calc(100% + 80px);
+    width: 100%;
 }
 
 .breadcrumb-inner {
@@ -445,8 +444,7 @@ function generatePostHTML(post) {
 
 
     <div class="post-page">
-        <div class="post-container${post.contentHtml ? ' html-content' : ''}">
-            <div class="breadcrumb">
+    <div class="breadcrumb">
                 <div class="breadcrumb-inner">
                     <a href="/">Home</a>
                     <span class="breadcrumb-sep">›</span>
@@ -455,6 +453,7 @@ function generatePostHTML(post) {
                     <span class="breadcrumb-current">${post.title}</span>
                 </div>
             </div>
+        <div class="post-container${post.contentHtml ? ' html-content' : ''}">
             <div class="post-header">
                 <div class="post-meta">
                     <span class="post-type">${post.type}</span>

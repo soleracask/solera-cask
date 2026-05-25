@@ -85,6 +85,10 @@ class SoleraHomepageIntegration {
         if (storyImage && featuredPost.featuredImage) {
             storyImage.src = featuredPost.featuredImage;
             storyImage.alt = `${featuredPost.title} - Featured Story`;
+            storyImage.style.cursor = 'pointer';
+            storyImage.addEventListener('click', function() {
+                window.location.href = postUrl;
+            });
             console.log('Updated featured image');
         }
         revealImage(storyImage); // reveal after src is set (or if no featuredImage, reveal default)

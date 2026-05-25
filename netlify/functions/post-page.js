@@ -375,6 +375,40 @@ function generatePostHTML(post) {
                 gap: 12px;
             }
         }
+            .breadcrumb {
+    background: var(--cream);
+    border-bottom: 1px solid var(--border-light);
+    padding: 12px 0;
+    margin-bottom: 40px;
+}
+
+.breadcrumb-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+}
+
+.breadcrumb a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    color: var(--primary);
+}
+
+.breadcrumb-sep {
+    color: var(--border);
+}
+
+.breadcrumb-current {
+    color: var(--text-secondary);
+}
     </style>
 </head>
 <body>
@@ -408,6 +442,15 @@ function generatePostHTML(post) {
 
     <div class="post-page">
         <div class="post-container${post.contentHtml ? ' html-content' : ''}">
+            <div class="breadcrumb">
+                <div class="breadcrumb-inner">
+                    <a href="/">Home</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="/blog">Stories & News</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span class="breadcrumb-current">${post.title}</span>
+                </div>
+            </div>
             <div class="post-header">
                 <div class="post-meta">
                     <span class="post-type">${post.type}</span>

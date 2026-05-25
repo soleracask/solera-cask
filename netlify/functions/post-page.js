@@ -380,7 +380,7 @@ function generatePostHTML(post) {
     border-bottom: 1px solid var(--border-light);
     padding: 12px 0;
     width: 100%;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
 }
 
 .breadcrumb-inner {

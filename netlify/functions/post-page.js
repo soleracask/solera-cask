@@ -376,10 +376,10 @@ function generatePostHTML(post) {
             }
         }
             .breadcrumb {
-    background: var(--cream);
+    background: transparent;
     border-bottom: 1px solid var(--border-light);
     padding: 12px 0;
-    margin-bottom: 40px;
+    margin: 0 -40px 40px -40px;
 }
 
 .breadcrumb-inner {
@@ -390,6 +390,7 @@ function generatePostHTML(post) {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-weight: 500;
+    padding: 0 40px;
 }
 
 .breadcrumb a {

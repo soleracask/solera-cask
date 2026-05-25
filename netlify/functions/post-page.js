@@ -413,6 +413,21 @@ function generatePostHTML(post) {
 .breadcrumb-current {
     color: var(--text-secondary);
 }
+    .post-content figure {
+    margin: 32px 0;
+}
+
+.post-content figcaption {
+    font-size: 14px;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 6px;
+    text-align: center;
+}
+
+.post-content figure img {
+    margin-bottom: 0;
+}
     </style>
 </head>
 <body>

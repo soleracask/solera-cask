@@ -2,7 +2,7 @@
     'use strict';
   
     // ── CONFIG ─────────────────────────────────────────────────────────────────
-    var PHONE    = '34856142527';       // Your number without + or spaces
+    var PHONE    = '34656778590';       // Your number without + or spaces
     var DELAY_MS = 1500;               // ms after page load before bubble appears
   
     var isSpanish = window.location.pathname.startsWith('/es');

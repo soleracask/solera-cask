@@ -1,0 +1,104 @@
+/* ==========================================================
+   TRANSPARENT SCROLL NAVBAR — Solera Cask
+
+   Add this file to your /css/ folder, then add this line
+   to every HTML page AFTER the existing styles.css link:
+
+   <link rel="stylesheet" href="css/transparent-nav.css">
+   ========================================================== */
+
+
+/* ----------------------------------------------------------
+   1. HEADER BASE — transparent at the top of the page
+   ---------------------------------------------------------- */
+   header {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom-color: transparent;
+    box-shadow: none;
+}
+
+/* ----------------------------------------------------------
+   2. HEADER SCROLLED — white with blur (replaces current default)
+   ---------------------------------------------------------- */
+header.scrolled {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+
+/* ----------------------------------------------------------
+   3. NAV MENU LINKS — white when transparent
+   ---------------------------------------------------------- */
+header:not(.scrolled) .nav-menu a {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+header:not(.scrolled) .nav-menu a:hover {
+    color: #ffffff;
+}
+
+/* Underline indicator: white instead of var(--primary) */
+header:not(.scrolled) .nav-menu a::after {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+
+/* ----------------------------------------------------------
+   4. GET QUOTE BUTTON — frosted glass pill when transparent
+   ---------------------------------------------------------- */
+header:not(.scrolled) .nav-cta {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: none;
+}
+
+header:not(.scrolled) .nav-cta:hover {
+    background: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    box-shadow: none;
+    transform: translateY(-2px);
+}
+
+
+/* ----------------------------------------------------------
+   5. LANGUAGE SWITCHER — white when transparent
+   ---------------------------------------------------------- */
+header:not(.scrolled) .language-switcher a {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+header:not(.scrolled) .language-switcher a:hover,
+header:not(.scrolled) .language-switcher a.active {
+    color: #ffffff;
+}
+
+header:not(.scrolled) .language-separator {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+
+/* ----------------------------------------------------------
+   6. LOGO — invert to white when transparent
+
+   The dark logo becomes white via CSS filter.
+   Your logo images already have transition: all 0.4s on them,
+   so the filter will fade smoothly as the nav transitions.
+   ---------------------------------------------------------- */
+header:not(.scrolled) .logo-image {
+    filter: brightness(0) invert(1);
+}
+
+header.scrolled .logo-image {
+    filter: none;
+}
+
+
+/* ----------------------------------------------------------
+   7. MOBILE HAMBURGER — white lines when transparent
+   ---------------------------------------------------------- */
+header:not(.scrolled) .mobile-menu-toggle span {
+    background: #ffffff;
+}

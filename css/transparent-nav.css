@@ -102,3 +102,52 @@ header.scrolled .logo-image {
 header:not(.scrolled) .mobile-menu-toggle span {
     background: #ffffff;
 }
+
+
+/* ----------------------------------------------------------
+   8. NON-HERO PAGES — force solid white nav regardless of scroll
+   (cookie policy, legal, privacy, terms, and any future page
+   without a .hero section — no HTML changes needed)
+   ---------------------------------------------------------- */
+body:not(:has(.hero)) header:not(.scrolled) {
+    background: rgba(254, 254, 254, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom-color: var(--border);
+    box-shadow: none;
+}
+
+body:not(:has(.hero)) header:not(.scrolled) .nav-menu a {
+    color: var(--text-primary);
+}
+
+body:not(:has(.hero)) header:not(.scrolled) .nav-menu a::after {
+    background: var(--primary);
+}
+
+body:not(:has(.hero)) header:not(.scrolled) .nav-cta {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    border: none;
+}
+
+body:not(:has(.hero)) header:not(.scrolled) .language-switcher a {
+    color: var(--text-light);
+}
+
+body:not(:has(.hero)) header:not(.scrolled) .language-switcher a:hover,
+body:not(:has(.hero)) header:not(.scrolled) .language-switcher a.active {
+    color: var(--primary);
+}
+
+body:not(:has(.hero)) header:not(.scrolled) .language-separator {
+    color: var(--text-light);
+}
+
+body:not(:has(.hero)) header:not(.scrolled) .logo-image {
+    filter: none;
+}
+
+body:not(:has(.hero)) header:not(.scrolled) .mobile-menu-toggle span {
+    background: var(--text-primary);
+}

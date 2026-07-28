@@ -5436,9 +5436,14 @@ h1:contains("Browse by Category") {
     border-color: var(--primary);
 }
 
-.logistics-icon {
-    font-size: 32px;
-    margin-bottom: 20px;
+.logistics-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--primary-dark);   /* warm taupe: #938977 */
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
 }
 
 .logistics-card h3 {

@@ -38,6 +38,13 @@
     
     <!-- Canonical URL -->
     <link rel="canonical" id="canonicalUrl" href="">
+    <!-- Set canonical immediately from URL so crawlers don't see an empty href -->
+    <script>
+        (function() {
+            var c = document.getElementById('canonicalUrl');
+            if (c) c.setAttribute('href', window.location.href.split('?')[0]);
+        })();
+    </script>
     
     <!-- Additional SEO Tags -->
     <meta name="theme-color" content="#eadabd">

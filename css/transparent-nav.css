@@ -151,3 +151,44 @@ body:not(:has(.hero)) header:not(.scrolled) .logo-image {
 body:not(:has(.hero)) header:not(.scrolled) .mobile-menu-toggle span {
     background: var(--text-primary);
 }
+
+
+/* ----------------------------------------------------------
+   9. SPANISH NAV — tighter spacing to prevent logo overlap
+   Spanish words are longer, so we reduce gap + letter-spacing
+   and trigger the hamburger menu earlier.
+   ---------------------------------------------------------- */
+
+html[lang="es"] .nav-menu {
+    gap: 20px;
+}
+
+html[lang="es"] .nav-menu a {
+    letter-spacing: 0.01em;
+}
+
+html[lang="es"] .nav-cta,
+html[lang="es"] .nav-book-call {
+    padding: 10px 14px;
+    letter-spacing: 0.02em;
+}
+
+/* Switch to hamburger at 1700px on Spanish pages (vs 1400px on English) */
+@media (max-width: 1700px) {
+    html[lang="es"] .nav-menu         { display: none !important; }
+    html[lang="es"] .nav-right        { display: none !important; }
+    html[lang="es"] .mobile-menu-toggle { display: flex !important; }
+}
+
+
+/* ----------------------------------------------------------
+   10. MOBILE MENU X BUTTON — dark at ≤1024px
+   At this breakpoint the overlay becomes full-width (cream
+   background), so the white X becomes invisible. Force it
+   dark whenever the menu is open at mobile sizes.
+   ---------------------------------------------------------- */
+@media (max-width: 1024px) {
+    .mobile-menu-toggle.active span {
+        background: var(--text-primary) !important;
+    }
+}

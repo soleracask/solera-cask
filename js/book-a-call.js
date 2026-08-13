@@ -84,7 +84,7 @@
     var navRight = document.querySelector('.nav-right');
     if (navRight) {
       var navLink = document.createElement('a');
-      navLink.href      = 'BOOKING_URL';
+      navLink.href      = BOOKING_URL;
       navLink.target    = '_blank';
       navLink.rel       = 'noopener noreferrer';
       navLink.className = 'nav-book-call';
@@ -101,7 +101,7 @@
     var mobileContent = document.querySelector('.mobile-menu-content');
     if (mobileContent) {
       var mobileLink = document.createElement('a');
-      mobileLink.href      = 'BOOKING_URL';
+      mobileLink.href      = BOOKING_URL;
       mobileLink.target    = '_blank';
       mobileLink.rel       = 'noopener noreferrer';
       mobileLink.className = 'mobile-book-call';

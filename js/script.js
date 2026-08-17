@@ -3051,19 +3051,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const heroVideo = document.querySelector('.hero-bg-video');
     if (!heroVideo) return;
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    if (prefersReducedMotion) {
-        // Leave video hidden — the still image behind it stays visible
-        return;
+    function showVideo() {
+        heroVideo.classList.add('playing');
     }
 
-    // Fade the video in as soon as the browser has enough data to play smoothly
-    heroVideo.addEventListener('canplay', function () {
-        heroVideo.classList.add('playing');
-    }, { once: true });
+    // readyState >= 3 means the browser already has enough data to play.
+    // This happens when the video is cached — canplay won't fire again,
+    // so we need to add the class immediately instead of waiting for the event.
+    if (heroVideo.readyState >= 3) {
+        showVideo();
+    } else {
+        heroVideo.addEventListener('canplay', showVideo, { once: true });
 
-    heroVideo.play().catch(() => {
-        // Autoplay blocked — still image remains visible, nothing to do
+        // Safety net: if canplay never fires (slow connection, server issue),
+        // show the video anyway after 5s so it doesn't stay hidden forever
+        setTimeout(function () {
+            if (!heroVideo.classList.contains('playing')) {
+                showVideo();
+            }
+        }, 5000);
+    }
+
+    heroVideo.play().catch(function () {
+        // Autoplay blocked — still image stays visible
     });
 })();

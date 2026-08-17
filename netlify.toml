@@ -36,6 +36,12 @@
   to = "/admin.html"
   status = 200
 
+# Explicitly pass through video files before the catch-all sees them
+[[redirects]]
+  from = "/videos/*"
+  to = "/videos/:splat"
+  status = 200
+
 # Catch-all redirect (must be last)
 [[redirects]]
   from = "/*"

@@ -3046,15 +3046,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Replace with your actual DeepL API key
     window.universalTranslator.setupForSpanish('a1573e28-05da-41ea-9be4-e6bb29daa694:fx');
 });
-// Pause video if user prefers reduced motion
-// Falls back to poster image if autoplay is blocked
-const heroVideo = document.querySelector('.hero-bg-video');
-if (heroVideo) {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        heroVideo.pause();
-    } else {
-        heroVideo.play().catch(() => {
-            // Autoplay blocked — poster image already showing, nothing to do
-        });
+// Hero video: fade in once ready, fall back gracefully to the still image
+(function () {
+    const heroVideo = document.querySelector('.hero-bg-video');
+    if (!heroVideo) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+        // Leave video hidden — the still image behind it stays visible
+        return;
     }
-}
+
+    // Fade the video in as soon as the browser has enough data to play smoothly
+    heroVideo.addEventListener('canplay', function () {
+        heroVideo.classList.add('playing');
+    }, { once: true });
+
+    heroVideo.play().catch(() => {
+        // Autoplay blocked — still image remains visible, nothing to do
+    });
+})();

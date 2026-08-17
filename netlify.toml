@@ -1,6 +1,14 @@
 [build]
   publish = "."
 
+# Ensure video files are served with correct MIME type and streaming headers
+[[headers]]
+  for = "/videos/*"
+  [headers.values]
+    Content-Type = "video/mp4"
+    Accept-Ranges = "bytes"
+    Cache-Control = "public, max-age=31536000, immutable"
+
 # API redirect for Netlify functions (REQUIRED!)
 [[redirects]]
   from = "/api/*"

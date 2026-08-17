@@ -3046,3 +3046,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Replace with your actual DeepL API key
     window.universalTranslator.setupForSpanish('a1573e28-05da-41ea-9be4-e6bb29daa694:fx');
 });
+// Pause video if user prefers reduced motion
+// Falls back to poster image if autoplay is blocked
+const heroVideo = document.querySelector('.hero-bg-video');
+if (heroVideo) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        heroVideo.pause();
+    } else {
+        heroVideo.play().catch(() => {
+            // Autoplay blocked — poster image already showing, nothing to do
+        });
+    }
+}

@@ -12,57 +12,57 @@
   </url>
 
   <url>
-    <loc>https://soleracask.com/sherry-barrels.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-sherry.html"/>
+    <loc>https://soleracask.com/sherry-barrels</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-sherry"/>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/sherry-barrels-faq.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels-faq.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/faq-barricas-jerez.html"/>
+    <loc>https://soleracask.com/sherry-barrels-faq</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels-faq"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/faq-barricas-jerez"/>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/whisky-sherry-barrels.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/whisky-sherry-barrels.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-whisky.html"/>
+    <loc>https://soleracask.com/whisky-sherry-barrels</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/whisky-sherry-barrels"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-whisky"/>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/rum-sherry-barrels.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/rum-sherry-barrels.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-ron.html"/>
+    <loc>https://soleracask.com/rum-sherry-barrels</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/rum-sherry-barrels"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-ron"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/beer-sherry-barrels.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/beer-sherry-barrels.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-cerveza.html"/>
+    <loc>https://soleracask.com/beer-sherry-barrels</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/beer-sherry-barrels"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-cerveza"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/tequila-sherry-barrels.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/tequila-sherry-barrels.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-tequila.html"/>
+    <loc>https://soleracask.com/tequila-sherry-barrels</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/tequila-sherry-barrels"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-tequila"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/vodka-sherry-barrels.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/vodka-sherry-barrels.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-vodka.html"/>
+    <loc>https://soleracask.com/vodka-sherry-barrels</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/vodka-sherry-barrels"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-vodka"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -77,57 +77,57 @@
   </url>
 
   <url>
-    <loc>https://soleracask.com/es/barricas-jerez-sherry.html</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-sherry.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels.html"/>
+    <loc>https://soleracask.com/es/barricas-jerez-sherry</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-sherry"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/es/faq-barricas-jerez.html</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/faq-barricas-jerez.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels-faq.html"/>
+    <loc>https://soleracask.com/es/faq-barricas-jerez</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/faq-barricas-jerez"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels-faq"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/es/barricas-jerez-whisky.html</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-whisky.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/whisky-sherry-barrels.html"/>
+    <loc>https://soleracask.com/es/barricas-jerez-whisky</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-whisky"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/whisky-sherry-barrels"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/es/barricas-jerez-ron.html</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-ron.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/rum-sherry-barrels.html"/>
+    <loc>https://soleracask.com/es/barricas-jerez-ron</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-ron"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/rum-sherry-barrels"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/es/barricas-jerez-cerveza.html</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-cerveza.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/beer-sherry-barrels.html"/>
+    <loc>https://soleracask.com/es/barricas-jerez-cerveza</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-cerveza"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/beer-sherry-barrels"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/es/barricas-jerez-tequila.html</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-tequila.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/tequila-sherry-barrels.html"/>
+    <loc>https://soleracask.com/es/barricas-jerez-tequila</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-tequila"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/tequila-sherry-barrels"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://soleracask.com/es/barricas-jerez-vodka.html</loc>
-    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-vodka.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/vodka-sherry-barrels.html"/>
+    <loc>https://soleracask.com/es/barricas-jerez-vodka</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-vodka"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/vodka-sherry-barrels"/>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

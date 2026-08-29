@@ -67,6 +67,49 @@
     <priority>0.6</priority>
   </url>
 
+  <!-- Blog index -->
+  <url>
+    <loc>https://soleracask.com/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Blog posts -->
+  <url>
+    <loc>https://soleracask.com/post/john-sleeman-sons-solera-cask-two-golds-at-the-canadian-whisky-awards</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://soleracask.com/post/the-macallan-bets-on-jerez-and-sherry-oak-casks</loc>
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://soleracask.com/post/why-sherry-barrels-are-exceptional-for-aging-tequila</loc>
+    <lastmod>2025-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://soleracask.com/post/welcome-to-solera-cask-stories</loc>
+    <lastmod>2025-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://soleracask.com/post/understanding-sherry-types-for-aging</loc>
+    <lastmod>2025-07-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- Spanish pages -->
   <url>
     <loc>https://soleracask.com/es/</loc>

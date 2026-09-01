@@ -206,12 +206,27 @@ class SoleraHomepageIntegration {
         const raw     = (post.excerpt || '').trim();
         const excerpt = raw.length > 80 ? raw.substring(0, 80) + '...' : raw;
 
-        // Try featuredImage first, then seoImage, then extract first img from content HTML
+        // Try featuredImage → seoImage → first img in contentHtml → any Cloudinary URL in content
         let imgSrc = post.featuredImage || post.seoImage || '';
         if (!imgSrc && post.contentHtml) {
-            const match = post.contentHtml.match(/<img[^>]+src=["']([^"']+)["']/i);
-            if (match) imgSrc = match[1];
+            // Match <img src="..."> or <img src='...'> or HTML entities &quot;
+            const m = post.contentHtml.match(/<img[^>]+src=(?:["']|&quot;)([^"'&\s>]+)/i);
+            if (m) imgSrc = m[1];
         }
+        if (!imgSrc && post.content) {
+            // Try markdown image syntax first
+            const md = post.content.match(/!\[.*?\]\((https?:\/\/[^\s)]+)\)/);
+            if (md) imgSrc = md[1];
+        }
+        if (!imgSrc) {
+            // Last resort: any Cloudinary URL in any text field
+            const allText = [post.contentHtml, post.content, post.metaDescription, post.description].filter(Boolean).join(' ');
+            const m = allText.match(/https?:\/\/res\.cloudinary\.com\/[^\s"'<>)]+/);
+            if (m) imgSrc = m[0].replace(/&amp;/g, '&');
+        }
+        console.log(`Carousel [${post.title}] — featuredImage: "${post.featuredImage}" | seoImage: "${post.seoImage}" | resolved: "${imgSrc}"`);
+
+
 
         // No .container wrapper — padding is on the slide element itself (see CSS)
         slide.innerHTML = `

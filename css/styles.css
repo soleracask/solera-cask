@@ -6324,13 +6324,12 @@ h1:contains("Browse by Category") {
     align-items: center;
     text-decoration: none;
     color: inherit;
-    padding: 0 0 0 40px;  /* left padding only — right is covered by the 260px peek gap */
+    padding: 0;
     box-sizing: border-box;
 }
 
-/* Remove right padding on both sides of any slide so consecutive slides have only one padding-width gap */
-.story-slide--featured .container,
-.story-card-slide {
+/* Remove right padding from featured container so there's no double-gap between slides */
+.story-slide--featured .container {
     padding-right: 0;
 }
 
@@ -6340,8 +6339,8 @@ h1:contains("Browse by Category") {
     top: 0;
     right: 0;
     height: 100%;
-    width: 300px;
-    background: linear-gradient(to right, transparent 0%, var(--cream) 58%);
+    width: 160px;
+    background: linear-gradient(to right, transparent 0%, var(--cream) 65%);
     pointer-events: none;
     z-index: 5;
     transition: opacity 0.35s ease;

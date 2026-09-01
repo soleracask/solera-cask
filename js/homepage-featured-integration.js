@@ -206,11 +206,15 @@ class SoleraHomepageIntegration {
         const raw     = (post.excerpt || '').trim();
         const excerpt = raw.length > 80 ? raw.substring(0, 80) + '...' : raw;
 
-        // Use the same image src patterns the featured story uses
-        const imgSrc = post.featuredImage || post.image || post.coverImage || '';
+        // Try every common image field name from the CMS
+        const imgSrc = post.featuredImage || post.image || post.coverImage
+                    || post.thumbnail    || post.heroImage || post.photo || '';
 
+        console.log('Carousel card — post fields:', Object.keys(post), '| imgSrc:', imgSrc);
+
+        // No .container wrapper — padding is on the slide element itself (see CSS)
         slide.innerHTML = `
-            <div class="container">
+            <div style="width:100%;max-width:1320px;margin:0 auto;">
                 <div class="story-grid">
                     <div class="story-image ${imgSrc ? 'has-image' : ''}">
                         ${imgSrc
@@ -325,7 +329,7 @@ class SoleraHomepageIntegration {
         // ── Mouse-position–based speed ────────────────────────────────────────
         // Right 28% of section → scroll right (faster toward edge)
         // Left  12% of section → scroll left  (faster toward edge)
-        const MAX_SPEED = 7; // px per frame at cursor edge
+        const MAX_SPEED = 15; // px per frame at cursor edge (~900px/s at 60fps)
 
         section.addEventListener('mousemove', (e) => {
             const rect = section.getBoundingClientRect();

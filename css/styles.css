@@ -6320,9 +6320,17 @@ h1:contains("Browse by Category") {
 .story-card-slide {
     flex: 0 0 calc(100% - 260px);
     min-width: 0;
+    display: flex;
+    align-items: center;
     text-decoration: none;
     color: inherit;
-    display: block;
+    padding: 0 40px;   /* match container padding, no wrapper needed */
+    box-sizing: border-box;
+}
+
+/* Remove the double-padding gap between the featured slide and card slides */
+.story-slide--featured .container {
+    padding-right: 0;
 }
 
 /* ── Right-edge cream gradient ── */

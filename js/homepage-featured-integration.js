@@ -196,7 +196,7 @@ class SoleraHomepageIntegration {
         }
     }
 
-    // ── Carousel: build a card slide element ─────────────────────────────────
+    // ── Carousel: build a card slide — same layout as the featured story ──────
     buildStoryCard(post) {
         const slug  = this.createPostSlug(post);
         const slide = document.createElement('a');
@@ -204,20 +204,42 @@ class SoleraHomepageIntegration {
         slide.href = `/post/${slug}`;
 
         const raw     = (post.excerpt || '').trim();
-        const excerpt = raw.length > 110 ? raw.substring(0, 110) + '…' : raw;
+        const excerpt = raw.length > 80 ? raw.substring(0, 80) + '...' : raw;
+
+        // Use the same image src patterns the featured story uses
+        const imgSrc = post.featuredImage || post.image || post.coverImage || '';
 
         slide.innerHTML = `
-            <div class="story-card-inner">
-                <div class="story-card-img-wrap">
-                    ${post.featuredImage
-                        ? `<img src="${post.featuredImage}" alt="${post.title}" loading="lazy">`
-                        : `<div style="height:220px;background:var(--warm-white);"></div>`}
+            <div class="container">
+                <div class="story-grid">
+                    <div class="story-image ${imgSrc ? 'has-image' : ''}">
+                        ${imgSrc
+                            ? `<img src="${imgSrc}" alt="${post.title}" class="story-bg-image" style="opacity:0;transition:opacity 0.4s ease;">`
+                            : ''}
+                    </div>
+                    <div class="story-content">
+                        <div class="section-label">${post.type || 'Story'}</div>
+                        <h2>${post.title}</h2>
+                        ${excerpt ? `<p class="story-subtitle">${excerpt}</p>` : ''}
+                        <span class="btn-outline" style="display:inline-block;">Read Full Story</span>
+                    </div>
                 </div>
-                <div class="story-card-label">${post.type || 'Story'}</div>
-                <div class="story-card-title">${post.title}</div>
-                ${excerpt ? `<p class="story-card-excerpt">${excerpt}</p>` : ''}
             </div>
         `;
+
+        // Fade the image in once loaded (same pattern as featured story)
+        if (imgSrc) {
+            const img = slide.querySelector('.story-bg-image');
+            if (img) {
+                const show = () => { img.style.opacity = '1'; };
+                if (img.complete) show();
+                else {
+                    img.addEventListener('load',  show, { once: true });
+                    img.addEventListener('error', show, { once: true });
+                }
+            }
+        }
+
         return slide;
     }
 
@@ -236,19 +258,17 @@ class SoleraHomepageIntegration {
 
         if (!section) return;
 
+        // No other posts — restore full width and hide UI
         if (posts.length === 0) {
             [moreNav, rightFade, hoverZone].forEach(el => {
                 if (el) el.classList.add('sc-hidden');
             });
-            // Restore featured slide to full width — no cards to peek
             const featuredSlide = track.querySelector('.story-slide--featured');
             if (featuredSlide) featuredSlide.style.flex = '0 0 100%';
             return;
         }
 
-        let currentIndex = 0;
-
-        // Back nav
+        // ── Inject back nav ───────────────────────────────────────────────────
         const backNav = document.createElement('div');
         backNav.className = 'story-back-nav';
         backNav.setAttribute('role', 'button');
@@ -263,44 +283,112 @@ class SoleraHomepageIntegration {
         `;
         section.appendChild(backNav);
 
-        // Left fade
+        // ── Inject left fade ──────────────────────────────────────────────────
         const leftFade = document.createElement('div');
         leftFade.className = 'story-left-fade';
         section.appendChild(leftFade);
 
-        const scrollTo = (index) => {
+        // ── Scroll state ──────────────────────────────────────────────────────
+        let scrollX  = 0;
+        let speed    = 0;
+        let rafId    = null;
+
+        const getMaxScroll = () => {
             const slides = track.querySelectorAll('.story-slide--featured, .story-card-slide');
-            if (index < 0 || index >= slides.length) return;
-            currentIndex = index;
+            const total  = Array.from(slides).reduce((sum, s) => sum + s.offsetWidth, 0);
+            return Math.max(0, total - section.offsetWidth);
+        };
 
+        const updateNav = () => {
+            const maxScroll = getMaxScroll();
+            const atStart   = scrollX <= 0;
+            const atEnd     = scrollX >= maxScroll - 1;
+
+            if (moreNav)   moreNav.classList.toggle('sc-hidden', atEnd);
+            if (rightFade) rightFade.classList.toggle('sc-hidden', atEnd);
+            backNav.classList.toggle('sc-visible',  !atStart);
+            leftFade.classList.toggle('sc-visible', !atStart);
+        };
+
+        // ── rAF scroll loop ───────────────────────────────────────────────────
+        const tick = () => {
+            if (speed !== 0) {
+                const maxScroll = getMaxScroll();
+                scrollX = Math.max(0, Math.min(maxScroll, scrollX + speed));
+                track.style.transform = `translateX(-${scrollX}px)`;
+                updateNav();
+            }
+            rafId = requestAnimationFrame(tick);
+        };
+        rafId = requestAnimationFrame(tick);
+
+        // ── Mouse-position–based speed ────────────────────────────────────────
+        // Right 28% of section → scroll right (faster toward edge)
+        // Left  12% of section → scroll left  (faster toward edge)
+        const MAX_SPEED = 7; // px per frame at cursor edge
+
+        section.addEventListener('mousemove', (e) => {
+            const rect = section.getBoundingClientRect();
+            const x    = e.clientX - rect.left;
+            const w    = rect.width;
+
+            const rightStart = w * 0.72;
+            const leftEnd    = w * 0.12;
+
+            if (x > rightStart) {
+                const t = (x - rightStart) / (w - rightStart); // 0→1
+                speed = t * MAX_SPEED;
+            } else if (x < leftEnd && scrollX > 0) {
+                const t = (leftEnd - x) / leftEnd; // 0→1
+                speed = -t * MAX_SPEED;
+            } else {
+                speed = 0;
+            }
+        });
+
+        section.addEventListener('mouseleave', () => { speed = 0; });
+
+        // ── Click nav arrows: snap to nearest slide boundary ─────────────────
+        const snapTo = (direction) => {
+            const slides = Array.from(track.querySelectorAll('.story-slide--featured, .story-card-slide'));
             let offset = 0;
-            for (let i = 0; i < index; i++) offset += slides[i].offsetWidth;
-            track.style.transform = `translateX(-${offset}px)`;
-
-            const isFirst = index === 0;
-            const isLast  = index >= slides.length - 1;
-
-            if (moreNav)   moreNav.classList.toggle('sc-hidden', isLast);
-            if (rightFade) rightFade.classList.toggle('sc-hidden', isLast);
-            if (hoverZone) hoverZone.style.pointerEvents = isLast ? 'none' : 'auto';
-            backNav.classList.toggle('sc-visible', !isFirst);
-            leftFade.classList.toggle('sc-visible', !isFirst);
+            for (const slide of slides) {
+                const next = offset + slide.offsetWidth;
+                if (direction > 0 && next > scrollX + 10) {
+                    scrollX = Math.min(getMaxScroll(), next);
+                    break;
+                }
+                if (direction < 0 && offset < scrollX - 10) {
+                    // keep going to find the previous boundary
+                }
+                offset = next;
+            }
+            if (direction < 0) {
+                // Find the slide boundary just before current scrollX
+                let prev = 0;
+                offset = 0;
+                for (const slide of slides) {
+                    if (offset + slide.offsetWidth >= scrollX - 10) break;
+                    prev = offset;
+                    offset += slide.offsetWidth;
+                }
+                scrollX = prev;
+            }
+            track.style.transform = `translateX(-${scrollX}px)`;
+            updateNav();
         };
 
         if (moreNav) {
-            moreNav.addEventListener('click',   () => scrollTo(currentIndex + 1));
-            moreNav.addEventListener('keydown', e => e.key === 'Enter' && scrollTo(currentIndex + 1));
+            moreNav.addEventListener('click',   () => snapTo(1));
+            moreNav.addEventListener('keydown', e => e.key === 'Enter' && snapTo(1));
         }
-        backNav.addEventListener('click',   () => scrollTo(currentIndex - 1));
-        backNav.addEventListener('keydown', e => e.key === 'Enter' && scrollTo(currentIndex - 1));
+        backNav.addEventListener('click',   () => snapTo(-1));
+        backNav.addEventListener('keydown', e => e.key === 'Enter' && snapTo(-1));
 
-        let hoverTimer = null;
-        if (hoverZone) {
-            hoverZone.addEventListener('mouseenter', () => {
-                hoverTimer = setTimeout(() => scrollTo(currentIndex + 1), 480);
-            });
-            hoverZone.addEventListener('mouseleave', () => clearTimeout(hoverTimer));
-        }
+        // Hide the now-redundant hover zone element
+        if (hoverZone) hoverZone.classList.add('sc-hidden');
+
+        updateNav();
     }
 
     // Initialize the integration

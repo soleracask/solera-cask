@@ -6316,63 +6316,13 @@ h1:contains("Browse by Category") {
     min-width: 0;
 }
 
-/* ── Additional story card slides ── */
+/* ── Additional story card slides — same width & layout as featured ── */
 .story-card-slide {
-    flex: 0 0 380px;
-    display: flex;
-    align-items: center;
-    padding: 0 36px;
+    flex: 0 0 calc(100% - 260px);
+    min-width: 0;
     text-decoration: none;
     color: inherit;
-    cursor: pointer;
-}
-
-.story-card-inner {
-    width: 100%;
-}
-
-.story-card-img-wrap {
-    width: 100%;
-    overflow: hidden;
-    margin-bottom: 22px;
-    box-shadow: var(--shadow-medium);
-}
-
-.story-card-img-wrap img {
     display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    transition: transform 0.35s ease;
-}
-
-.story-card-slide:hover .story-card-img-wrap img {
-    transform: scale(1.03);
-}
-
-.story-card-label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--primary);
-    margin-bottom: 10px;
-}
-
-.story-card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 300;
-    font-style: italic;
-    color: var(--text-primary);
-    line-height: 1.35;
-    margin-bottom: 12px;
-}
-
-.story-card-excerpt {
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--text-secondary);
 }
 
 /* ── Right-edge cream gradient ── */
@@ -6406,15 +6356,17 @@ h1:contains("Browse by Category") {
     opacity: 1;
 }
 
-/* ── "More Stories" nav ── */
+/* ── "More Stories" nav — centred within the 260px right gap ── */
 .story-more-nav {
     position: absolute;
-    right: 118px;
+    right: 0;
+    width: 260px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 14px;
     cursor: pointer;
     z-index: 10;

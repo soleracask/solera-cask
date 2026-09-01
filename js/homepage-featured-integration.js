@@ -206,11 +206,12 @@ class SoleraHomepageIntegration {
         const raw     = (post.excerpt || '').trim();
         const excerpt = raw.length > 80 ? raw.substring(0, 80) + '...' : raw;
 
-        // Try every common image field name from the CMS
-        const imgSrc = post.featuredImage || post.image || post.coverImage
-                    || post.thumbnail    || post.heroImage || post.photo || '';
-
-        console.log('Carousel card — post fields:', Object.keys(post), '| imgSrc:', imgSrc);
+        // Try featuredImage first, then seoImage, then extract first img from content HTML
+        let imgSrc = post.featuredImage || post.seoImage || '';
+        if (!imgSrc && post.contentHtml) {
+            const match = post.contentHtml.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (match) imgSrc = match[1];
+        }
 
         // No .container wrapper — padding is on the slide element itself (see CSS)
         slide.innerHTML = `

@@ -6324,12 +6324,13 @@ h1:contains("Browse by Category") {
     align-items: center;
     text-decoration: none;
     color: inherit;
-    padding: 0 40px;   /* match container padding, no wrapper needed */
+    padding: 0 0 0 40px;  /* left padding only — right is covered by the 260px peek gap */
     box-sizing: border-box;
 }
 
-/* Remove the double-padding gap between the featured slide and card slides */
-.story-slide--featured .container {
+/* Remove right padding on both sides of any slide so consecutive slides have only one padding-width gap */
+.story-slide--featured .container,
+.story-card-slide {
     padding-right: 0;
 }
 

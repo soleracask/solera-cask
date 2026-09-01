@@ -214,7 +214,7 @@ class SoleraHomepageIntegration {
 
         // No .container wrapper — padding is on the slide element itself (see CSS)
         slide.innerHTML = `
-            <div style="width:100%;max-width:1320px;margin:0 auto;">
+            <div style="width:100%;">
                 <div class="story-grid">
                     <div class="story-image ${imgSrc ? 'has-image' : ''}">
                         ${imgSrc

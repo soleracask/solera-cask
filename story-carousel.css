@@ -1,0 +1,222 @@
+/* ===================================================
+   Story Carousel — paste at the END of styles.css
+   =================================================== */
+
+/* Allow the section to clip the scrolling track */
+.featured-story {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Scrollable track */
+.story-track {
+    display: flex;
+    transition: transform 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+}
+
+/* Featured story slide — slightly narrower than full width so the next card peeks through */
+.story-slide--featured {
+    flex: 0 0 calc(100% - 260px);
+    min-width: 0;
+}
+
+/* ── Additional story card slides ── */
+.story-card-slide {
+    flex: 0 0 380px;
+    display: flex;
+    align-items: center;
+    padding: 0 36px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.story-card-inner {
+    width: 100%;
+}
+
+.story-card-img-wrap {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow-medium);
+}
+
+.story-card-img-wrap img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.story-card-slide:hover .story-card-img-wrap img {
+    transform: scale(1.03);
+}
+
+.story-card-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.story-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 12px;
+}
+
+.story-card-excerpt {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+/* ── Right-edge cream gradient ── */
+.story-right-fade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 300px;
+    background: linear-gradient(to right, transparent 0%, var(--cream) 58%);
+    pointer-events: none;
+    z-index: 5;
+    transition: opacity 0.35s ease;
+}
+
+/* ── Left-edge cream gradient (visible when scrolled right) ── */
+.story-left-fade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 160px;
+    background: linear-gradient(to left, transparent 0%, var(--cream) 100%);
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.story-left-fade.sc-visible {
+    opacity: 1;
+}
+
+/* ── "More Stories" nav ── */
+.story-more-nav {
+    position: absolute;
+    right: 118px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    z-index: 10;
+    transition: opacity 0.35s ease;
+    user-select: none;
+}
+
+.story-more-label {
+    font-size: 16px;
+    font-style: italic;
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+.story-more-arrow {
+    width: 52px;
+    height: 20px;
+    color: var(--primary);
+    transition: transform 0.2s ease;
+}
+
+.story-more-nav:hover .story-more-arrow {
+    transform: translateX(5px);
+}
+
+/* ── Back nav (injected by JS, visible when scrolled right) ── */
+.story-back-nav {
+    position: absolute;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    user-select: none;
+}
+
+.story-back-nav.sc-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.story-back-label {
+    font-size: 16px;
+    font-style: italic;
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+.story-back-arrow {
+    width: 52px;
+    height: 20px;
+    color: var(--primary);
+    transition: transform 0.2s ease;
+}
+
+.story-back-nav:hover .story-back-arrow {
+    transform: translateX(-5px);
+}
+
+/* ── Invisible hover zone (right edge) ── */
+.story-hover-zone {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100%;
+    z-index: 8;
+    cursor: pointer;
+}
+
+/* ── Hidden state ── */
+.story-more-nav.sc-hidden,
+.story-right-fade.sc-hidden,
+.story-hover-zone.sc-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ── Mobile: disable carousel entirely ── */
+@media (max-width: 1024px) {
+    .story-slide--featured {
+        flex: 0 0 100%;
+    }
+
+    .story-more-nav,
+    .story-right-fade,
+    .story-left-fade,
+    .story-hover-zone,
+    .story-back-nav,
+    .story-card-slide {
+        display: none !important;
+    }
+}

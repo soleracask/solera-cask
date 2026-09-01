@@ -329,7 +329,7 @@ class SoleraHomepageIntegration {
         // ── Mouse-position–based speed ────────────────────────────────────────
         // Right 28% of section → scroll right (faster toward edge)
         // Left  12% of section → scroll left  (faster toward edge)
-        const MAX_SPEED = 15; // px per frame at cursor edge (~900px/s at 60fps)
+        const MAX_SPEED = 20; // px per frame at cursor edge (~900px/s at 60fps)
 
         section.addEventListener('mousemove', (e) => {
             const rect = section.getBoundingClientRect();

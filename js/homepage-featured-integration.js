@@ -223,7 +223,7 @@ class SoleraHomepageIntegration {
         const grid = document.createElement('div');
         grid.className = 'story-cards-grid';
 
-        posts.slice(0, 4).forEach(post => {
+        posts.slice(0, 3).forEach(post => {
             const slug   = this.createPostSlug(post);
             const card   = document.createElement('a');
             card.className = 'story-card';

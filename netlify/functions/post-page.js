@@ -60,7 +60,13 @@ function formatDate(dateStr) {
 
 function formatContent(content) {
   if (!content) return '';
-  
+
+  // Normalise line endings, and strip trailing spaces/tabs from every line.
+  // Pasted text often leaves a stray space on the "blank" lines between
+  // paragraphs; without this the \n\n split never matches and the whole post
+  // renders as one paragraph with literal "## " headings in the body text.
+  content = content.replace(/\r\n?/g, '\n').replace(/[ \t]+$/gm, '');
+
   // Convert markdown images to HTML
   let formatted = content.replace(/!\[(.*?)\]\((.*?)\)/g, 
     '<figure><img src="$2" alt="$1" loading="lazy"><figcaption>$1</figcaption></figure>'
@@ -74,16 +80,29 @@ function formatContent(content) {
   // Split into paragraphs and format
   const paragraphs = formatted.split('\n\n').filter(p => p.trim());
   
+  const inline = (s) => s
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, '<code>$1</code>');
+
   return paragraphs.map(paragraph => {
     const trimmed = paragraph.trim();
     if (!trimmed) return '';
-    
+
+    const lines = trimmed.split('\n');
+
+    // Bulleted list: every line in the block starts with "- "
+    if (lines.length && lines.every(l => /^-\s+/.test(l))) {
+      return '<ul>' + lines.map(l => `<li>${inline(l.replace(/^-\s+/, ''))}</li>`).join('') + '</ul>';
+    }
+
+    // Numbered list: every line in the block starts with "1. " / "1) "
+    if (lines.length && lines.every(l => /^\d+[.)]\s+/.test(l))) {
+      return '<ol>' + lines.map(l => `<li>${inline(l.replace(/^\d+[.)]\s+/, ''))}</li>`).join('') + '</ol>';
+    }
+
     // Format markdown-style elements
-    let text = trimmed
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/`(.*?)`/g, '<code>$1</code>')
-      .replace(/\n/g, '<br>');
+    let text = inline(trimmed).replace(/\n/g, '<br>');
     
     // Handle headers
     if (text.startsWith('### ')) {

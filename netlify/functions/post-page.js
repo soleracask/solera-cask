@@ -123,7 +123,10 @@ function formatContent(content) {
 }
 
 function generatePostHTML(post) {
-  const baseUrl = 'https://soleracask.netlify.app';
+  // The live domain. This must be soleracask.com: it is used for the canonical
+  // URL, og:url and the JSON-LD @id. Pointing it at the netlify.app subdomain
+  // tells Google the real page lives on another domain.
+  const baseUrl = 'https://soleracask.com';
   const currentUrl = `${baseUrl}/post/${createPostSlug(post)}`;
   
   // Generate SEO data with fallbacks

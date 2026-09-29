@@ -2836,9 +2836,17 @@
         function generateSEOTitle() {
             const postTitle = document.getElementById('postTitle').value;
             if (postTitle) {
-                let seoTitle = `${postTitle} - Solera Cask`;
-                if (seoTitle.length > 60) {
-                    seoTitle = seoTitle.substring(0, 57) + '...';
+                // Keep the brand suffix only if it fits inside 60 characters.
+                // Truncating "<title> - Solera Cask" produced titles ending in
+                // fragments like "- So...", which is worse than no suffix.
+                const withBrand = `${postTitle} - Solera Cask`;
+                let seoTitle;
+                if (withBrand.length <= 60) {
+                    seoTitle = withBrand;
+                } else if (postTitle.length <= 60) {
+                    seoTitle = postTitle;
+                } else {
+                    seoTitle = postTitle.substring(0, 59).replace(/\s+\S*$/, '').trim();
                 }
                 document.getElementById('seoTitle').value = seoTitle;
                 document.getElementById('seoTitle').dispatchEvent(new Event('input'));

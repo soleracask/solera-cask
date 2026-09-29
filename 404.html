@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Page Not Found | Solera Cask</title>
+        <meta name="robots" content="noindex">
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="manifest" href="/site.webmanifest">
+
+        <link rel="stylesheet" href="/css/styles.css">
+        <link rel="stylesheet" href="/css/components-loader.css">
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+        <style>
+            .notfound {
+                min-height: 70vh;
+                padding: 180px 40px 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                background: var(--warm-white);
+            }
+            .notfound-inner { max-width: 620px; }
+            .notfound h1 {
+                font-family: 'Playfair Display', serif;
+                font-size: 44px;
+                font-weight: 400;
+                color: var(--text-primary);
+                margin-bottom: 20px;
+                line-height: 1.2;
+            }
+            .notfound p {
+                font-size: 18px;
+                line-height: 1.7;
+                color: var(--text-secondary);
+                margin-bottom: 36px;
+            }
+            .notfound-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 14px;
+                justify-content: center;
+            }
+            .notfound-links a {
+                display: inline-block;
+                padding: 12px 22px;
+                border: 1px solid var(--border-light, #ddd);
+                border-radius: 2px;
+                text-decoration: none;
+                color: var(--text-primary);
+                font-size: 15px;
+            }
+            .notfound-links a.primary {
+                background: var(--primary);
+                border-color: var(--primary);
+                color: #fff;
+            }
+            @media (max-width: 600px) {
+                .notfound { padding: 140px 24px 70px; }
+                .notfound h1 { font-size: 32px; }
+            }
+        </style>
+    </head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">
+                <img src="/images/logos/Solera-Cask-Logo.png" alt="Solera Cask" class="logo-image logo-large">
+                <img src="/images/logos/SC-Logo.png" alt="Solera Cask" class="logo-image logo-small">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/blog">All Stories</a></li>
+                <li><a href="/#contact" class="nav-cta">Get Quote</a></li>
+            </ul>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span><span></span><span></span>
+            </div>
+        </nav>
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+            <div class="mobile-menu-content">
+                <a href="/blog" class="mobile-menu-item">All Stories</a>
+                <a href="/#contact" class="mobile-menu-item mobile-cta">Get Quote</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="notfound">
+        <div class="notfound-inner">
+            <h1>This page has gone missing</h1>
+            <p>The link may be out of date, or the address slightly off. The casks are all still here.</p>
+            <div class="notfound-links">
+                <a href="/" class="primary">Home</a>
+                <a href="/sherry-barrels">Our Casks</a>
+                <a href="/blog">All Stories</a>
+                <a href="/sherry-barrels-faq">FAQ</a>
+                <a href="/#contact">Get a Quote</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const t = document.getElementById('mobileMenuToggle');
+        const o = document.getElementById('mobileMenuOverlay');
+        if (t && o) t.addEventListener('click', () => o.classList.toggle('active'));
+    </script>
+</body>
+</html>

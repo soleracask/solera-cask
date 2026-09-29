@@ -286,25 +286,6 @@ function generatePostHTML(post) {
             margin-bottom: 60px;
         }
 
-        .post-content ul,
-        .post-content ol {
-            margin: 24px 0 24px 8px;
-            padding-left: 24px;
-        }
-
-        .post-content li {
-            margin-bottom: 12px;
-            line-height: 1.7;
-        }
-
-        .post-content blockquote {
-            margin: 32px 0;
-            padding: 8px 0 8px 24px;
-            border-left: 3px solid var(--primary);
-            font-style: italic;
-            color: var(--text-primary);
-        }
-
         .post-content h2 {
             font-family: 'Playfair Display', serif;
             font-size: 32px;
@@ -617,12 +598,8 @@ exports.handler = async (event, context) => {
     
     // ✅ FIXED: Extract slug from path instead of query parameters
     // Path will be: /post/welcome-to-solera-cask-stories
-    // Slug normally comes from the pretty path (/post/SLUG). The ?slug= fallback
-    // lets the function be previewed directly at
-    // /.netlify/functions/post-page?slug=<slug> before a static file is removed.
     const pathParts = event.path.split('/');
-    const slug = (event.queryStringParameters && event.queryStringParameters.slug)
-      || (pathParts[1] === 'post' ? pathParts[2] : null);
+    const slug = pathParts[2]; // /post/SLUG -> pathParts[2]
     
     console.log('🔍 Looking for slug:', slug);
     

@@ -1,0 +1,214 @@
+═══════════════════════════════════════════════════════════════
+SOLERA CASK CMS — NEW POST
+Paste each field below into the matching box in /admin.html
+Content editor: leave the toggle on MARKDOWN (not HTML)
+═══════════════════════════════════════════════════════════════
+
+
+── TITLE ──────────────────────────────────────────────────────
+
+Drinking Less, But Better: How Sherry Cask Finishing Turns Slow-Moving Stock Into a Premium Release
+
+
+── TYPE ───────────────────────────────────────────────────────
+
+Education
+
+
+── DATE ───────────────────────────────────────────────────────
+
+2026-09-28
+
+
+── EXCERPT ────────────────────────────────────────────────────
+
+Volumes are down, but buyers still reward spirits that justify their price. Sherry cask finishing is the fastest route from surplus stock to a premium SKU.
+
+
+── SEO TITLE ──────────────────────────────────────────────────
+
+Sherry Cask Finishing: Turn Slow Stock Into Premium Spirit
+
+
+── SEO DESCRIPTION (157 chars) ────────────────────────────────
+
+Consumers are drinking less but better. How sherry cask finishing turns slow-moving spirit stock into a premium release, with 2025-26 market data.
+
+
+── SEO KEYWORDS ───────────────────────────────────────────────
+
+sherry cask finishing, ex-sherry casks for distillers, spirits premiumisation, solera casks, whisky oversupply, secondary maturation, Oloroso cask finish, Pedro Ximenez cask, buy sherry casks
+
+
+── TAGS ───────────────────────────────────────────────────────
+
+premiumisation, sherry, whisky, cask finishing, Solera Cask
+
+
+── FEATURED IMAGE ─────────────────────────────────────────────
+
+Upload one in the admin. Suggested alt text:
+Historic solera butts in a bodega in Jerez de la Frontera
+
+
+── FEATURED? ──────────────────────────────────────────────────
+
+Your call. The Sleeman post currently holds the featured slot.
+
+
+═══════════════════════════════════════════════════════════════
+CONTENT — paste everything between the lines into the
+Markdown content box. Keep the blank lines exactly as they are.
+═══════════════════════════════════════════════════════════════
+─────────────────────── START ────────────────────────
+
+Fewer people are drinking. The ones who still do will pay more per bottle, if the bottle earns it. The market shrank, but it also got fussier.
+
+Gallup puts the share of US adults who drink at [a record-low 54%, the second year running](https://news.gallup.com/poll/713534/americans-drinking-remains-record-low.aspx), down from 62% in 2023. Price is not the driver. Health is: 51% of Americans now say one or two drinks a day is bad for you, against 27% in 2001.
+
+Globally, [IWSR recorded a 2% fall in total beverage alcohol volumes in 2025](https://www.theiwsr.com/insight/a-major-reset-beverage-alcohol-volumes-fall-again-in-2025/), about 500 million nine-litre cases. Across 21 leading markets [value fell 4%, the first time in recent history that volume has outperformed value](https://www.theiwsr.com/insight/premiumisation-stalls-as-difficult-trading-conditions-persist/). Premiumisation, IWSR says, is "taking a back seat."
+
+Then look at global travel retail. IWSR reported [7% value growth and 5% volume growth there in 2025, super-premium up 10%](https://www.thespiritsbusiness.com/2026/08/iwsr-premiumisation-still-alive-in-gtr/), Scotch up 10% by volume. Luke Tegner of IWSR: consumers "are looking for value in the truest sense, not cheapness."
+
+Marten Lodewijks, also of IWSR, puts the behaviour plainly: ["Consumers aren't abandoning alcohol, but they are being more intentional about the frequency and intensity with which they drink it."](https://www.theiwsr.com/insight/a-major-reset-beverage-alcohol-volumes-fall-again-in-2025/)
+
+The shelf has not turned against expensive spirits. It has turned against expensive spirits that cannot say why.
+
+## Meanwhile, the warehouses are full
+
+Supply moved the other way, and it moved years ago.
+
+[Roughly 22 million casks are maturing in Scotland](https://www.scotch-whisky.org.uk/industry-insights/facts-figures/), about 12 billion bottles. Kentucky's Distillers' Association counted [17.1 million barrels ageing on 1 January 2025, an all-time high](https://kybourbon.com/industry-news/the-bourbon-state-challenges-continue-amid-record-barrel-inventory-skyrocketing-taxes/). KDA president Eric Gregory: "most of these barrels won't be ready to bottle until 2030 and beyond." Stock laid down for a growth curve that flattened.
+
+Shipments say the same. Scotch Whisky Association figures for 2025 show [exports of £5.3bn, down 1.8% in value and 4.3% in volume](https://www.scotch-whisky.org.uk/newsroom/2025-export-figures/), with US volumes down 9.2%.
+
+Bulk pricing has absorbed the difference. VinePair reports [six- to eight-year-old bourbon trading at $2,200–$2,500 a barrel against roughly $4,000 in 2022](https://vinepair.com/articles/global-whiskey-oversupply/), with four-year stock near $1,200. Dixon Dedman, who founded Kentucky Owl, reckons "the cost of liquid is probably at deeper than 50 percent discount."
+
+## Discounting is the most expensive thing you can do with good liquid
+
+A discount is not a tactic. It is a new price. Cut once and you reset what the trade believes your brand is worth, and every conversation after that starts from the lower number. Sell into bulk and your margin leaves on the tanker.
+
+Re-cask instead and the same litres come back as a different SKU at a different price, with a new name, a new label, a reason for a buyer to take the meeting. You are launching a product rather than defending a price.
+
+## What a sherry cask does to stock you can't move
+
+Secondary maturation is the fastest lever in spirits. Three to twelve months in ex-sherry oak changes the liquid and the positioning together.
+
+**Pedro Ximénez** gives raisin, fig, dark chocolate and deep colour, and does the most for a thin or unremarkable base spirit.
+
+**Oloroso** brings walnut, dried orange, leather and structure. The classic route to a richer, older-tasting profile.
+
+**Amontillado** sits between them, nutty and dry without the sweetness.
+
+**Fino and Manzanilla** lend saline, almond and green-apple lift, which suits lighter rums, agave spirits and delicate malts.
+
+Buyers already understand the category. Diageo's Malts platform [flags cask-driven flavour and sherried whisky in its 2026 trends outlook](https://www.malts.com/en-us/articles/expert-whisky-trends-and-predictions-for-2026), so you are not explaining a novelty from scratch when you pitch the listing.
+
+Rum, brandy, tequila, gin and barrel-aged beer all take sherry wood.
+
+## Provenance is the part you can't fake
+
+Most barrels sold as sherry casks are new American oak seasoned with sherry for 12 to 18 months. In fact, all the DO certified "Sherry Casks" are new American oak, as one of the many requirements dictated by the Consejo Regulador in Jerez in order for a barrel to be certified. Markus Eder, a barrel dealer, told VinePair that customers routinely assume they are buying wood that spent decades in sherry production when they are buying [a newly built cask seasoned for a year](https://vinepair.com/articles/the-actual-business-behind-sherry-barrel-aging/). The same report counts around 84,100 casks exported annually, triple the figure of five years ago and more than the sherry actually produced.
+
+Both have their place. They are not the same material, they do not give the same result, and only one gives you the depth of years of sherry character.
+
+The Consejo Regulador registered the Sherry Cask trademark in 2015, and [certified casks carry a guarantee label stating the wine type and the minimum seasoning period](https://www.sherry.wine/sherry-cask/certificacion), verified by the OECCA Foundation.
+
+Solera Cask is located in the heart of the DO, Jerez de la Frontera, and we supply both: new casks seasoned 12–24 months certified to DO standards, and [historic solera barrels](https://soleracask.com/sherry-barrels) pulled from working bodegas and restored by our coopers. 225L bordelesas, 500L butts, 700L bocoys, in Fino, Manzanilla, Amontillado, Oloroso and Pedro Ximénez.
+
+## Start with ten casks, not ten thousand litres
+
+Timing is the argument. New spirit laid down now is a 2030 product. Stock you already own, finished, is a release this financial year.
+
+A typical trial runs five to ten barrels. Take the batch that isn't selling, split it across two cask types, sample at three, six and nine months, and see which one gives you a bottle you'd price a tier above where you sit now. Spread across the litres a butt or bocoy holds, the wood costs little against the uplift from standard to premium.
+
+If you have stock that deserves better than the bulk market, [book a call with our team](https://cal.com/imaldomar/30min). We'll suggest cask types that fit your spirit and the price you're aiming at.
+
+## Sources
+
+[Gallup — Americans' Drinking Remains at Record Low](https://news.gallup.com/poll/713534/americans-drinking-remains-record-low.aspx)
+[IWSR — 'A major reset': beverage alcohol volumes fall again in 2025](https://www.theiwsr.com/insight/a-major-reset-beverage-alcohol-volumes-fall-again-in-2025/)
+[IWSR — Premiumisation stalls as difficult trading conditions persist](https://www.theiwsr.com/insight/premiumisation-stalls-as-difficult-trading-conditions-persist/)
+[The Spirits Business — IWSR: premiumisation still alive in GTR](https://www.thespiritsbusiness.com/2026/08/iwsr-premiumisation-still-alive-in-gtr/)
+[Scotch Whisky Association — Facts & Figures](https://www.scotch-whisky.org.uk/industry-insights/facts-figures/)
+[Scotch Whisky Association — 2025 export figures](https://www.scotch-whisky.org.uk/newsroom/2025-export-figures/)
+[Kentucky Distillers' Association — Record Barrel Inventory](https://kybourbon.com/industry-news/the-bourbon-state-challenges-continue-amid-record-barrel-inventory-skyrocketing-taxes/)
+[VinePair — No One Wants to Talk About the Oversupply of Scotch and Bourbon](https://vinepair.com/articles/global-whiskey-oversupply/)
+[VinePair — The Actual Business Behind Sherry Barrel-Aging](https://vinepair.com/articles/the-actual-business-behind-sherry-barrel-aging/)
+[Consejo Regulador Jerez-Xérès-Sherry — Certification of a Sherry Cask](https://www.sherry.wine/sherry-cask/certificacion)
+[Malts (Diageo) — Expert whisky trends and predictions for 2026](https://www.malts.com/en-us/articles/expert-whisky-trends-and-predictions-for-2026)
+
+──────────────────────── END ─────────────────────────
+
+
+═══════════════════════════════════════════════════════════════
+NOTES ON WHY IT IS FORMATTED THIS WAY
+═══════════════════════════════════════════════════════════════
+
+Your renderer (formatContent in netlify/functions/post-page.js)
+understands only: blank-line paragraphs, "## " headings,
+**bold**, *italic*, [links](url), ![images](url), and "> quotes".
+
+It has NO bullet list support. A line starting with "- " comes
+out as a literal paragraph reading "- Pedro Ximénez gives...".
+So the four cask types are bold-led paragraphs instead, and the
+sources are single-newline lines inside one block, which your
+renderer turns into <br> line breaks. Both render cleanly with
+the CSS you already have.
+
+Do not switch the editor to HTML mode for this one. HTML mode
+adds .html-content to the container, which widens it to 1200px —
+too wide for a text article — and your stylesheet still has no
+ul/li rules, so a real list would render unstyled anyway.
+
+Use "## " for headings, never "# ". A single # renders as <h3>.
+
+
+═══════════════════════════════════════════════════════════════
+ONE DECISION BEFORE YOU SAVE: THE SLUG
+═══════════════════════════════════════════════════════════════
+
+Your CMS builds the URL from the title. You cannot set it
+separately. createPostSlug lowercases, strips punctuation and
+joins with hyphens, so the title above produces:
+
+/post/drinking-less-but-better-how-sherry-cask-finishing-turns-slow-moving-stock-into-a-premium-release
+
+97 characters. It will work and it will rank, but it is long.
+
+If you want a shorter URL, shorten the TITLE — the SEO title
+field stays as written either way, so the search result is
+unaffected. Two options:
+
+  Title: Sherry Cask Finishing: Turning Slow Stock Into a Premium Release
+  → /post/sherry-cask-finishing-turning-slow-stock-into-a-premium-release
+
+  Title: Drinking Less, But Better: The Sherry Cask Opportunity
+  → /post/drinking-less-but-better-the-sherry-cask-opportunity
+
+The trade-off is that the title is also your H1, so the shorter
+you make it, the less the headline does for the reader.
+
+
+═══════════════════════════════════════════════════════════════
+AFTER SAVING
+═══════════════════════════════════════════════════════════════
+
+1. Do NOT create a file in /post/. A static file would shadow
+   the CMS version and you would be back to maintaining two
+   copies of the same post.
+
+2. Load the live URL and confirm it renders from the CMS.
+
+3. Add one entry to sitemap.xml, using the slug you ended up
+   with:
+
+   <url>
+     <loc>https://soleracask.com/post/YOUR-SLUG-HERE</loc>
+     <lastmod>2026-09-28</lastmod>
+     <changefreq>monthly</changefreq>
+     <priority>0.7</priority>
+   </url>
+
+4. Google Search Console → URL Inspection → paste the URL →
+   Request Indexing.

@@ -1,7 +1,19 @@
+# ─────────────────────────────────────────────────────────────
+# Solera Cask — Netlify configuration
+#
+# This file is the SINGLE source of redirects. There is no
+# _redirects file: when both exist Netlify processes _redirects
+# first, which silently shadowed the rules below.
+#
+# Netlify serves a matching static file before any 200 rewrite,
+# so a file at /post/<slug>.html still wins over the /post/*
+# rule. Remove the static file to let the CMS serve that post.
+# ─────────────────────────────────────────────────────────────
+
 [build]
   publish = "."
 
-# Ensure video files are served with correct MIME type and streaming headers
+# Video files: correct MIME type and range requests for streaming
 [[headers]]
   for = "/videos/*"
   [headers.values]
@@ -9,13 +21,21 @@
     Accept-Ranges = "bytes"
     Cache-Control = "public, max-age=31536000, immutable"
 
-# API redirect for Netlify functions (REQUIRED!)
+# ── Redirects (first match wins) ──────────────────────────────
+
+# Netlify Functions API
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
 
-# Specific redirects for your pages
+# Pass video files through before the catch-all sees them
+[[redirects]]
+  from = "/videos/*"
+  to = "/videos/:splat"
+  status = 200
+
+# Blog index
 [[redirects]]
   from = "/blog"
   to = "/blog.html"
@@ -26,25 +46,22 @@
   to = "/blog.html"
   status = 200
 
+# Post pages: server-side rendered from the CMS for SEO.
+# A static file at /post/<slug>.html overrides this.
 [[redirects]]
   from = "/post/*"
-  to = "/post.html"
+  to = "/.netlify/functions/post-page"
   status = 200
 
+# Admin
 [[redirects]]
   from = "/admin"
   to = "/admin.html"
   status = 200
 
-# Explicitly pass through video files before the catch-all sees them
-[[redirects]]
-  from = "/videos/*"
-  to = "/videos/:splat"
-  status = 200
-
-# Catch-all redirect (must be last)
+# Unknown URLs return a real 404, not a 200 copy of the homepage.
+# A 200 here makes every typo a soft 404 in Google's eyes.
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
-  force = false
+  to = "/404.html"
+  status = 404

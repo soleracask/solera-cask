@@ -2918,17 +2918,17 @@ console.log('Validating quantity. Field exists:', !!hiddenQuantityField, 'Value:
 
 if (!quantitySelected || quantitySelected.trim() === '') {
     isValid = false;
-    showFormNotification('Please select an estimated quantity', 'error');
+    showFormNotification(formCopy().selectQuantity, 'error');
     return;
 }
     
     if (!isValid) {
-        showFormNotification('Please fill in all required fields', 'error');
+        showFormNotification(formCopy().fillRequired, 'error');
         return;
     }
     
     // Show loading state
-    submitBtn.textContent = 'Sending...';
+    submitBtn.textContent = formCopy().sending;
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.7';
     
@@ -2943,9 +2943,9 @@ if (!quantitySelected || quantitySelected.trim() === '') {
         
         if (response.ok) {
             showFormNotification(
-                'Quote Request Received!',
+                formCopy().successTitle,
                 'success',
-                'Thank you for your inquiry. Our team will contact you within 24 hours with a detailed quote.'
+                formCopy().successBody
             );
             
             // Reset form
@@ -2982,9 +2982,9 @@ if (!quantitySelected || quantitySelected.trim() === '') {
     } catch (error) {
         console.error('Form submission error:', error);
         showFormNotification(
-            'Submission Error',
+            formCopy().errorTitle,
             'error',
-            'There was a problem submitting your request. Please try again or contact us directly at info@soleracask.com'
+            formCopy().errorBody
         );
     } finally {
         submitBtn.textContent = originalText;
@@ -2994,6 +2994,36 @@ if (!quantitySelected || quantitySelected.trim() === '') {
 }
 
 // Notification system for form
+// Copy for the quote form, in the page's language. The form lives on both
+// /es/ and English pages but the strings were hardcoded in English, so a
+// Spanish visitor saw an English confirmation.
+function formCopy() {
+    const isES = (document.documentElement.lang || 'en').toLowerCase().startsWith('es');
+    return isES ? {
+        sending:        'Enviando...',
+        selectQuantity: 'Seleccione una cantidad estimada',
+        fillRequired:   'Complete todos los campos obligatorios',
+        successTitle:   '\u00A1Solicitud de cotizaci\u00F3n recibida!',
+        successBody:    'Gracias por su consulta. Nuestro equipo se pondr\u00E1 en contacto con usted en un plazo de 24 horas con una cotizaci\u00F3n detallada.',
+        errorTitle:     'Error al enviar',
+        errorBody:      'Hubo un problema al enviar su solicitud. Int\u00E9ntelo de nuevo o escr\u00EDbanos directamente a info@soleracask.com',
+        bookLead:       '\u00BFNo quiere esperar? Hablemos antes.',
+        bookLabel:      'Reservar una Llamada',
+        close:          'Cerrar'
+    } : {
+        sending:        'Sending...',
+        selectQuantity: 'Please select an estimated quantity',
+        fillRequired:   'Please fill in all required fields',
+        successTitle:   'Quote Request Received!',
+        successBody:    'Thank you for your inquiry. Our team will contact you within 24 hours with a detailed quote.',
+        errorTitle:     'Submission Error',
+        errorBody:      'There was a problem submitting your request. Please try again or contact us directly at info@soleracask.com',
+        bookLead:       "Don't want to wait? Let's talk sooner.",
+        bookLabel:      'Book a Call',
+        close:          'Close'
+    };
+}
+
 function showFormNotification(title, type = 'info', message = '') {
     // Remove existing notifications
     const existingNotifications = document.querySelectorAll('.notification');
@@ -3011,13 +3041,11 @@ function showFormNotification(title, type = 'info', message = '') {
     
     // Post-submission booking offer. Shown only on success, where the visitor
     // has already converted, so it cannot cannibalise the form submission.
-    const isES = (document.documentElement.lang || 'en').toLowerCase().startsWith('es');
+    const copy = formCopy();
     const bookUrl = 'https://cal.com/imaldomar/30min';
-    const bookLabel = isES ? 'Reservar una Llamada' : 'Book a Call';
-    const bookLead = isES
-        ? '¿No quiere esperar? Hablemos antes.'
-        : "Don't want to wait? Let's talk sooner.";
-    const closeLabel = type === 'success' ? (isES ? 'Cerrar' : 'Close') : 'Close';
+    const bookLabel = copy.bookLabel;
+    const bookLead = copy.bookLead;
+    const closeLabel = copy.close;
     const ctaBlock = type === 'success' ? `
         <p style="font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin-top: 20px;">${bookLead}</p>
         <a href="${bookUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: 12px; padding: 14px 32px; background: var(--primary); color: #ffffff; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">${bookLabel}</a>

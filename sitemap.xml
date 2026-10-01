@@ -5,6 +5,7 @@
   <!-- English pages -->
   <url>
     <loc>https://soleracask.com/</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/"/>
     <changefreq>monthly</changefreq>
@@ -13,6 +14,7 @@
 
   <url>
     <loc>https://soleracask.com/sherry-barrels</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-sherry"/>
     <changefreq>monthly</changefreq>
@@ -21,6 +23,7 @@
 
   <url>
     <loc>https://soleracask.com/sherry-barrels-faq</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels-faq"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/faq-barricas-jerez"/>
     <changefreq>monthly</changefreq>
@@ -29,6 +32,7 @@
 
   <url>
     <loc>https://soleracask.com/whisky-sherry-barrels</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/whisky-sherry-barrels"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-whisky"/>
     <changefreq>monthly</changefreq>
@@ -37,6 +41,7 @@
 
   <url>
     <loc>https://soleracask.com/rum-sherry-barrels</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/rum-sherry-barrels"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-ron"/>
     <changefreq>monthly</changefreq>
@@ -45,6 +50,7 @@
 
   <url>
     <loc>https://soleracask.com/beer-sherry-barrels</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/beer-sherry-barrels"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-cerveza"/>
     <changefreq>monthly</changefreq>
@@ -53,6 +59,7 @@
 
   <url>
     <loc>https://soleracask.com/tequila-sherry-barrels</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/tequila-sherry-barrels"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-tequila"/>
     <changefreq>monthly</changefreq>
@@ -61,6 +68,7 @@
 
   <url>
     <loc>https://soleracask.com/vodka-sherry-barrels</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/vodka-sherry-barrels"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-vodka"/>
     <changefreq>monthly</changefreq>
@@ -70,48 +78,49 @@
   <!-- Blog index -->
   <url>
     <loc>https://soleracask.com/blog</loc>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Blog posts -->
   <url>
-    <loc>https://soleracask.com/post/sherry-cask-finishing-turning-slow-stock-into-a-premium-release</loc>
-    <lastmod>2026-09-29</lastmod>
+    <loc>https://soleracask.com/post/sherry-cask-finishing-turn-slow-stock-into-a-premium-release</loc>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://soleracask.com/post/john-sleeman-sons-solera-cask-two-golds-at-the-canadian-whisky-awards</loc>
-    <lastmod>2026-05-12</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://soleracask.com/post/the-macallan-bets-on-jerez-and-sherry-oak-casks</loc>
-    <lastmod>2026-03-24</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://soleracask.com/post/why-sherry-barrels-are-exceptional-for-aging-tequila</loc>
-    <lastmod>2025-07-26</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://soleracask.com/post/welcome-to-solera-cask-stories</loc>
-    <lastmod>2025-07-21</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
     <loc>https://soleracask.com/post/understanding-sherry-types-for-aging</loc>
-    <lastmod>2025-07-20</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -119,6 +128,7 @@
   <!-- Spanish pages -->
   <url>
     <loc>https://soleracask.com/es/</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/"/>
     <changefreq>monthly</changefreq>
@@ -127,6 +137,7 @@
 
   <url>
     <loc>https://soleracask.com/es/barricas-jerez-sherry</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-sherry"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels"/>
     <changefreq>monthly</changefreq>
@@ -135,6 +146,7 @@
 
   <url>
     <loc>https://soleracask.com/es/faq-barricas-jerez</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/faq-barricas-jerez"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/sherry-barrels-faq"/>
     <changefreq>monthly</changefreq>
@@ -143,6 +155,7 @@
 
   <url>
     <loc>https://soleracask.com/es/barricas-jerez-whisky</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-whisky"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/whisky-sherry-barrels"/>
     <changefreq>monthly</changefreq>
@@ -151,6 +164,7 @@
 
   <url>
     <loc>https://soleracask.com/es/barricas-jerez-ron</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-ron"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/rum-sherry-barrels"/>
     <changefreq>monthly</changefreq>
@@ -159,6 +173,7 @@
 
   <url>
     <loc>https://soleracask.com/es/barricas-jerez-cerveza</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-cerveza"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/beer-sherry-barrels"/>
     <changefreq>monthly</changefreq>
@@ -167,6 +182,7 @@
 
   <url>
     <loc>https://soleracask.com/es/barricas-jerez-tequila</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-tequila"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/tequila-sherry-barrels"/>
     <changefreq>monthly</changefreq>
@@ -175,6 +191,7 @@
 
   <url>
     <loc>https://soleracask.com/es/barricas-jerez-vodka</loc>
+    <lastmod>2026-10-01</lastmod>
     <xhtml:link rel="alternate" hreflang="es" href="https://soleracask.com/es/barricas-jerez-vodka"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://soleracask.com/vodka-sherry-barrels"/>
     <changefreq>monthly</changefreq>

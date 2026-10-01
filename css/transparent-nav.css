@@ -167,8 +167,7 @@ html[lang="es"] .nav-menu a {
     letter-spacing: 0.01em;
 }
 
-html[lang="es"] .nav-cta,
-html[lang="es"] .nav-book-call {
+html[lang="es"] .nav-cta {
     padding: 10px 14px;
     letter-spacing: 0.02em;
 }
@@ -191,4 +190,38 @@ html[lang="es"] .nav-book-call {
     .mobile-menu-toggle.active span {
         background: var(--text-primary) !important;
     }
+}
+
+
+/* ----------------------------------------------------------
+   11. CASKS DROPDOWN — transparent at the top of a hero page
+
+   Section 3 turns every .nav-menu link white while the header
+   is transparent, and the dropdown items sit inside .nav-menu,
+   so they go white too. Against the white panel that makes
+   them invisible. On pages with a hero the panel drops away at
+   the top of the page and returns on scroll, matching how the
+   nav items themselves behave.
+
+   Pages without a hero are excluded: section 8 already forces
+   a solid white nav there, so the white panel is correct.
+   ---------------------------------------------------------- */
+body:has(.hero) header:not(.scrolled) .dropdown-menu {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    /* Frosts whatever the hero is showing behind the items, so the white
+       text stays legible over the lighter frames of the video. */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+body:has(.hero) header:not(.scrolled) .dropdown-menu a {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+body:has(.hero) header:not(.scrolled) .dropdown-menu a:hover,
+body:has(.hero) header:not(.scrolled) .dropdown-menu a:focus {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
 }

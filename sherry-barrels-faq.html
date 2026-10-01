@@ -142,30 +142,39 @@
     <header>
         <nav class="container">
             <a href="/" class="logo">
-                <img src="images/logos/Solera-Cask-Logo.png" alt="Solera Cask" class="logo-image logo-large">
-                <img src="images/logos/SC-Logo.png" alt="Solera Cask" class="logo-image logo-small">
+                <img src="/images/logos/Solera-Cask-Logo.png" alt="Solera Cask" class="logo-image logo-large">
+                <img src="/images/logos/SC-Logo.png" alt="Solera Cask" class="logo-image logo-small">
             </a>
-            
+
             <!-- Desktop Menu -->
             <ul class="nav-menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="#faq-content">FAQ Categories</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li class="has-dropdown">
+                    <a href="/sherry-barrels" aria-haspopup="true">Casks</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/sherry-barrels">All Sherry Casks</a></li>
+                        <li><a href="/whisky-sherry-barrels">Whisky</a></li>
+                        <li><a href="/rum-sherry-barrels">Rum</a></li>
+                        <li><a href="/tequila-sherry-barrels">Tequila</a></li>
+                        <li><a href="/vodka-sherry-barrels">Vodka</a></li>
+                        <li><a href="/beer-sherry-barrels">Beer</a></li>
+                    </ul>
+                </li>
+                <li><a href="/blog">Stories</a></li>
+                <li><a href="/sherry-barrels-faq">FAQ</a></li>
             </ul>
 
             <!-- Right Side Navigation Items -->
             <div class="nav-right">
-                <!-- Get Quote Button -->
                 <a href="#contact" class="nav-cta">Get Quote</a>
-                
+
                 <!-- Language Switcher -->
                 <div class="language-switcher">
-                    <a href="/sherry-barrels-faq.html" class="language-option active">English</a>
+                    <a href="/sherry-barrels-faq" class="language-option active">English</a>
                     <span class="language-separator">|</span>
-                    <a href="/es/faq-barricas-jerez.html" class="language-option">Español</a>
+                    <a href="/es/faq-barricas-jerez" class="language-option">Español</a>
                 </div>
             </div>
-    
+
             <!-- Mobile Hamburger Menu -->
             <div class="mobile-menu-toggle" id="mobileMenuToggle">
                 <span></span>
@@ -173,21 +182,24 @@
                 <span></span>
             </div>
         </nav>
-    
+
         <!-- Mobile Menu Overlay -->
         <div class="mobile-menu-overlay" id="mobileMenuOverlay">
             <div class="mobile-menu-content">
-                <a href="index.html" class="mobile-menu-item">Home</a>
-                <a href="#faq-content" class="mobile-menu-item">FAQ Categories</a>
-                <a href="#faq-contact" class="mobile-menu-item">Contact</a>
-                <a href="#technical" class="mobile-menu-item">Aging Science</a>
-                <a href="#faq" class="mobile-menu-item">FAQ</a>
+                <a href="/sherry-barrels" class="mobile-menu-item">All Sherry Casks</a>
+                <a href="/whisky-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Whisky</a>
+                <a href="/rum-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Rum</a>
+                <a href="/tequila-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Tequila</a>
+                <a href="/vodka-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Vodka</a>
+                <a href="/beer-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Beer</a>
+                <a href="/blog" class="mobile-menu-item">Stories</a>
+                <a href="/sherry-barrels-faq" class="mobile-menu-item">FAQ</a>
                 <a href="#contact" class="mobile-menu-item mobile-cta">Get Quote</a>
 
                 <!-- Mobile Language Switcher -->
                 <div class="mobile-language-switcher">
-                    <a href="/sherry-barrels-faq.html" class="mobile-language-option active">English</a>
-                    <a href="/es/faq-barricas-jerez.html" class="mobile-language-option">Español</a>
+                    <a href="/sherry-barrels-faq" class="mobile-language-option active">English</a>
+                    <a href="/es/faq-barricas-jerez" class="mobile-language-option">Español</a>
                 </div>
             </div>
         </div>
@@ -263,7 +275,7 @@
                         </button>
                         <div class="faq-answer">
                             <div class="faq-content">
-                                <p>DO-certified casks are brand-new American Oak barrels seasoned for one to two years with Sherry and certified by the Consejo Regulador of Jerez-Xérès-Sherry, this option caters more specifically to large volume producers who need yearly predetermined quantities of barrels with a DO seal.
+                                <p>DO-certified casks are brand-new American Oak barrels seasoned for one to two years with Sherry and certified by the Consejo Regulador of Jerez-Xérès-Sherry, this option caters more specifically to large volume producers who need yearly predetermined quantities of barrels with a DO seal.</p>
                                     <p>Historic solera casks, on the other hand, are genuine ex-sherry barrels sourced from solera systems of varying age within the sherry triangle. Having matured sherry for decades, the oak in these casks has already released most of its tannins, allowing the spirit to absorb the purest expression of sherry character without the harshness of new wood. Each cask carries the depth, complexity, and soul of Jerez — offering distillers a rare opportunity to craft spirits with exceptional smoothness and layered nuance born from time itself.</p>
                                     <p>Both options ensure true Spanish provenance: DO-certified casks deliver commercial consistency and control, while historic solera casks provide unmatched richness, maturity, and authenticity.
                                     </p>
@@ -471,7 +483,6 @@
 <script src="js/components-loader.js"></script>
 <script src="/js/cookie-consent.js"></script>
 <script src="js/whatsapp-bubble.js"></script>
-<script src="js/book-a-call.js"></script>
 </body>
 </html>
 

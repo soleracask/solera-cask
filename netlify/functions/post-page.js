@@ -478,11 +478,26 @@ function generatePostHTML(post) {
                 <img src="/images/logos/Solera-Cask-Logo.png" alt="Solera Cask" class="logo-image logo-large">
                 <img src="/images/logos/SC-Logo.png" alt="Solera Cask" class="logo-image logo-small">
             </a>
-            
+
             <ul class="nav-menu">
-                <li><a href="/blog">All Stories</a></li>
-                <li><a href="/#contact" class="nav-cta">Get Quote</a></li>
+                <li class="has-dropdown">
+                    <a href="/sherry-barrels" aria-haspopup="true">Casks</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/sherry-barrels">All Sherry Casks</a></li>
+                        <li><a href="/whisky-sherry-barrels">Whisky</a></li>
+                        <li><a href="/rum-sherry-barrels">Rum</a></li>
+                        <li><a href="/tequila-sherry-barrels">Tequila</a></li>
+                        <li><a href="/vodka-sherry-barrels">Vodka</a></li>
+                        <li><a href="/beer-sherry-barrels">Beer</a></li>
+                    </ul>
+                </li>
+                <li><a href="/blog">Stories</a></li>
+                <li><a href="/sherry-barrels-faq">FAQ</a></li>
             </ul>
+
+            <div class="nav-right">
+                <a href="/#contact" class="nav-cta">Get Quote</a>
+            </div>
 
             <div class="mobile-menu-toggle" id="mobileMenuToggle">
                 <span></span>
@@ -493,7 +508,14 @@ function generatePostHTML(post) {
 
         <div class="mobile-menu-overlay" id="mobileMenuOverlay">
             <div class="mobile-menu-content">
-                <a href="/blog" class="mobile-menu-item">All Stories</a>
+                <a href="/sherry-barrels" class="mobile-menu-item">All Sherry Casks</a>
+                <a href="/whisky-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Whisky</a>
+                <a href="/rum-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Rum</a>
+                <a href="/tequila-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Tequila</a>
+                <a href="/vodka-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Vodka</a>
+                <a href="/beer-sherry-barrels" class="mobile-menu-item mobile-submenu-item">Beer</a>
+                <a href="/blog" class="mobile-menu-item">Stories</a>
+                <a href="/sherry-barrels-faq" class="mobile-menu-item">FAQ</a>
                 <a href="/#contact" class="mobile-menu-item mobile-cta">Get Quote</a>
             </div>
         </div>

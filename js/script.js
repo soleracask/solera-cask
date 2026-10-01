@@ -3009,6 +3009,20 @@ function showFormNotification(title, type = 'info', message = '') {
     const titleColor = type === 'success' ? 'var(--primary)' : 
                       type === 'error' ? '#d32f2f' : 'var(--text-primary)';
     
+    // Post-submission booking offer. Shown only on success, where the visitor
+    // has already converted, so it cannot cannibalise the form submission.
+    const isES = (document.documentElement.lang || 'en').toLowerCase().startsWith('es');
+    const bookUrl = 'https://cal.com/imaldomar/30min';
+    const bookLabel = isES ? 'Reservar una Llamada' : 'Book a Call';
+    const bookLead = isES
+        ? '¿No quiere esperar? Hablemos antes.'
+        : "Don't want to wait? Let's talk sooner.";
+    const closeLabel = type === 'success' ? (isES ? 'Cerrar' : 'Close') : 'Close';
+    const ctaBlock = type === 'success' ? `
+        <p style="font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin-top: 20px;">${bookLead}</p>
+        <a href="${bookUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: 12px; padding: 14px 32px; background: var(--primary); color: #ffffff; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">${bookLabel}</a>
+    ` : '';
+
     notification.style.cssText = `
         position: fixed;
         top: 50%;
@@ -3028,17 +3042,21 @@ function showFormNotification(title, type = 'info', message = '') {
     notification.innerHTML = `
         <h3 style="font-size: 24px; margin-bottom: 16px; color: ${titleColor};">${title}</h3>
         ${message ? `<p style="font-size: 16px; line-height: 1.6; color: var(--text-secondary);">${message}</p>` : ''}
-        <button onclick="this.parentElement.remove()" style="margin-top: 24px; padding: 12px 32px; background: ${borderColor}; color: white; border: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Close</button>
+        ${ctaBlock}
+        <button onclick="this.parentElement.remove()" style="margin-top: ${type === 'success' ? '12px' : '24px'}; padding: 12px 32px; background: ${type === 'success' ? 'transparent' : borderColor}; color: ${type === 'success' ? 'var(--text-light)' : 'white'}; border: ${type === 'success' ? '1px solid var(--border-light)' : 'none'}; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">${closeLabel}</button>
     `;
     
     document.body.appendChild(notification);
     
-    // Auto-remove after 8 seconds
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 8000);
+    // Success stays put: it now carries a call-to-action the visitor may want
+    // to act on. Errors and info still clear themselves after 8 seconds.
+    if (type !== 'success') {
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 8000);
+    }
 }
 
 // Add this at the bottom of js/script.js:

@@ -21,3 +21,10 @@ post/*.html  (5 files, in _to_delete/post/)
     TO REVERT any single post:
         mv "_to_delete/post/<slug>.html" post/
     then commit and push. That post goes back to being served statically.
+
+js/book-a-call.js
+    Injected a "Book a Call" button into the nav and mobile overlay.
+    Removed so Get Quote is the single nav CTA. Its job is now done by
+    a text link under the quote form and a button in the success modal.
+    To revert: mv _to_delete/js/book-a-call.js js/ and re-add
+    <script src="js/book-a-call.js"></script> to each page.
